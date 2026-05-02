@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Text, TouchableOpacity, View, Image, ScrollView } from 'react-native'
+import { Bar } from 'react-native-progress'
 import { styles, text } from './ProductDetailStyle'
 
 
@@ -42,8 +43,8 @@ export default function ProductDetail() {
                         <Text style={text.nameText}>상품 이름입니다.</Text>
                     </View>
                 </View>
-                <View style={styles.mainContainer}>
-                    <Text style={text.contentText}>bar입니다.</Text>
+                <View style={styles.barContainer}>
+                    <Bar progress={0.7} width={340} color={'#0076F0'} />
                 </View>
                 <TouchableOpacity
                     style={styles.buttonContainer}

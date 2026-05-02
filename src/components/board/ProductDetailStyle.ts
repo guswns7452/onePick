@@ -40,7 +40,6 @@ export const styles = StyleSheet.create({
         width: '100%',
         paddingTop: 5,
         marginBottom: 10,
-        backgroundColor: 'blue',
     },
     titleContainer: {
         width: '95%',
@@ -57,7 +56,7 @@ export const styles = StyleSheet.create({
         marginRight: 12,
         borderRadius: 10,
         borderWidth: 0.3,
-        borderColor: color.backgroundGray,
+        borderColor: color.faintBlack,
     },
     titleBox: {
         marginTop: 3,
@@ -71,10 +70,20 @@ export const styles = StyleSheet.create({
         justifyContent: 'center',
         borderRadius: 15,
     },
+    barContainer: {
+        width: '95%',
+        padding: 8,
+        marginBottom: 15,
+        alignSelf: 'center',
+        alignItems: 'center',
+        borderColor: 'black',
+        borderWidth: 4,
+    },
     mainContainer: {
         width: '95%',
         //height: 80,
         padding: 8,
+        marginTop: 10,
         alignSelf: 'center',
         flexDirection: 'row',
         borderColor: 'black',
@@ -88,7 +97,7 @@ export const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         borderRadius: 10,
-        backgroundColor: color.backgroundGray,
+        backgroundColor: 'gray',
     },
     footer: {
         flex: 0.15,
@@ -151,7 +160,7 @@ export const text = {
         lineHeight: 22.4,
     },
     nameText: {
-        color: color.faintGray,
+        color: color.faintBlack,
         fontSize: 18,
         fontWeight: '400',
         marginTop: 8,
