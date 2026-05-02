@@ -35,7 +35,6 @@ export const styles = StyleSheet.create({
     },
     main: {
         flex: 1,
-        backgroundColor: 'blue',
     },
     mainContainer: {
         width: '90%',
