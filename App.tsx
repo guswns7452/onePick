@@ -8,11 +8,12 @@
 
 
 import React from 'react';
+import ProductDetail from './src/components/board/ProductDetail'
 import Payment from './src/components/payment/Payment'
 
 export default function App() {
   return (
-    <Payment />
+    <ProductDetail />
   );
 }
 
