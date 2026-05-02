@@ -8,31 +8,13 @@
 
 
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import Payment from './src/components/payment/Payment'
 
 export default function App() {
   return (
-    <View style={styles.container}>
-      <View style={styles.box}>
-        <Text style={styles.text}>👋 OnePick 👋</Text>
-      </View>
-    </View>
+    <Payment />
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  box: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingTop: 200,
-  },
-  text: {
-    fontSize: 36,
-  }
-});
 
 
 /*
