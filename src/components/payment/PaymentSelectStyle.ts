@@ -1,23 +1,5 @@
 import { StyleSheet, StyleProp, TextStyle } from 'react-native'
-
-//자주 반복되는 색 객체로 빼서 사용
-const color = {
-    primary: '#0076F0',
-    positiveBlue: '#1654D1',
-    positiveLightBlue: '#B6CAF3',
-    buttonBlue: '#0B95F7',
-    negativeRed: '#EE473D',
-    negativeLightRed: '#FAE1DF',
-    noticeOrange: '#C85000',
-    noticeLightOrange: '#F5E0D3',
-
-    backgroundGray: '#F3F4F7',
-    
-    // 임시
-    normal: '#232323',
-    faintBlack: '#555555',
-    faintGray: '#EEEEEE',
-}
+import { color }  from '../../public/style/colors.ts'
 
 export const styles = StyleSheet.create({
     scrollView: {
