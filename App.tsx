@@ -10,11 +10,6 @@
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native'
 import StackNavigator from './src/navigation/StackNavigator'
-import MyPage from './src/components/main/MyPage'
-import NewPost from './src/components/board/NewPost'
-import PostBoard from './src/components/board/PostBoard'
-import PostDeatil from './src/components/board/PostDetail'
-import Payment from './src/components/payment/Payment'
 
 export default function App() {
   return (
