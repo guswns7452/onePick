@@ -1,9 +1,18 @@
-import React, { useState, useEffect } from 'react';
-import { Text, TouchableOpacity, View, Image, ScrollView, TextInput } from 'react-native'
+import React from 'react'
+import { Text, TouchableOpacity, View, Image } from 'react-native'
 import { styles, text } from './MyPageStyle'
 
+import { NativeStackNavigationProp } from '@react-navigation/native-stack'
+import { RootStackParamList } from '../../navigation/StackNavigator'
 
-export default function MyPage() {
+type HomeScreenNavigationProp =
+  NativeStackNavigationProp<RootStackParamList, 'MyPage'>;
+
+type Props = {
+  navigation: HomeScreenNavigationProp;
+};
+
+export default function MyPage({ navigation }: Props) {
     
     return (
         <View style={styles.flex}>
@@ -22,7 +31,10 @@ export default function MyPage() {
         <View style={styles.main}>
             <View style={styles.mainView}>
                 <View style={styles.mainContainer}>
-                    <TouchableOpacity style={styles.optionContainer}>
+                    <TouchableOpacity
+                        style={styles.optionContainer}
+                        onPress={() => navigation.navigate('PostBoard')}
+                    >
                         <View style={styles.imageBox}>
                             <Image
                                 style={styles.optionImage}
@@ -30,10 +42,13 @@ export default function MyPage() {
                             />
                         </View>
                         <View style={styles.textBox}>
-                            <Text style={text.optionText}>OPTION 1</Text>
+                            <Text style={text.optionText}>POSTBOARD</Text>
                         </View>
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.optionContainer}>
+                    <TouchableOpacity
+                        style={styles.optionContainer}
+                        onPress={() => navigation.navigate('Payment')}
+                    >
                         <View style={styles.imageBox}>
                             <Image
                                 style={styles.optionImage}
@@ -41,12 +56,15 @@ export default function MyPage() {
                             />
                         </View>
                         <View style={styles.textBox}>
-                            <Text style={text.optionText}>OPTION 2</Text>
+                            <Text style={text.optionText}>PAYMENT</Text>
                         </View>
                     </TouchableOpacity>
                 </View>
                 <View style={styles.mainContainer}>
-                    <TouchableOpacity style={styles.optionContainer}>
+                    <TouchableOpacity
+                        style={styles.optionContainer}
+                        onPress={() => navigation.navigate('NewPost')}
+                    >
                         <View style={styles.imageBox}>
                             <Image
                                 style={styles.optionImage}
@@ -54,10 +72,13 @@ export default function MyPage() {
                             />
                         </View>
                         <View style={styles.textBox}>
-                            <Text style={text.optionText}>OPTION 3</Text>
+                            <Text style={text.optionText}>NEWPOST</Text>
                         </View>
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.optionContainer}>
+                    <TouchableOpacity
+                        style={styles.optionContainer}
+                        onPress={() => navigation.navigate('PostDetail')}
+                    >
                         <View style={styles.imageBox}>
                             <Image
                                 style={styles.optionImage}
@@ -65,7 +86,7 @@ export default function MyPage() {
                             />
                         </View>
                         <View style={styles.textBox}>
-                            <Text style={text.optionText}>OPTION 4</Text>
+                            <Text style={text.optionText}>POSTDETAIL</Text>
                         </View>
                     </TouchableOpacity>
                 </View>

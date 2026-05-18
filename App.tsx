@@ -8,6 +8,8 @@
 
 
 import React from 'react';
+import { NavigationContainer } from '@react-navigation/native'
+import StackNavigator from './src/navigation/StackNavigator'
 import MyPage from './src/components/main/MyPage'
 import NewPost from './src/components/board/NewPost'
 import PostBoard from './src/components/board/PostBoard'
@@ -16,7 +18,9 @@ import Payment from './src/components/payment/Payment'
 
 export default function App() {
   return (
-    <MyPage />
+    <NavigationContainer>
+      <StackNavigator />
+    </NavigationContainer>
   );
 }
 

@@ -2,6 +2,16 @@ import React, { useState } from 'react';
 import { Text, TouchableOpacity, View, Image, ScrollView } from 'react-native'
 import { styles, text } from './PostBoardStyle'
 
+import { NativeStackNavigationProp } from '@react-navigation/native-stack'
+import { RootStackParamList } from '../../navigation/StackNavigator'
+
+type HomeScreenNavigationProp =
+  NativeStackNavigationProp<RootStackParamList, 'MyPage'>;
+
+type Props = {
+  navigation: HomeScreenNavigationProp;
+};
+
 const productList = [
     {
         id: 1,
@@ -33,7 +43,7 @@ const productList = [
     },
 ]
 
-export default function PostBoard() {
+export default function PostBoard({ navigation }: Props) {
 
     // const [finished, setFinished] = useState(false)
 
@@ -41,7 +51,7 @@ export default function PostBoard() {
         <View style={styles.flex}>
         <View style={styles.header}>
             <View style={styles.headerContainer}>
-            <TouchableOpacity /*onPress={() => {navigation.goBack()}}*/>
+            <TouchableOpacity onPress={() => {navigation.goBack()}}>
                 <Image
                     source={require('../../public/assets/back.png')}
                     style={styles.iconBack}
@@ -54,8 +64,8 @@ export default function PostBoard() {
         <View style={styles.main}>
             <ScrollView style={styles.scrollView}>
                 <View style={styles.messageContainer}>
-                    <Text style={[text.messageText, {left: -6}]}>총 000개의 상품이 있고,</Text>
-                    <Text style={[text.messageText, {right: -6}]}>그 중 최저가는 000원입니다. </Text>
+                    <Text style={[text.messageText, { left: -6 }]}>총 000개의 상품이 있고,</Text>
+                    <Text style={[text.messageText, { right: -6 }]}>그 중 최저가는 000원입니다. </Text>
                 </View>
 
                 {productList.map((product: any) => (

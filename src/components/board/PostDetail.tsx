@@ -3,8 +3,18 @@ import { Text, TouchableOpacity, View, Image, ScrollView } from 'react-native'
 import { Bar } from 'react-native-progress'
 import { styles, text } from './PostDetailStyle'
 
+import { NativeStackNavigationProp } from '@react-navigation/native-stack'
+import { RootStackParamList } from '../../navigation/StackNavigator'
 
-export default function PostDetail() {
+type HomeScreenNavigationProp =
+  NativeStackNavigationProp<RootStackParamList, 'MyPage'>;
+
+type Props = {
+  navigation: HomeScreenNavigationProp;
+};
+
+
+export default function PostDetail({ navigation }: Props) {
 
     const [finished, setFinished] = useState(false)
 
@@ -12,7 +22,7 @@ export default function PostDetail() {
         <View style={styles.flex}>
         <View style={styles.header}>
             <View style={styles.headerContainer}>
-            <TouchableOpacity /*onPress={() => {navigation.goBack()}}*/>
+            <TouchableOpacity onPress={() => {navigation.goBack()}}>
                 <Image
                     source={require('../../public/assets/back.png')}
                     style={styles.iconBack}

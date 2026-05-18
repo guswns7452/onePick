@@ -3,8 +3,17 @@ import { Text, TouchableOpacity, View, Image, ScrollView, TextInput } from 'reac
 import { styles, text } from './NewPostStyle'
 import { buttonStyle, buttonText }  from '../../public/style/button.ts'
 
+import { NativeStackNavigationProp } from '@react-navigation/native-stack'
+import { RootStackParamList } from '../../navigation/StackNavigator'
 
-export default function NewPost() {
+type HomeScreenNavigationProp =
+  NativeStackNavigationProp<RootStackParamList, 'MyPage'>;
+
+type Props = {
+  navigation: HomeScreenNavigationProp;
+};
+
+export default function NewPost({ navigation }: Props) {
 
     const [fulfilled, setFulfilled] = useState(false)
 
@@ -25,7 +34,7 @@ export default function NewPost() {
         <View style={styles.flex}>
         <View style={styles.header}>
             <View style={styles.headerContainer}>
-            <TouchableOpacity /*onPress={() => {navigation.goBack()}}*/>
+            <TouchableOpacity onPress={() => {navigation.goBack()}}>
                 <Image
                     source={require('../../public/assets/back.png')}
                     style={styles.iconBack}
