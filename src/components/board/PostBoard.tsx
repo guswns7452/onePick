@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Text, TouchableOpacity, View, Image, ScrollView } from 'react-native'
-import { styles, text } from './ProductBoardStyle'
+import { styles, text } from './PostBoardStyle'
 
 const productList = [
     {
@@ -33,7 +33,7 @@ const productList = [
     },
 ]
 
-export default function ProductBoard() {
+export default function PostBoard() {
 
     // const [finished, setFinished] = useState(false)
 

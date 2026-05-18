@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { Text, TouchableOpacity, View, Image, ScrollView } from 'react-native'
 import { Bar } from 'react-native-progress'
-import { styles, text } from './ProductDetailStyle'
+import { styles, text } from './PostDetailStyle'
 
 
-export default function ProductDetail() {
+export default function PostDetail() {
 
     const [finished, setFinished] = useState(false)
 

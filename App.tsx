@@ -8,13 +8,14 @@
 
 
 import React from 'react';
-import ProductBoard from './src/components/board/ProductBoard'
-import ProductDetail from './src/components/board/ProductDetail'
+import NewPost from './src/components/board/NewPost'
+import PostBoard from './src/components/board/PostBoard'
+import PostDeatil from './src/components/board/PostDetail'
 import Payment from './src/components/payment/Payment'
 
 export default function App() {
   return (
-    <ProductBoard />
+    <NewPost />
   );
 }
 
