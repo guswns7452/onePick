@@ -17,7 +17,7 @@ export const styles = StyleSheet.create({
         alignSelf: 'center',
         borderRadius: 10,
         borderColor: color.positiveBlue,
-        borderWidth: 3,
+        borderWidth: 2,
     },
     inactiveBox: {
         width: '90%',

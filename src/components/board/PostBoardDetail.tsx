@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Text, TouchableOpacity, View, Image, ScrollView } from 'react-native'
 import { Bar } from 'react-native-progress'
-import { styles, text } from './PostDetailStyle'
+import { styles, text } from './PostBoardDetailStyle'
 
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { RootStackParamList } from '../../navigation/StackNavigator'
@@ -14,9 +14,9 @@ type Props = {
 };
 
 
-export default function PostDetail({ navigation }: Props) {
-
-    const [finished, setFinished] = useState(false)
+export default function PostBoardDetail({ navigation }: Props) {
+    
+    const [finished, setFinished] = useState(false);
 
     return (
         <View style={styles.flex}>

@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { Text, TouchableOpacity, View, Image, ScrollView } from 'react-native'
-import { styles, text } from './PostBoardStyle'
+import { styles, text } from './PostListStyle'
 
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { RootStackParamList } from '../../navigation/StackNavigator'
 
 type HomeScreenNavigationProp =
-  NativeStackNavigationProp<RootStackParamList, 'MyPage'>;
+  NativeStackNavigationProp<RootStackParamList>;
 
 type Props = {
   navigation: HomeScreenNavigationProp;
@@ -41,11 +41,23 @@ const productList = [
         price: 1500,
         img_source: require('../../public/assets/credit-card.png'),
     },
+    {
+        id: 5,
+        name: '상품 5',
+        seller: '판매자 5',
+        price: 50000,
+        img_source: require('../../public/assets/bank-account.png'),
+    },
+    {
+        id: 6,
+        name: '상품 6',
+        seller: '판매자 6',
+        price: 15000,
+        img_source: require('../../public/assets/credit-card.png'),
+    },
 ]
 
-export default function PostBoard({ navigation }: Props) {
-
-    // const [finished, setFinished] = useState(false)
+export default function PostList({ navigation }: Props) {
 
     return (
         <View style={styles.flex}>
@@ -57,34 +69,40 @@ export default function PostBoard({ navigation }: Props) {
                     style={styles.iconBack}
                 />
             </TouchableOpacity>
-            <Text style={text.headerText}>PRODUCT BOARD</Text>
+            <Text style={text.headerText}>POST LIST</Text>
             </View>
         </View>
 
         <View style={styles.main}>
             <ScrollView style={styles.scrollView}>
-                <View style={styles.messageContainer}>
-                    <Text style={[text.messageText, { left: -6 }]}>총 000개의 상품이 있고,</Text>
-                    <Text style={[text.messageText, { right: -6 }]}>그 중 최저가는 000원입니다. </Text>
-                </View>
 
                 {productList.map((product: any) => (
-                    <TouchableOpacity key={product.id} style={styles.contentContainer}>
+                    <TouchableOpacity
+                        key={product.id} style={styles.mainContainer}
+                        onPress={() =>
+                            navigation.navigate('ProductDetail', {
+                                id: product.id,
+                                name: product.name,
+                                seller: product.seller,
+                                price: product.price,
+                                img_source: product.img_source,
+                            })}
+                    >
                         <View style={styles.upperBox}>
-                            <Text style={text.priceText}>{product.price}</Text>
-                            <Text style={text.priceUnitText}>원</Text>
-                        </View>
-                        <View style={styles.lowerBox}>
-                            <View style={styles.lowerImageBox}>
+                            <View style={styles.upperImageBox}>
                                 <Image
                                     source={product.img_source}
                                     style={styles.productImage}
                                 />
                             </View>
-                            <View style={styles.lowerTextBox}>
+                            <View style={styles.upperTextBox}>
                                 <Text style={text.productText}>{product.name}</Text>
-                                <Text style={text.sellerText}>{product.seller}</Text>
+                                <Text style={text.productText}>{product.seller}</Text>
                             </View>
+                        </View>
+                        <View style={styles.lowerBox}>
+                            <Text style={text.productText}>{product.price}</Text>
+                            <Text style={text.productText}>원</Text>
                     </View>
 
                     </TouchableOpacity>

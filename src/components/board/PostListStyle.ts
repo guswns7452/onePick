@@ -17,43 +17,45 @@ export const styles = StyleSheet.create({
     },
     main: {
         flex: 1,
-        justifyContent: 'center',
     },
-    mainView: {
+    scrollView: {
         width: '100%',
-        height: 400,
-        alignItems: 'center',
-        top: -25,
+        paddingTop: 12,
+        marginBottom: 10,
     },
     mainContainer: {
-        flex: 1,
         width: '90%',
-        flexDirection: 'row',
-        justifyContent: 'center',
-        marginVertical: 10,
+        alignSelf: 'center',
+        padding: 10,
+        marginVertical: 5,
+        borderRadius: 10,
+        borderColor: color.positiveBlue,
+        borderWidth: 1,
     },
-    optionContainer: {
-        width: '40%',
-        marginHorizontal: 8,
+    upperBox: {
+        width: '95%',
+        flexDirection: 'row',
+        alignSelf: 'center',
+        paddingVertical: 20,
+        marginBottom: 15,
+        borderBottomColor: color.faintBlack,
+        borderBottomWidth: 0.2,
+    },
+    upperImageBox: {
+        width: '30%',
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: color.backgroundGray,
-        borderRadius: 20,
-        borderColor: color.positiveLightBlue,
-        borderWidth: 2,
-        // 그림자효과
     },
-    imageBox: {
-        height: '60%',
-        top: -5,
+    upperTextBox: {
+        width: '70%',
+        paddingLeft: 15,
     },
-    textBox: {
-        justifyContent: 'center',
-        //backgroundColor: 'pink',
-    },
-    optionImage: {
-        width: 95,
-        height: 95,
+    lowerBox: {
+        width: '95%',
+        flexDirection: 'row',
+        marginBottom: 15,
+        alignSelf: 'center',
+        alignItems: 'center',
     },
     footer: {
         flex: 0.15,
@@ -63,6 +65,10 @@ export const styles = StyleSheet.create({
         left: 15,
         width: 40,
         height: 40,
+    },
+    productImage: {
+        width: 80,
+        height: 80,
     },
 })
 
@@ -80,18 +86,9 @@ export const text = {
         alignSelf: 'center',
         left: 30,
     },
-    optionText: {
+    productText: {
         ...baseText,
-        fontWeight: '500',
-        fontSize: 17,
-    },
-    subtitleText: {
-        ...baseText,
-        fontSize: 18,
-    },
-    contentText: {
-        ...baseText,
-        fontSize: 18,
+        fontSize: 19,
     },
     mainText: {
         color: color.normal,

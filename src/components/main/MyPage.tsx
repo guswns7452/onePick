@@ -63,7 +63,7 @@ export default function MyPage({ navigation }: Props) {
                 <View style={styles.mainContainer}>
                     <TouchableOpacity
                         style={styles.optionContainer}
-                        onPress={() => navigation.navigate('NewPost')}
+                        onPress={() => navigation.navigate('PostList')}
                     >
                         <View style={styles.imageBox}>
                             <Image
@@ -72,12 +72,12 @@ export default function MyPage({ navigation }: Props) {
                             />
                         </View>
                         <View style={styles.textBox}>
-                            <Text style={text.optionText}>NEWPOST</Text>
+                            <Text style={text.optionText}>POSTLIST</Text>
                         </View>
                     </TouchableOpacity>
                     <TouchableOpacity
                         style={styles.optionContainer}
-                        onPress={() => navigation.navigate('PostDetail')}
+                        onPress={() => navigation.navigate('PostBoardDetail')}
                     >
                         <View style={styles.imageBox}>
                             <Image
@@ -86,7 +86,7 @@ export default function MyPage({ navigation }: Props) {
                             />
                         </View>
                         <View style={styles.textBox}>
-                            <Text style={text.optionText}>POSTDETAIL</Text>
+                            <Text style={text.optionText}>BOARDDETAIL</Text>
                         </View>
                     </TouchableOpacity>
                 </View>
