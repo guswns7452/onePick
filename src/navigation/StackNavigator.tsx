@@ -4,7 +4,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import MyPage from '../components/main/MyPage'
 import NewPost from '../components/board/NewPost'
 import PostList from '../components/board/PostList'
-import PostBoard from '../components/board/PostBoard'
+import FundingList from '../components/funding/FundingList'
 import PostBoardDetail from '../components/board/PostBoardDetail'
 import ProductDetail from '../components/board/ProductDetail'
 import Payment from '../components/payment/Payment'
@@ -12,8 +12,8 @@ import Payment from '../components/payment/Payment'
 export type RootStackParamList = {
   MyPage: undefined;
   NewPost: undefined;
+  FundingList: undefined;
   PostList: undefined;
-  PostBoard: undefined;
   PostBoardDetail: undefined;
   ProductDetail: {
     id: number;
@@ -47,8 +47,8 @@ export default function StackNavigator() {
         component={PostList}
       />
       <Stack.Screen
-        name="PostBoard"
-        component={PostBoard}
+        name="FundingList"
+        component={FundingList}
       />
       <Stack.Screen
         name="PostBoardDetail"

@@ -1,12 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Text, TouchableOpacity, View, Image, ScrollView } from 'react-native'
-import { styles, text } from './PostBoardStyle'
+import { styles, text } from './FundingListStyle'
 
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { RootStackParamList } from '../../navigation/StackNavigator'
 
+import { getFundings } from '../../api/getFundings'
+
 type HomeScreenNavigationProp =
-  NativeStackNavigationProp<RootStackParamList, 'MyPage'>;
+  NativeStackNavigationProp<RootStackParamList>;
 
 type Props = {
   navigation: HomeScreenNavigationProp;
@@ -43,9 +45,26 @@ const productList = [
     },
 ]
 
-export default function PostBoard({ navigation }: Props) {
+export default function FundingList({ navigation }: Props) {
 
-    // const [finished, setFinished] = useState(false)
+    const [fundings, setFundings] = useState([]);
+
+    useEffect(() => {
+        fetchPosts();
+    }, []);
+
+    const fetchPosts = async () => {
+        try {
+            const data = await getFundings(1/* proposalId 고유값 필요 */);
+
+            console.log(data);
+            setFundings(data);
+
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
 
     return (
         <View style={styles.flex}>
@@ -69,7 +88,11 @@ export default function PostBoard({ navigation }: Props) {
                 </View>
 
                 {productList.map((product: any) => (
-                    <TouchableOpacity key={product.id} style={styles.contentContainer}>
+                    <TouchableOpacity
+                        key={product.id}
+                        style={styles.contentContainer}
+                        /*onPress={() => console.log(fundings)}*/
+                    >
                         <View style={styles.upperBox}>
                             <Text style={text.priceText}>{product.price}</Text>
                             <Text style={text.priceUnitText}>원</Text>

@@ -7,7 +7,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { RootStackParamList } from '../../navigation/StackNavigator'
 
 type HomeScreenNavigationProp =
-  NativeStackNavigationProp<RootStackParamList, 'MyPage'>;
+  NativeStackNavigationProp<RootStackParamList>;
 
 type Props = {
   navigation: HomeScreenNavigationProp;

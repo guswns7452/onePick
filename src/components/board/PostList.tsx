@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Text, TouchableOpacity, View, Image, ScrollView } from 'react-native'
 import { styles, text } from './PostListStyle'
 
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { RootStackParamList } from '../../navigation/StackNavigator'
+
+import { getProducts } from '../../api/getProducts';
 
 type HomeScreenNavigationProp =
   NativeStackNavigationProp<RootStackParamList>;
@@ -58,6 +60,24 @@ const productList = [
 ]
 
 export default function PostList({ navigation }: Props) {
+
+    const [posts, setPosts] = useState([]);
+    
+    useEffect(() => {
+        fetchPosts();
+    }, []);
+    
+    const fetchPosts = async () => {
+        try {
+            const data = await getProducts();
+    
+            console.log(data);
+            setPosts(data);
+    
+        } catch (error) {
+            console.log(error);
+        }
+    };
 
     return (
         <View style={styles.flex}>

@@ -6,7 +6,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { RootStackParamList } from '../../navigation/StackNavigator'
 
 type HomeScreenNavigationProp =
-  NativeStackNavigationProp<RootStackParamList, 'MyPage'>;
+  NativeStackNavigationProp<RootStackParamList>;
 
 type Props = {
   navigation: HomeScreenNavigationProp;
@@ -33,7 +33,7 @@ export default function MyPage({ navigation }: Props) {
                 <View style={styles.mainContainer}>
                     <TouchableOpacity
                         style={styles.optionContainer}
-                        onPress={() => navigation.navigate('PostBoard')}
+                        onPress={() => navigation.navigate('FundingList')}
                     >
                         <View style={styles.imageBox}>
                             <Image
@@ -42,7 +42,7 @@ export default function MyPage({ navigation }: Props) {
                             />
                         </View>
                         <View style={styles.textBox}>
-                            <Text style={text.optionText}>POSTBOARD</Text>
+                            <Text style={text.optionText}>FUNDINGLIST</Text>
                         </View>
                     </TouchableOpacity>
                     <TouchableOpacity
