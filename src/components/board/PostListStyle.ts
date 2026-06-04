@@ -24,7 +24,7 @@ export const styles = StyleSheet.create({
         marginBottom: 10,
     },
     mainContainer: {
-        width: '90%',
+        width: '85%',
         alignSelf: 'center',
         padding: 10,
         marginVertical: 5,

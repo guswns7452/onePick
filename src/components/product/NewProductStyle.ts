@@ -33,6 +33,26 @@ export const styles = StyleSheet.create({
         borderColor: color.positiveBlue,
         borderWidth: 1,
     },
+    pickerContainer: {
+        /*
+        width: '95%',
+        height: 80,
+        flexDirection: 'row',
+        alignSelf: 'center',
+        padding: 15,
+        marginVertical: 5,
+        borderRadius: 10,
+        borderColor: color.positiveBlue,
+        borderWidth: 1,
+        */
+        width: '100%',
+        height: 60,
+        backgroundColor: 'white',
+        borderWidth: 1,
+        borderColor: '#ccc',
+        justifyContent: 'center',
+        marginBottom: 20,
+    },
     footer: {
         flex: 0.15,
         backgroundColor: 'green',
@@ -62,17 +82,9 @@ export const text = {
         alignSelf: 'center',
         left: 30,
     },
-    titleText: {
+    placeholderText: {
         ...baseText,
-        fontSize: 18,
-    },
-    subtitleText: {
-        ...baseText,
-        fontSize: 18,
-    },
-    contentText: {
-        ...baseText,
-        fontSize: 18,
+        fontSize: 17,
     },
     mainText: {
         color: color.normal,

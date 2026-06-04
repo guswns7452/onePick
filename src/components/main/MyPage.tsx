@@ -89,6 +89,21 @@ export default function MyPage({ navigation }: Props) {
                             <Text style={text.optionText}>BOARDDETAIL</Text>
                         </View>
                     </TouchableOpacity>
+
+                    <TouchableOpacity
+                        style={styles.optionContainer}
+                        onPress={() => navigation.navigate('NewProduct')}
+                    >
+                        <View style={styles.imageBox}>
+                            <Image
+                                style={styles.optionImage}
+                                source={require('../../public/assets/bank-account.png')}
+                            />
+                        </View>
+                        <View style={styles.textBox}>
+                            <Text style={text.optionText}>NEWPRODUCT</Text>
+                        </View>
+                    </TouchableOpacity>
                 </View>
             </View>
         </View>

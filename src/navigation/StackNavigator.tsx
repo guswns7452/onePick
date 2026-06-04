@@ -2,7 +2,7 @@ import React from 'react'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 
 import MyPage from '../components/main/MyPage'
-import NewPost from '../components/board/NewPost'
+import NewProduct from '../components/product/NewProduct'
 import PostList from '../components/board/PostList'
 import FundingList from '../components/funding/FundingList'
 import PostBoardDetail from '../components/board/PostBoardDetail'
@@ -11,7 +11,7 @@ import Payment from '../components/payment/Payment'
 
 export type RootStackParamList = {
   MyPage: undefined;
-  NewPost: undefined;
+  NewProduct: undefined;
   FundingList: undefined;
   PostList: undefined;
   PostBoardDetail: undefined;
@@ -39,8 +39,8 @@ export default function StackNavigator() {
         component={MyPage}
       />
       <Stack.Screen
-        name="NewPost"
-        component={NewPost}
+        name="NewProduct"
+        component={NewProduct}
       />
       <Stack.Screen
         name="PostList"
