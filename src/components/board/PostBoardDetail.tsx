@@ -58,7 +58,7 @@ export default function PostBoardDetail({ navigation }: Props) {
                 </View>
                 <TouchableOpacity
                     style={styles.buttonContainer}
-                    /* onPress */
+                    /*onPress={}*/
                 >
                     <Text style={text.buttonText}>상 세</Text>
                 </TouchableOpacity>

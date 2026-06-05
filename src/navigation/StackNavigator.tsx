@@ -1,6 +1,10 @@
 import React from 'react'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 
+import Main from '../components/main/Main'
+import SetPrice from '../components/SetPrice'
+import IndMain from '../components/main/IndMain'
+import CorMain from '../components/main/CorMain'
 import MyPage from '../components/main/MyPage'
 import NewProduct from '../components/product/NewProduct'
 import PostList from '../components/board/PostList'
@@ -10,6 +14,10 @@ import ProductDetail from '../components/board/ProductDetail'
 import Payment from '../components/payment/Payment'
 
 export type RootStackParamList = {
+  Main: undefined;
+  SetPrice: undefined;
+  IndMain: undefined;
+  CorMain: undefined;
   MyPage: undefined;
   NewProduct: undefined;
   FundingList: undefined;
@@ -34,6 +42,22 @@ export default function StackNavigator() {
         headerShown: false,
       }}
     >
+      <Stack.Screen
+        name="Main"
+        component={Main}
+      />
+      <Stack.Screen
+        name="SetPrice"
+        component={SetPrice}
+      />
+      <Stack.Screen
+        name="IndMain"
+        component={IndMain}
+      />
+      <Stack.Screen
+        name="CorMain"
+        component={CorMain}
+      />
       <Stack.Screen
         name="MyPage"
         component={MyPage}

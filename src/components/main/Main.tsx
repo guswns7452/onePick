@@ -1,26 +1,64 @@
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import React from 'react'
+import { Text, TouchableOpacity, View, Image } from 'react-native'
+import { styles, text } from './MainStyle'
 
-export default function App() {
-  return (
-    <View style={styles.container}>
-      <View style={styles.box}>
-        <Text style={styles.text}>👋 OnePick 👋</Text>
-      </View>
+import { NativeStackNavigationProp } from '@react-navigation/native-stack'
+import { RootStackParamList } from '../../navigation/StackNavigator'
+
+type HomeScreenNavigationProp =
+  NativeStackNavigationProp<RootStackParamList>;
+
+type Props = {
+  navigation: HomeScreenNavigationProp;
+};
+
+export default function Main({ navigation }: Props) {
+    
+    return (
+        <View style={styles.flex}>
+        <View style={styles.header}>
+            <View style={styles.headerContainer}>
+            <Text style={text.headerText}>MAIN</Text>
+            </View>
+        </View>
+
+        <View style={styles.main}>
+            <View style={styles.mainView}>
+                <View style={styles.mainContainer}>
+                    <TouchableOpacity
+                        style={styles.optionContainer}
+                        onPress={() => navigation.navigate('IndMain')}
+                    >
+                        <View style={styles.imageBox}>
+                            <Image
+                                style={styles.optionImage}
+                                /*source={require('../../public/assets/credit-card.png')}*/
+                            />
+                        </View>
+                        <View style={styles.textBox}>
+                            <Text style={text.optionText}>개인회원</Text>
+                        </View>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        style={styles.optionContainer}
+                        onPress={() => navigation.navigate('CorMain')}
+                    >
+                        <View style={styles.imageBox}>
+                            <Image
+                                style={styles.optionImage}
+                                /*source={require('../../public/assets/bank-account.png')}*/
+                            />
+                        </View>
+                        <View style={styles.textBox}>
+                            <Text style={text.optionText}>기업회원</Text>
+                        </View>
+                    </TouchableOpacity>
+                </View>
+            </View>
+        </View>
+        <View style={styles.footer}>
+            <Text style={text.headerText}>FOOTER</Text>
+        </View>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  box: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingTop: 200,
-  },
-  text: {
-    fontSize: 36,
-  }
-});
