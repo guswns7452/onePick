@@ -38,7 +38,6 @@ export const styles = StyleSheet.create({
     },
     footer: {
         flex: 0.15,
-        backgroundColor: 'green',
     },
     iconBack: {
         left: 15,
@@ -75,104 +74,6 @@ export const text = {
         marginTop: 10,
         left: 15,
     },
-    /*
-    activeText: {
-        fontWeight: '800',
-        color: color.primary,
-        fontSize: 18,
-        lineHeight: 22.4,
-    },
-    inactiveText: {
-        ...baseText,
-        color: color.inactive,
-        fontSize: 18,
-        lineHeight: 22.4,
-    },
-    timeText: {
-        fontWeight: '500',
-        color: color.inactive,
-        fontSize: 16,
-        lineHeight: 22.4,
-        letterSpacing: -0.5,
-    },
-    ribbonText: {
-        ...baseText,
-        color: color.ribbon,
-        fontSize: 14,
-        lineHeight: 19.6,
-        letterSpacing: -0.5,
-    },
-    hospitalText: {
-        fontWeight: '800',
-        fontSize: 20,
-        lineHeight: 28,
-        color: color.normal,
-    },
-    smallBlackText: {
-        ...baseText,
-        fontSize: 14,
-        lineHeight: 19.6,
-        letterSpacing: -0.5,
-        color: color.normal,
-    },
-    normalText: {
-        ...baseText,
-        fontSize: 16,
-        lineHeight: 22.4,
-        letterSpacing: -0.5,
-        color: color.normal,
-    },
-    semiboldText: {
-        fontWeight: '800',
-        fontSize: 18,
-        color: color.normal,
-        lineHeight: 22.4,
-    },
-    doctorText: {
-        fontWeight: '800',
-        fontSize: 16,
-        color: color.normal,
-        lineHeight: 22.4,
-    },
-    titleText: {
-        ...baseText,
-        fontSize: 16,
-        color: color.normal,
-        lineHeight: 22.4,
-        letterSpacing: -0.5,
-        marginLeft: 4,
-    },
-    profiletitleText: {
-        ...baseText,
-        fontSize: 16,
-        color: color.primary,
-        lineHeight: 19.6,
-        letterSpacing: -0.5,
-    },
-    primaryboldText: {
-        fontWeight: '800',
-        fontSize: 18,
-        color: color.primary,
-        lineHeight: 22.4,
-    },
-    faintText: {
-        ...baseText,
-        fontSize: 18,
-        lineHeight: 22.4,
-        letterSpacing: -0.5,
-        color: color.faintBlack,
-    },
-    showReviewText: {
-        ...baseText,
-        fontSize: 16,
-        lineHeight: 22.4,
-        letterSpacing: -0.5,
-        color: color.faintBlack,
-        textDecorationColor: color.faintBlack,
-        textDecorationStyle: 'solid',
-        textDecorationLine: 'underline',
-    },
-    */
 } as {
     [key: string]: StyleProp<TextStyle>
 }

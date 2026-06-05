@@ -34,16 +34,14 @@ export default function Payment({ navigation }: Props) {
             <PaymentSelect />
         </View>
 
-        <TouchableOpacity
-        activeOpacity={0.7}
-            style={buttonStyle.active}
-            /* onPress */
-        >
-            <Text style={buttonText.active}>다음</Text>
-        </TouchableOpacity>
-
         <View style={styles.footer}>
-            <Text style={text.headerText}>FOOTER</Text>
+            <TouchableOpacity
+                activeOpacity={0.7}
+                style={buttonStyle.active}
+                /* onPress */
+            >
+                <Text style={buttonText.active}>다음</Text>
+            </TouchableOpacity>
         </View>
     </View>
   );

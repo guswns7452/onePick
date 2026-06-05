@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Text, TouchableOpacity, View, Image, ScrollView } from 'react-native'
-import { styles, text } from './PostListStyle'
+import { styles, text } from './ProductListStyle'
 
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { RootStackParamList } from '../../navigation/StackNavigator'
@@ -14,7 +14,7 @@ type Props = {
   navigation: HomeScreenNavigationProp;
 };
 
-const productList = [
+const dummy_productList = [
     {
         id: 1,
         name: '상품 1',
@@ -61,18 +61,18 @@ const productList = [
 
 export default function PostList({ navigation }: Props) {
 
-    const [posts, setPosts] = useState([]);
+    const [products, setProducts] = useState([]);
     
     useEffect(() => {
-        fetchPosts();
+        fetchProducts();
     }, []);
     
-    const fetchPosts = async () => {
+    const fetchProducts = async () => {
         try {
             const data = await getProducts();
     
             console.log(data);
-            setPosts(data);
+            setProducts(data);
     
         } catch (error) {
             console.log(error);
@@ -96,7 +96,7 @@ export default function PostList({ navigation }: Props) {
         <View style={styles.main}>
             <ScrollView style={styles.scrollView}>
 
-                {productList.map((product: any) => (
+                {dummy_productList.map((product: any) => (
                     <TouchableOpacity
                         key={product.id} style={styles.mainContainer}
                         onPress={() =>

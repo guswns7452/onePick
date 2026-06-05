@@ -6,8 +6,9 @@ import SetPrice from '../components/SetPrice'
 import IndMain from '../components/main/IndMain'
 import CorMain from '../components/main/CorMain'
 import MyPage from '../components/main/MyPage'
+import NewPost from '../components/product/NewPost'
 import NewProduct from '../components/product/NewProduct'
-import PostList from '../components/board/PostList'
+import ProductList from '../components/board/ProductList'
 import FundingList from '../components/funding/FundingList'
 import PostBoardDetail from '../components/board/PostBoardDetail'
 import ProductDetail from '../components/board/ProductDetail'
@@ -20,8 +21,9 @@ export type RootStackParamList = {
   CorMain: undefined;
   MyPage: undefined;
   NewProduct: undefined;
+  NewPost: undefined;
   FundingList: undefined;
-  PostList: undefined;
+  ProductList: undefined;
   PostBoardDetail: undefined;
   ProductDetail: {
     id: number;
@@ -63,12 +65,16 @@ export default function StackNavigator() {
         component={MyPage}
       />
       <Stack.Screen
+        name="NewPost"
+        component={NewPost}
+      />
+      <Stack.Screen
         name="NewProduct"
         component={NewProduct}
       />
       <Stack.Screen
-        name="PostList"
-        component={PostList}
+        name="ProductList"
+        component={ProductList}
       />
       <Stack.Screen
         name="FundingList"

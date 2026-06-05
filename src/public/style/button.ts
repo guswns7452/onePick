@@ -2,14 +2,14 @@ import { StyleSheet, StyleProp, ViewStyle, TextStyle } from 'react-native'
 import { color }  from './colors.ts'
 
 const baseStyle: ViewStyle = {
-        width: '95%',
+        width: '93%',
         height: 60,
         padding: 8,
-        marginTop: 15,
+        bottom: 10,
         alignSelf: 'center',
         alignItems: 'center',
         justifyContent: 'center',
-        borderRadius: 18,
+        borderRadius: 16,
 }
 
 export const buttonStyle = StyleSheet.create({
