@@ -33,7 +33,7 @@ export default function MyPage({ navigation }: Props) {
                 <View style={styles.mainContainer}>
                     <TouchableOpacity
                         style={styles.optionContainer}
-                        onPress={() => navigation.navigate('FundingList')}
+                        onPress={() => navigation.navigate('MyList')}
                     >
                         <View style={styles.imageBox}>
                             <Image
@@ -42,7 +42,7 @@ export default function MyPage({ navigation }: Props) {
                             />
                         </View>
                         <View style={styles.textBox}>
-                            <Text style={text.optionText}>FUNDINGLIST</Text>
+                            <Text style={text.optionText}>MYLIST</Text>
                         </View>
                     </TouchableOpacity>
                     <TouchableOpacity
@@ -78,7 +78,7 @@ export default function MyPage({ navigation }: Props) {
                     </TouchableOpacity>
                     <TouchableOpacity
                         style={styles.optionContainer}
-                        onPress={() => navigation.navigate('FundingList')}
+                        onPress={() => navigation.navigate('MyList')}
                     >
                         <View style={styles.imageBox}>
                             <Image

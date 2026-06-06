@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Text, TouchableOpacity, View, Image, ScrollView } from 'react-native'
-import { styles, text } from './FundingListStyle'
+import { styles, text } from './MyListStyle'
 
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { RootStackParamList } from '../../navigation/StackNavigator'
 
-import { getFundings } from '../../api/ProposalFunding/getFundings'
+import { getMyFundings } from '../../api/Product/getMyFundings';
+import { deleteApplyFunding } from '../../api/Product/deleteApplyFunding'
 
 type HomeScreenNavigationProp =
   NativeStackNavigationProp<RootStackParamList>;
@@ -45,7 +46,7 @@ const productList = [
     },
 ]
 
-export default function FundingList({ navigation }: Props) {
+export default function MyFundingList({ navigation }: Props) {
 
     const [fundings, setFundings] = useState([]);
 

@@ -40,7 +40,7 @@ export default function Login({ navigation }: Props) {
             const result = await postLogin(body);
             console.log(result);
 
-            navigation.navigate('IndMain');
+            navigation.navigate('ProductFundingList');
 
         } catch (error) {
 
