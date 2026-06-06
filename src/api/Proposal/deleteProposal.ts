@@ -1,4 +1,4 @@
-import { api } from './axios';
+import { api } from '../axios';
 
 export const deleteProposal = async (proposalId: number) => {
     const response = await api.delete(`/api/v1/proposals/${proposalId}`);

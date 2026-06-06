@@ -1,4 +1,4 @@
-import { api } from './axios';
+import { api } from '../axios';
 
 // 요청 body 타입
 export interface CreateProductRequest {

@@ -28,13 +28,13 @@ type Props = {
 
 export default function ProductDetail({ navigation, route }: Props) {
 
-    const [finished, setFinished] = useState(false);
+    
     const {
-        id,
-        name,
-        seller,
+        title,
         price,
-        img_source,
+        minPeople,
+        status,
+        category,
     } = route.params;
 
     return (
@@ -54,22 +54,16 @@ export default function ProductDetail({ navigation, route }: Props) {
         <View style={styles.main}>
             <ScrollView style={styles.scrollView}>
                 <View style={styles.mainContainer}>
-                    <View style={styles.imageBox}>
-                        <Image
-                            source={img_source}
-                            style={styles.productImage}
-                        />
-                    </View>
                     <View>
                         <View style={styles.titleBox}>
-                            <View style={[styles.statusBox, finished ? { backgroundColor: '#555555' } : { backgroundColor: '#1654D1' }]}>
+                            <View style={styles.statusBox}>
                                 <Text style={text.statusText}>
-                                    {finished ? '종료' : '진행'}
+                                    {status}
                                 </Text>
                             </View>
                             <Text style={text.timeText}>4 : 02 : 55</Text>
                         </View>
-                        <Text style={text.nameText}>{name}</Text>
+                        <Text style={text.nameText}>{title}</Text>
                     </View>
                 </View>
 
@@ -88,13 +82,13 @@ export default function ProductDetail({ navigation, route }: Props) {
                     style={styles.buttonContainer}
                     /* onPress */
                 >
-                    <Text style={text.buttonText}>상 세</Text>
+                    <Text style={text.buttonText}>{category}</Text>
                 </TouchableOpacity>
                 <View style={styles.contentContainer}>
-                    <Text style={text.contentText}>{seller}</Text>
+                    <Text style={text.contentText}>{price}</Text>
                 </View>
                 <View style={styles.contentContainer}>
-                    <Text style={text.contentText}>{price}</Text>
+                    <Text style={text.contentText}>{minPeople}</Text>
                 </View>
             </ScrollView>
         </View>

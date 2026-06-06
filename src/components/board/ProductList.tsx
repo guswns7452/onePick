@@ -5,7 +5,7 @@ import { styles, text } from './ProductListStyle'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { RootStackParamList } from '../../navigation/StackNavigator'
 
-import { getProducts } from '../../api/getProducts';
+import { getProducts } from '../../api/Product/getProducts';
 
 type HomeScreenNavigationProp =
   NativeStackNavigationProp<RootStackParamList>;
@@ -14,54 +14,11 @@ type Props = {
   navigation: HomeScreenNavigationProp;
 };
 
-const dummy_productList = [
-    {
-        id: 1,
-        name: '상품 1',
-        seller: '판매자 1',
-        price: 5000,
-        img_source: require('../../public/assets/bank-account.png'),
-    },
-    {
-        id: 2,
-        name: '상품 2',
-        seller: '판매자 2',
-        price: 10000,
-        img_source: require('../../public/assets/credit-card.png'),
-    },
-    {
-        id: 3,
-        name: '상품 3',
-        seller: '판매자 3',
-        price: 20000,
-        img_source: require('../../public/assets/bank-account.png'),
-    },
-    {
-        id: 4,
-        name: '상품 4',
-        seller: '판매자 4',
-        price: 1500,
-        img_source: require('../../public/assets/credit-card.png'),
-    },
-    {
-        id: 5,
-        name: '상품 5',
-        seller: '판매자 5',
-        price: 50000,
-        img_source: require('../../public/assets/bank-account.png'),
-    },
-    {
-        id: 6,
-        name: '상품 6',
-        seller: '판매자 6',
-        price: 15000,
-        img_source: require('../../public/assets/credit-card.png'),
-    },
-]
 
-export default function PostList({ navigation }: Props) {
 
-    const [products, setProducts] = useState([]);
+export default function ProductList({ navigation }: Props) {
+
+    const [products, setProducts] = useState<any[]>([]);
     
     useEffect(() => {
         fetchProducts();
@@ -70,10 +27,15 @@ export default function PostList({ navigation }: Props) {
     const fetchProducts = async () => {
         try {
             const data = await getProducts();
-    
-            console.log(data);
-            setProducts(data);
-    
+            console.log(JSON.stringify(data, null, 2));
+            
+            if (Array.isArray(data)) {
+                setProducts(data);
+            } else if (Array.isArray(data.data)) {
+                setProducts(data.data);
+            } else {
+                setProducts([]);
+            }
         } catch (error) {
             console.log(error);
         }
@@ -89,39 +51,35 @@ export default function PostList({ navigation }: Props) {
                     style={styles.iconBack}
                 />
             </TouchableOpacity>
-            <Text style={text.headerText}>POST LIST</Text>
+            <Text style={text.headerText}>PRODUCT LIST</Text>
             </View>
         </View>
 
         <View style={styles.main}>
             <ScrollView style={styles.scrollView}>
 
-                {dummy_productList.map((product: any) => (
+                {products?.map((product: any) => (
                     <TouchableOpacity
-                        key={product.id} style={styles.mainContainer}
+                        key={product.productId} style={styles.mainContainer}
                         onPress={() =>
                             navigation.navigate('ProductDetail', {
-                                id: product.id,
-                                name: product.name,
-                                seller: product.seller,
+                                title: product.title,
                                 price: product.price,
-                                img_source: product.img_source,
+                                minPeople: product.minPeople,
+                                status: product.status,
+                                category: product.category,
                             })}
                     >
                         <View style={styles.upperBox}>
-                            <View style={styles.upperImageBox}>
-                                <Image
-                                    source={product.img_source}
-                                    style={styles.productImage}
-                                />
-                            </View>
                             <View style={styles.upperTextBox}>
-                                <Text style={text.productText}>{product.name}</Text>
-                                <Text style={text.productText}>{product.seller}</Text>
+                                <Text style={text.productText}>{product.title}</Text>
+                                <Text style={text.productText}>{product.price}</Text>
+                                <Text style={text.productText}>{product.status}</Text>
                             </View>
                         </View>
                         <View style={styles.lowerBox}>
-                            <Text style={text.productText}>{product.price}</Text>
+                                <Text style={text.productText}>{product.category}</Text>
+                                <Text style={text.productText}>{product.minPeople}</Text>
                             <Text style={text.productText}>원</Text>
                     </View>
 

@@ -1,5 +1,6 @@
+import axios from 'axios';
 import React, { useState, useEffect } from 'react';
-import { Text, TouchableOpacity, View, Image, ScrollView, TextInput } from 'react-native'
+import { Alert, Text, TouchableOpacity, View, Image, ScrollView, TextInput } from 'react-native'
 import { styles, text } from './NewProductStyle.ts'
 import { buttonStyle, buttonText }  from '../../public/style/button.ts'
 import { Picker } from '@react-native-picker/picker'
@@ -7,7 +8,7 @@ import { Picker } from '@react-native-picker/picker'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { RootStackParamList } from '../../navigation/StackNavigator.tsx'
 
-import { postProduct } from '../../api/postProduct'
+import { postProduct } from '../../api/Product/postProduct.ts'
 
 type HomeScreenNavigationProp =
   NativeStackNavigationProp<RootStackParamList>;
@@ -88,13 +89,29 @@ export default function NewPost({ navigation }: Props) {
 
             const result = await postProduct(body);
             console.log(result);
+            Alert.alert(
+            '등록 완료',
+            '상품이 성공적으로 등록되었습니다.'
+            );
 
             navigation.goBack();
 
         } catch (error) {
 
-            console.log(error);
+            if (axios.isAxiosError(error)) {
 
+                Alert.alert(
+                    '에러 발생',
+                    error.response?.data?.message
+                    || '상품 등록 실패',
+                );
+
+                } else {
+                    Alert.alert(
+                        '에러 발생',
+                        '알 수 없는 오류',
+                );
+            }
         }
     };
 
@@ -184,7 +201,7 @@ export default function NewPost({ navigation }: Props) {
                 </View>
                 
                 <TouchableOpacity
-                    activeOpacity={fulfilled ? 0.7 : 1}
+                    disabled={!fulfilled}
                     style={fulfilled ? buttonStyle.active : buttonStyle.inactive}
                     onPress={handleSubmit}
                 >

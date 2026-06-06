@@ -78,7 +78,7 @@ export default function MyPage({ navigation }: Props) {
                     </TouchableOpacity>
                     <TouchableOpacity
                         style={styles.optionContainer}
-                        onPress={() => navigation.navigate('PostBoardDetail')}
+                        onPress={() => navigation.navigate('FundingList')}
                     >
                         <View style={styles.imageBox}>
                             <Image
@@ -87,7 +87,7 @@ export default function MyPage({ navigation }: Props) {
                             />
                         </View>
                         <View style={styles.textBox}>
-                            <Text style={text.optionText}>BOARDDETAIL</Text>
+                            <Text style={text.optionText}>사장이 쓴 글 목록</Text>
                         </View>
                     </TouchableOpacity>
                 </View>

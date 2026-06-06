@@ -1,4 +1,4 @@
-import { api } from './axios';
+import { api } from '../axios';
 
 export const getProposal = async (proposalId: number) => {
     const response = await api.get(`/api/v1/proposals/${proposalId}`);

@@ -2,6 +2,7 @@ import React from 'react'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 
 import Main from '../components/main/Main'
+import Login from '../components/main/Login'
 import SetPrice from '../components/SetPrice'
 import IndMain from '../components/main/IndMain'
 import CorMain from '../components/main/CorMain'
@@ -16,6 +17,7 @@ import Payment from '../components/payment/Payment'
 
 export type RootStackParamList = {
   Main: undefined;
+  Login: undefined;
   SetPrice: undefined;
   IndMain: undefined;
   CorMain: undefined;
@@ -26,11 +28,11 @@ export type RootStackParamList = {
   ProductList: undefined;
   PostBoardDetail: undefined;
   ProductDetail: {
-    id: number;
-    name: string;
-    seller: string;
-    price: number;
-    img_source: any;
+    title: string,
+    price: string,
+    minPeople: number,
+    status: string,
+    category: string;
   };
   Payment: undefined;
 };
@@ -44,6 +46,10 @@ export default function StackNavigator() {
         headerShown: false,
       }}
     >
+      <Stack.Screen
+        name="Login"
+        component={Login}
+      />
       <Stack.Screen
         name="Main"
         component={Main}

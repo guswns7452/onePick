@@ -5,7 +5,7 @@ import { styles, text } from './FundingListStyle'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { RootStackParamList } from '../../navigation/StackNavigator'
 
-import { getFundings } from '../../api/getFundings'
+import { getFundings } from '../../api/ProposalFunding/getFundings'
 
 type HomeScreenNavigationProp =
   NativeStackNavigationProp<RootStackParamList>;
