@@ -346,8 +346,9 @@ if (!product) {
                 style={[
                   styles.button,
                   !fulfilled &&
-                  styles.buttonDisabled,
-                  styles.modalBidBtn]}
+                  styles.modalBidBtn,
+                  //styles.buttonDisabled
+                ]}
                 onPress={handleBid}
               >
                 <Text style={styles.modalBidText}>입찰하기</Text>

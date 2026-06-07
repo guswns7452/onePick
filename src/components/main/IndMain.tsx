@@ -24,7 +24,7 @@ export default function MyPage({ navigation }: Props) {
                     style={styles.iconBack}
                 />
             </TouchableOpacity>
-            <Text style={text.headerText}>MYPAGE</Text>
+            <Text style={text.headerText}>INDIVIDUAL MAIN</Text>
             </View>
         </View>
 
@@ -33,16 +33,12 @@ export default function MyPage({ navigation }: Props) {
                 <View style={styles.mainContainer}>
                     <TouchableOpacity
                         style={styles.optionContainer}
-                        onPress={() => navigation.navigate('MyList')}
+                        onPress={() => navigation.navigate('ProductFundingList')}
                     >
                         <View style={styles.imageBox}>
-                            <Image
-                                style={styles.optionImage}
-                                source={require('../../public/assets/credit-card.png')}
-                            />
                         </View>
                         <View style={styles.textBox}>
-                            <Text style={text.optionText}>MYLIST</Text>
+                            <Text style={text.optionText}>모집 중인 전체 펀딩 글</Text>
                         </View>
                     </TouchableOpacity>
                     <TouchableOpacity
@@ -51,43 +47,31 @@ export default function MyPage({ navigation }: Props) {
                         /*onPress={() => navigation.navigate('NewProduct')}*/
                     >
                         <View style={styles.imageBox}>
-                            <Image
-                                style={styles.optionImage}
-                                source={require('../../public/assets/bank-account.png')}
-                            />
                         </View>
                         <View style={styles.textBox}>
-                            <Text style={text.optionText}>NEWPRODUCT</Text>
+                            <Text style={text.optionText}>NEW POST</Text>
                         </View>
                     </TouchableOpacity>
                 </View>
                 <View style={styles.mainContainer}>
                     <TouchableOpacity
                         style={styles.optionContainer}
-                        onPress={() => navigation.navigate('ProductList')}
+                        onPress={() => navigation.navigate('MyProductList')}
                     >
                         <View style={styles.imageBox}>
-                            <Image
-                                style={styles.optionImage}
-                                source={require('../../public/assets/credit-card.png')}
-                            />
                         </View>
                         <View style={styles.textBox}>
-                            <Text style={text.optionText}>PRODUCTLIST</Text>
+                            <Text style={text.optionText}>내가 모집하는 펀딩 목록</Text>
                         </View>
                     </TouchableOpacity>
                     <TouchableOpacity
                         style={styles.optionContainer}
-                        onPress={() => navigation.navigate('MyList')}
+                        onPress={() => navigation.navigate('MyFundingList')}
                     >
                         <View style={styles.imageBox}>
-                            <Image
-                                style={styles.optionImage}
-                                source={require('../../public/assets/bank-account.png')}
-                            />
                         </View>
                         <View style={styles.textBox}>
-                            <Text style={text.optionText}>사장이 쓴 글 목록</Text>
+                            <Text style={text.optionText}>내가 펀딩 참여한 목록</Text>
                         </View>
                     </TouchableOpacity>
                 </View>

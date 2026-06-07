@@ -2,18 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { Text, TouchableOpacity, View, Image, ScrollView } from 'react-native'
 import { styles, text } from './MyListStyle'
 
-import { NativeStackNavigationProp } from '@react-navigation/native-stack'
-import { RootStackParamList } from '../../navigation/StackNavigator'
 
 import { getMyFundings } from '../../api/Product/getMyFundings';
 import { deleteApplyFunding } from '../../api/Product/deleteApplyFunding'
 
-type HomeScreenNavigationProp =
-  NativeStackNavigationProp<RootStackParamList>;
-
-type Props = {
-  navigation: HomeScreenNavigationProp;
-};
 
 const productList = [
     {
@@ -46,7 +38,7 @@ const productList = [
     },
 ]
 
-export default function MyFundingList({ navigation }: Props) {
+export default function FundingsList() {
 
     const [fundings, setFundings] = useState([]);
 
@@ -71,7 +63,7 @@ export default function MyFundingList({ navigation }: Props) {
         <View style={styles.flex}>
         <View style={styles.header}>
             <View style={styles.headerContainer}>
-            <TouchableOpacity onPress={() => {navigation.goBack()}}>
+            <TouchableOpacity /*onPress={() => {navigation.goBack()}}*/>
                 <Image
                     source={require('../../public/assets/back.png')}
                     style={styles.iconBack}

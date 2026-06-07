@@ -4,6 +4,15 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import Main from '../components/main/Main'
 import ProductFundingList from '../components/screen/Individual/ProductFundingList'
 import ProductFundingDetail from '../components/screen/Individual/ProductFundingDetail'
+import MyProductList from '../components/screen/Individual/MyProductList'
+import MyFundingList from '../components/screen/Individual/MyFundingList'
+
+import GongguAIScreen from '../components/screen/Ai/GongguAIScreen'
+import OrderParserScreen from '../components/screen/Ai/OrderParserScreen'
+import RecommendScreen from '../components/screen/Ai/RecommendScreen'
+import Sketch2ProductScreen from '../components/screen/Ai/Sketch2ProductScreen'
+
+
 import Login from '../components/main/Login'
 import SetPrice from '../components/SetPrice'
 import IndMain from '../components/main/IndMain'
@@ -13,7 +22,6 @@ import NewPost from '../components/product/NewPost'
 import NewProduct from '../components/product/NewProduct'
 import ProductList from '../components/board/ProductList'
 import MyList from '../components/funding/MyList'
-import MyFundingList from '../components/funding/MyFundingList'
 import PostBoardDetail from '../components/board/PostBoardDetail'
 import ProductDetail from '../components/board/ProductDetail'
 import Payment from '../components/payment/Payment'
@@ -24,6 +32,15 @@ export type RootStackParamList = {
   ProductFundingDetail: {
     productId: number,
   };
+  MyProductList: undefined;
+  MyFundingList: undefined;
+
+  GongguAIScreen: undefined;
+  OrderParserScreen: undefined;
+  RecommendScreen: undefined;
+  Sketch2ProductScreen: undefined;
+
+
   Login: undefined;
   SetPrice: undefined;
   IndMain: undefined;
@@ -32,7 +49,6 @@ export type RootStackParamList = {
   NewProduct: undefined;
   NewPost: undefined;
   MyList: undefined;
-  MyFundingList: undefined;
   ProductList: undefined;
   PostBoardDetail: undefined;
   ProductDetail: {
@@ -66,6 +82,35 @@ export default function StackNavigator() {
         name="ProductFundingDetail"
         component={ProductFundingDetail}
       />
+      <Stack.Screen
+        name="MyProductList"
+        component={MyProductList}
+      />
+      <Stack.Screen
+        name="MyFundingList"
+        component={MyFundingList}
+      />
+
+
+      <Stack.Screen
+        name="GongguAIScreen"
+        component={GongguAIScreen}
+      />
+      <Stack.Screen
+        name="OrderParserScreen"
+        component={OrderParserScreen}
+      />
+      <Stack.Screen
+        name="RecommendScreen"
+        component={RecommendScreen}
+      />
+      <Stack.Screen
+        name="Sketch2ProductScreen"
+        component={Sketch2ProductScreen}
+      />
+
+
+
       <Stack.Screen
         name="Main"
         component={Main}
@@ -101,10 +146,6 @@ export default function StackNavigator() {
       <Stack.Screen
         name="MyList"
         component={MyList}
-      />
-      <Stack.Screen
-        name="MyFundingList"
-        component={MyFundingList}
       />
       <Stack.Screen
         name="PostBoardDetail"

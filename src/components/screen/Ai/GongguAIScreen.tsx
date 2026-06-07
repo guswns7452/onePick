@@ -16,6 +16,16 @@ import {
   Alert,
 } from 'react-native';
 
+import { NativeStackNavigationProp } from '@react-navigation/native-stack'
+import { RootStackParamList } from '../../../navigation/StackNavigator'
+
+type HomeScreenNavigationProp =
+  NativeStackNavigationProp<RootStackParamList>;
+
+type Props = {
+  navigation: HomeScreenNavigationProp;
+};
+
 // ── API 서버 주소 ───────────────────────────────────────────
 // 로컬 테스트: 'http://localhost:8000'
 // 실제 서버:   'http://서버IP:8000'
@@ -37,7 +47,7 @@ interface ResultData {
 }
 
 // ── 메인 화면 ──────────────────────────────────────────────
-export default function GongguAIScreen() {
+export default function GongguAIScreen({ navigation }: Props) {
   const [form, setForm] = useState<FormData>({
     name:      '',
     cost:      '',
@@ -103,7 +113,13 @@ export default function GongguAIScreen() {
       style={styles.container}
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
-      <ScrollView contentContainerStyle={styles.scroll}>
+      <ScrollView
+        style={{ flex: 1 }}
+        contentContainerStyle={styles.scroll}
+        keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}
+        bounces={true}
+      >
 
         {/* 헤더 */}
         <View style={styles.header}>
@@ -224,7 +240,7 @@ const styles = StyleSheet.create({
   },
   scroll: {
     padding: 20,
-    paddingBottom: 40,
+    paddingBottom: 100,
   },
 
   // 헤더
@@ -304,6 +320,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     borderRadius: 16,
     padding: 20,
+    marginBottom: 40,
     shadowColor: '#000',
     shadowOpacity: 0.05,
     shadowRadius: 8,

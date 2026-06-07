@@ -29,18 +29,23 @@ export default function Login({ navigation }: Props) {
         setFulfilled(isFilled);
     }, [phoneNumber]);
 
-    const handleSubmit = async () => {
+    const handleLogin = async () => {
         try {
             const body = {
                 phoneNumber
             };
 
-            console.log(body);
-
             const result = await postLogin(body);
             console.log(result);
 
-            navigation.navigate('ProductFundingList');
+            console.log(`${result.data.type === 'CEO' ? '기업' : '개인'}회원 ${result.data.nickname} 님 로그인 성공 !`);
+            
+            if (result.data.type === 'CEO') {
+                //navigation.navigate('CorMain');
+                navigation.navigate('IndMain');
+            } else {
+                navigation.navigate('IndMain');
+            }
 
         } catch (error) {
 
@@ -79,19 +84,19 @@ export default function Login({ navigation }: Props) {
                 </View>
                 <View style={styles.footer}>
                     {/* BUTTON */}
-                                    <TouchableOpacity
-                                        disabled={!fulfilled}
-                                        style={[
-                                            buttonStyle.active,
-                                            !fulfilled &&
-                                            buttonStyle.inactive,
-                                        ]}
-                                        onPress={handleSubmit}
-                                    >
-                                        <Text style={buttonText.active}>
-                                            완료
-                                        </Text>
-                                    </TouchableOpacity>
+                    <TouchableOpacity
+                        disabled={!fulfilled}
+                        style={[
+                            buttonStyle.active,
+                            !fulfilled &&
+                            buttonStyle.inactive,
+                        ]}
+                        onPress={handleLogin}
+                    >
+                        <Text style={buttonText.active}>
+                            완료
+                        </Text>
+                    </TouchableOpacity>
                 </View>
             </View>
         </View>

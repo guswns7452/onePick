@@ -1,6 +1,6 @@
 // MyFundingList.tsx
 // (기업) 사장이 올린 펀딩 모집 글 목록 화면
-// 카드 클릭 시 MyFundingListDetail로 이동 ?
+// 카드 클릭 시 ProductFundingDetail로 이동 ???(개발필요)
 
 import React, { useState, useEffect } from 'react';
 import {
@@ -15,7 +15,7 @@ import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../../navigation/StackNavigator';
 
-import { getProducts } from '../../../api/Product/getProducts';
+import { getMyFundings } from '../../../api/Product/getMyFundings';
 
 type HomeScreenNavigationProp =
   NativeStackNavigationProp<RootStackParamList>;
@@ -127,25 +127,25 @@ function BidCard({ bid }: { bid: Bid }) {
 }
 
 // ── 메인 화면 ──────────────────────────────────────────────
-export default function ProductFundingList({ navigation }: Props) {
+export default function MyFundingList({ navigation }: Props) {
 
-    const [products, setProducts] = useState<any[]>([]);
+    const [myFundings, setMyFundings] = useState<any[]>([]);
     
     useEffect(() => {
-        fetchProducts();
+        fetchMyFundingList();
     }, []);
     
-    const fetchProducts = async () => {
+    const fetchMyFundingList = async () => {
         try {
-            const data = await getProducts();
+            const data = await getMyFundings();
             console.log(JSON.stringify(data, null, 2));
             
             if (Array.isArray(data)) {
-                setProducts(data);
+                setMyFundings(data);
             } else if (Array.isArray(data.data)) {
-                setProducts(data.data);
+                setMyFundings(data.data);
             } else {
-                setProducts([]);
+                setMyFundings([]);
             }
         } catch (error) {
             console.log(error);
@@ -156,7 +156,7 @@ export default function ProductFundingList({ navigation }: Props) {
   const [activeTab, setActiveTab]   = useState<BidStatus>('PENDING');
   const [refreshing, setRefreshing] = useState(false);
 
-  const filtered = products.filter( (product) => product.status === activeTab,);
+  const filtered = myFundings.filter( (myFunding) => myFunding.status === activeTab,);
 
   const onRefresh = async () => {
     setRefreshing(true);
@@ -164,9 +164,9 @@ export default function ProductFundingList({ navigation }: Props) {
   };
 
   const counts = {
-    PENDING: products.filter( (p) => p.status === 'PENDING' ).length,
-    FINISHED: products.filter( (p) => p.status === 'FINISHED' ).length,
-    CANCELLED: products.filter( (p) => p.status === 'CANCELLED' ).length,
+    PENDING: myFundings.filter( (mf) => mf.status === 'PENDING' ).length,
+    FINISHED: myFundings.filter( (mf) => mf.status === 'FINISHED' ).length,
+    CANCELLED: myFundings.filter( (mf) => mf.status === 'CANCELLED' ).length,
   };
 
 
@@ -175,8 +175,11 @@ export default function ProductFundingList({ navigation }: Props) {
 
       {/* 헤더 */}
       <View style={styles.header}>
+        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backBtn}>
+          <Text style={styles.backIcon}>←</Text>
+        </TouchableOpacity>
         <Text style={styles.headerTitle}>입찰 내역</Text>
-        <Text style={styles.headerSub}>총 {products.length}건의 입찰</Text>
+        <Text style={styles.headerSub}>총 {myFundings.length}건의 입찰</Text>
       </View>
 
       {/* 탭 */}
@@ -217,9 +220,9 @@ export default function ProductFundingList({ navigation }: Props) {
               {activeTab === 'PENDING' ? '🔍' : activeTab === 'FINISHED' ? '✅' : '❌'}
             </Text>
             <Text style={styles.emptyText}>
-              {activeTab === 'PENDING'    ? '진행 중인 입찰이 없어요'  :
-               activeTab === 'FINISHED' ? '종료된 입찰이 없어요'     :
-                                          '취소된 입찰이 없어요'}
+              {activeTab === 'PENDING'    ? '진행 중인 참여한 입찰이 없어요'  :
+               activeTab === 'FINISHED' ? '종료된 참여한 입찰이 없어요'     :
+                                          '취소된 참여한 입찰이 없어요'}
             </Text>
           </View>
         ) : (
@@ -237,6 +240,16 @@ const styles = StyleSheet.create({
   header: {
     paddingHorizontal: 20, paddingTop: 16, paddingBottom: 12,
     backgroundColor: '#fff',
+  },
+  backBtn: {
+    width: 40,
+    height: 40,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  backIcon: {
+    fontSize: 22,
+    color: '#1a1a2e',
   },
   headerTitle: { fontSize: 22, fontWeight: 'bold', color: '#1a1a2e', marginBottom: 2 },
   headerSub:   { fontSize: 13, color: '#888' },
