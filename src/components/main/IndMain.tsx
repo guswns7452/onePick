@@ -61,7 +61,7 @@ export default function MyPage({ navigation }: Props) {
                         <View style={styles.imageBox}>
                         </View>
                         <View style={styles.textBox}>
-                            <Text style={text.optionText}>내가 모집하는 펀딩 목록</Text>
+                            <Text style={text.optionText}>사장이 쓴 모집 글 목록</Text>
                         </View>
                     </TouchableOpacity>
                     <TouchableOpacity

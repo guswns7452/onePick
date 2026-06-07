@@ -4,7 +4,7 @@
 
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
-import GongguAIScreen from './ai/GongguAIScreen';
+import GongguAIScreen from './screen/Ai/GongguAIScreen';
 
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { RootStackParamList } from '../navigation/StackNavigator'

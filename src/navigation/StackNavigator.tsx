@@ -2,10 +2,12 @@ import React from 'react'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 
 import Main from '../components/main/Main'
+
 import ProductFundingList from '../components/screen/Individual/ProductFundingList'
 import ProductFundingDetail from '../components/screen/Individual/ProductFundingDetail'
-import MyProductList from '../components/screen/Individual/MyProductList'
 import MyFundingList from '../components/screen/Individual/MyFundingList'
+
+import MyProductList from '../components/screen/Corporation/MyProductList'
 
 import GongguAIScreen from '../components/screen/Ai/GongguAIScreen'
 import OrderParserScreen from '../components/screen/Ai/OrderParserScreen'

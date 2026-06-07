@@ -1,9 +1,11 @@
 // MyFundingList.tsx
-// (기업) 사장이 올린 펀딩 모집 글 목록 화면
+// (개인) 회원이 참여한 펀딩 모집 글 목록 화면
 // 카드 클릭 시 ProductFundingDetail로 이동 ???(개발필요)
 
+import axios from 'axios';
 import React, { useState, useEffect } from 'react';
 import {
+  Alert,
   View,
   Text,
   TouchableOpacity,
@@ -16,6 +18,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../../navigation/StackNavigator';
 
 import { getMyFundings } from '../../../api/Product/getMyFundings';
+import { deleteApplyFunding } from '../../../api/Product/deleteApplyFunding';
 
 type HomeScreenNavigationProp =
   NativeStackNavigationProp<RootStackParamList>;
@@ -29,12 +32,12 @@ type Props = {
 type BidStatus = 'PENDING' | 'FINISHED' | 'CANCELLED';
 
 interface Bid {
+  fundingId: number;
   productId: number;
-  title: string;
-  price: number;
-  minPeople: number;
-  status: BidStatus;
-  category: string;
+  productTitle: string;
+  quantity: number;
+  productStatus: BidStatus;
+  //category: string;
 }
 
 // ── 탭 설정 ────────────────────────────────────────────────
@@ -80,18 +83,69 @@ function StatusBadge({ status }: { status: BidStatus }) {
 function BidCard({ bid }: { bid: Bid }) {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   /*const remaining  = getRemainingTime(bid.endDate);*/
-  const isPending   = bid.status === 'PENDING';
+  const isPending   = bid.productStatus === 'PENDING';
   /*const isUrgent   = isActive && remaining.includes('시간') && !remaining.includes('일');*/
+
+  const cancelMyFunding = async (productId: number) => {
+
+    Alert.alert(
+      '입찰 취소',
+      '정말 입찰을 취소하시겠습니까?',
+      [
+        {
+          text: '아니오',
+          style: 'cancel',
+        },
+        {
+          text: '취소하기',
+          style: 'destructive',
+
+          onPress: async () => {
+            try {
+                
+              const result = await deleteApplyFunding(productId);
+              console.log(result);
+
+              Alert.alert(
+                '취소 완료',
+                '입찰이 취소되었습니다.',
+              );
+
+              navigation.goBack();
+
+            } catch (error) {
+                
+              if (axios.isAxiosError(error)) {
+                console.log(error);
+
+                Alert.alert(
+                  '에러 발생',
+                  JSON.stringify(error.response?.data,) || error.message,);
+
+              } else {
+                  
+                Alert.alert(
+                  '에러 발생',
+                  '알 수 없는 오류',
+                );
+              }
+            }
+          },
+        },
+      ],
+    );
+  };
+
 
   return (
     <TouchableOpacity
       style={styles.card}
       activeOpacity={0.8}
-      onPress={() =>
+      /*onPress={() =>
         navigation.navigate('ProductFundingDetail', {
           productId: bid.productId
         })
-      }
+      }*/
     >
       {/* 왼쪽 이모지 */}
       <View style={styles.cardEmoji}>
@@ -101,11 +155,20 @@ function BidCard({ bid }: { bid: Bid }) {
       {/* 중앙 정보 */}
       <View style={styles.cardContent}>
         <View style={styles.cardTopRow}>
-          <Text style={styles.productName} numberOfLines={1}>{bid.title}</Text>
-          <StatusBadge status={bid.status} />
+          <Text style={styles.productName} numberOfLines={1}>{bid.productTitle}</Text>
+          {/*<StatusBadge status={bid.productStatus} />*/}
         </View>
+        <Text style={styles.remainText}>{bid.quantity}</Text>
 
-        <Text style={styles.bidAmount}>{bid.price.toLocaleString()}원</Text>
+        <TouchableOpacity
+          style={styles.btn}
+          onPress={() => cancelMyFunding(bid.productId)}
+        >
+          <Text style={styles.btnText}>
+            참여 취소
+          </Text>
+        </TouchableOpacity>
+
         {/*
         <View style={styles.cardBottomRow}>
           <Text style={styles.dateText}>📅 {bid.date}</Text>
@@ -147,16 +210,19 @@ export default function MyFundingList({ navigation }: Props) {
             } else {
                 setMyFundings([]);
             }
+
         } catch (error) {
             console.log(error);
         }
     };
 
+
+
   
   const [activeTab, setActiveTab]   = useState<BidStatus>('PENDING');
   const [refreshing, setRefreshing] = useState(false);
 
-  const filtered = myFundings.filter( (myFunding) => myFunding.status === activeTab,);
+  const filtered = myFundings.filter( (myFunding) => myFunding.productStatus === activeTab,);
 
   const onRefresh = async () => {
     setRefreshing(true);
@@ -164,9 +230,9 @@ export default function MyFundingList({ navigation }: Props) {
   };
 
   const counts = {
-    PENDING: myFundings.filter( (mf) => mf.status === 'PENDING' ).length,
-    FINISHED: myFundings.filter( (mf) => mf.status === 'FINISHED' ).length,
-    CANCELLED: myFundings.filter( (mf) => mf.status === 'CANCELLED' ).length,
+    PENDING: myFundings.filter( (mf) => mf.productStatus === 'PENDING' ).length,
+    FINISHED: myFundings.filter( (mf) => mf.productStatus === 'FINISHED' ).length,
+    CANCELLED: myFundings.filter( (mf) => mf.productStatus === 'CANCELLED' ).length,
   };
 
 
@@ -226,7 +292,7 @@ export default function MyFundingList({ navigation }: Props) {
             </Text>
           </View>
         ) : (
-          filtered.map(product => <BidCard key={product.productId} bid={product} />)
+          filtered.map(myFunding => <BidCard key={myFunding.productId} bid={myFunding} />)
         )}
       </ScrollView>
 
@@ -291,4 +357,17 @@ const styles = StyleSheet.create({
   emptyBox:     { alignItems: 'center', paddingVertical: 60, gap: 12 },
   emptyEmoji:   { fontSize: 40 },
   emptyText:    { fontSize: 15, color: '#aaa' },
+  btn: {
+    right: 8,
+    paddingHorizontal: 6,
+    paddingVertical: 3,
+    borderRadius: 8,
+    alignSelf: 'flex-end',
+    backgroundColor: '#ef4444'
+    },
+  btnText: {
+    color: '#fff',
+    fontSize: 13,
+    fontWeight: '700',
+    },
 });

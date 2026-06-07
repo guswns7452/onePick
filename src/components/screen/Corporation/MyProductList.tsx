@@ -2,8 +2,10 @@
 // (기업) 사장이 올린 펀딩 모집 글 목록 화면
 // 카드 클릭 시 ProductFundingDetail로 이동 ???(개발필요)
 
+import axios from 'axios';
 import React, { useState, useEffect } from 'react';
 import {
+  Alert,
   View,
   Text,
   TouchableOpacity,
@@ -16,6 +18,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../../navigation/StackNavigator';
 
 import { getMyProducts } from '../../../api/Product/getMyProducts';
+import { deleteProduct } from '../../../api/Product/deleteProduct';
 
 type HomeScreenNavigationProp =
   NativeStackNavigationProp<RootStackParamList>;
@@ -83,6 +86,58 @@ function BidCard({ bid }: { bid: Bid }) {
   const isPending   = bid.status === 'PENDING';
   /*const isUrgent   = isActive && remaining.includes('시간') && !remaining.includes('일');*/
 
+
+  const deleteMyProduct = async (productId: number) => {
+
+    Alert.alert(
+      '펀딩 취소',
+      '정말 펀딩을 취소하시겠습니까?',
+      [
+        {
+          text: '아니오',
+          style: 'cancel',
+        },
+        {
+          text: '취소하기',
+          style: 'destructive',
+
+          onPress: async () => {
+            try {
+                
+              const result = await deleteProduct(productId);
+              console.log(result);
+
+              Alert.alert(
+                '취소 완료',
+                '펀딩이 취소되었습니다.',
+              );
+
+              navigation.goBack();
+
+            } catch (error) {
+                
+              if (axios.isAxiosError(error)) {
+                console.log(error);
+
+                Alert.alert(
+                  '에러 발생',
+                  JSON.stringify(error.response?.data,) || error.message,);
+
+              } else {
+                  
+                Alert.alert(
+                  '에러 발생',
+                  '알 수 없는 오류',
+                );
+              }
+            }
+          },
+        },
+      ],
+    );
+  };
+
+
   return (
     <TouchableOpacity
       style={styles.card}
@@ -102,10 +157,19 @@ function BidCard({ bid }: { bid: Bid }) {
       <View style={styles.cardContent}>
         <View style={styles.cardTopRow}>
           <Text style={styles.productName} numberOfLines={1}>{bid.title}</Text>
-          <StatusBadge status={bid.status} />
         </View>
 
         <Text style={styles.bidAmount}>{bid.price.toLocaleString()}원</Text>
+        
+        <TouchableOpacity
+          style={styles.btn}
+          onPress={() => deleteMyProduct(bid.productId)}
+        >
+          <Text style={styles.btnText}>
+            펀딩 취소
+          </Text>
+        </TouchableOpacity>
+        
         {/*
         <View style={styles.cardBottomRow}>
           <Text style={styles.dateText}>📅 {bid.date}</Text>
@@ -291,4 +355,17 @@ const styles = StyleSheet.create({
   emptyBox:     { alignItems: 'center', paddingVertical: 60, gap: 12 },
   emptyEmoji:   { fontSize: 40 },
   emptyText:    { fontSize: 15, color: '#aaa' },
+  btn: {
+    right: 8,
+    paddingHorizontal: 6,
+    paddingVertical: 3,
+    borderRadius: 8,
+    alignSelf: 'flex-end',
+    backgroundColor: '#ef4444'
+    },
+  btnText: {
+    color: '#fff',
+    fontSize: 13,
+    fontWeight: '700',
+    },
 });
