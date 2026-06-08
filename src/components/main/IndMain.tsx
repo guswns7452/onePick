@@ -35,21 +35,24 @@ export default function MyPage({ navigation }: Props) {
                         style={styles.optionContainer}
                         onPress={() => navigation.navigate('ProductFundingList')}
                     >
-                        <View style={styles.imageBox}>
-                        </View>
                         <View style={styles.textBox}>
                             <Text style={text.optionText}>모집 중인 전체 펀딩 글</Text>
                         </View>
                     </TouchableOpacity>
                     <TouchableOpacity
                         style={styles.optionContainer}
-                        onPress={() => navigation.navigate('NewProposal')}
-                        /*onPress={() => navigation.navigate('NewProduct')}*/
+                        onPress={() => navigation.navigate('NewProduct')}
                     >
-                        <View style={styles.imageBox}>
-                        </View>
                         <View style={styles.textBox}>
-                            <Text style={text.optionText}>NEW POST</Text>
+                            <Text style={text.optionText}>새로운 펀딩 모집</Text>
+                        </View>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        style={styles.optionContainer}
+                        onPress={() => navigation.navigate('NewProposal')}
+                    >
+                        <View style={styles.textBox}>
+                            <Text style={text.optionText}>새로운 구매 요청</Text>
                         </View>
                     </TouchableOpacity>
                 </View>
@@ -58,8 +61,6 @@ export default function MyPage({ navigation }: Props) {
                         style={styles.optionContainer}
                         onPress={() => navigation.navigate('MyProductList')}
                     >
-                        <View style={styles.imageBox}>
-                        </View>
                         <View style={styles.textBox}>
                             <Text style={text.optionText}>사장이 쓴 모집 글 목록</Text>
                         </View>
@@ -68,10 +69,16 @@ export default function MyPage({ navigation }: Props) {
                         style={styles.optionContainer}
                         onPress={() => navigation.navigate('MyFundingList')}
                     >
-                        <View style={styles.imageBox}>
-                        </View>
                         <View style={styles.textBox}>
                             <Text style={text.optionText}>내가 펀딩 참여한 목록</Text>
+                        </View>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        style={styles.optionContainer}
+                        onPress={() => navigation.navigate('MyProposalList')}
+                    >
+                        <View style={styles.textBox}>
+                            <Text style={text.optionText}>내가 구매 요청한 목록</Text>
                         </View>
                     </TouchableOpacity>
                 </View>

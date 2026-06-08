@@ -8,6 +8,7 @@ import {
   Alert,
   View,
   Text,
+  Image,
   TouchableOpacity,
   ScrollView,
   StyleSheet,
@@ -32,12 +33,17 @@ type Props = {
 type BidStatus = 'PENDING' | 'FINISHED' | 'CANCELLED';
 
 interface Bid {
-  fundingId: number;
-  productId: number;
-  productTitle: string;
-  quantity: number;
+  proposalId: number;
+  title: string;
+  content: string;
+  proposalCategory: string;
+  maxPrice: number;
   productStatus: BidStatus;
-  //category: string;
+  writerNickname: string;
+  createdAt: any;
+  deadlineDays: number,
+  fundingCount: number;
+  thumbnail: any;
 }
 
 // ── 탭 설정 ────────────────────────────────────────────────
@@ -97,7 +103,7 @@ function BidCard({ bid }: { bid: Bid }) {
           style: 'cancel',
         },
         {
-          text: '취소하기',
+          text: '삭제하기',
           style: 'destructive',
 
           onPress: async () => {
@@ -149,23 +155,28 @@ function BidCard({ bid }: { bid: Bid }) {
     >
       {/* 왼쪽 이모지 */}
       <View style={styles.cardEmoji}>
-        <Text style={styles.emojiText}>{/* EMOJI */}</Text>
+        {bid.thumbnail !== null ?
+        <Image
+            source={{ uri: bid.thumbnail.imageUrl }}
+            style={styles.cardImage}
+        /> :
+        <Text style={styles.emojiText}>❌</Text>}
       </View>
 
       {/* 중앙 정보 */}
       <View style={styles.cardContent}>
         <View style={styles.cardTopRow}>
-          <Text style={styles.productName} numberOfLines={1}>{bid.productTitle}</Text>
+          <Text style={styles.productName} numberOfLines={1}>{bid.title}</Text>
           {/*<StatusBadge status={bid.productStatus} />*/}
         </View>
-        <Text style={styles.remainText}>{bid.quantity}</Text>
+        <Text style={styles.remainText}>{bid.maxPrice}</Text>
 
         <TouchableOpacity
           style={styles.btn}
-          onPress={() => deleteMyProposal(bid.productId)}
+          onPress={() => deleteMyProposal(bid.proposalId)}
         >
           <Text style={styles.btnText}>
-            참여 취소
+            요청 삭제
           </Text>
         </TouchableOpacity>
 
@@ -222,7 +233,7 @@ export default function MyProposalList({ navigation }: Props) {
   const [activeTab, setActiveTab]   = useState<BidStatus>('PENDING');
   const [refreshing, setRefreshing] = useState(false);
 
-  const filtered = myProposals.filter( (myProposal) => myProposal.productStatus === activeTab,);
+  const filtered = myProposals.filter( (myProposal) => myProposal.proposalStatus === activeTab,);
 
   const onRefresh = async () => {
     setRefreshing(true);
@@ -230,9 +241,9 @@ export default function MyProposalList({ navigation }: Props) {
   };
 
   const counts = {
-    PENDING: myProposals.filter( (mp) => mp.productStatus === 'PENDING' ).length,
-    FINISHED: myProposals.filter( (mp) => mp.productStatus === 'FINISHED' ).length,
-    CANCELLED: myProposals.filter( (mp) => mp.productStatus === 'CANCELLED' ).length,
+    PENDING: myProposals.filter( (mp) => mp.proposalStatus === 'PENDING' ).length,
+    FINISHED: myProposals.filter( (mp) => mp.proposalStatus === 'FINISHED' ).length,
+    CANCELLED: myProposals.filter( (mp) => mp.proposalStatus === 'CANCELLED' ).length,
   };
 
 
@@ -292,7 +303,7 @@ export default function MyProposalList({ navigation }: Props) {
             </Text>
           </View>
         ) : (
-          filtered.map(myProposal => <BidCard key={myProposal} bid={myProposal} />)
+          filtered.map(myProposal => <BidCard key={myProposal.proposalId} bid={myProposal} />)
         )}
       </ScrollView>
 
@@ -342,7 +353,10 @@ const styles = StyleSheet.create({
     width: 52, height: 52, borderRadius: 14,
     backgroundColor: '#f5f6fa', alignItems: 'center', justifyContent: 'center',
   },
-  emojiText:    { fontSize: 26 },
+  cardImage: {
+    width: 52, height: 52, borderRadius: 14,
+  },
+  emojiText:    { fontSize: 18 },
   cardContent:  { flex: 1, gap: 4 },
   cardTopRow:   { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
   productName:  { fontSize: 14, fontWeight: '700', color: '#1a1a2e', flex: 1, marginRight: 8 },

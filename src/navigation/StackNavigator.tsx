@@ -6,6 +6,7 @@ import Main from '../components/main/Main'
 import ProductFundingList from '../components/screen/Individual/ProductFundingList'
 import ProductFundingDetail from '../components/screen/Individual/ProductFundingDetail'
 import MyFundingList from '../components/screen/Individual/MyFundingList'
+import MyProposalList from '../components/screen/Individual/MyProposalList'
 
 import MyProductList from '../components/screen/Corporation/MyProductList'
 
@@ -30,16 +31,18 @@ import PostBoardDetail from '../components/board/PostBoardDetail'
 import ProductDetail from '../components/board/ProductDetail'
 import Payment from '../components/payment/Payment'
 
+
 export type RootStackParamList = {
   Main: undefined;
   ProductFundingList: undefined;
   ProductFundingDetail: {
     productId: number,
   };
-  MyProductList: undefined;
   MyFundingList: undefined;
+  MyProposalList: undefined;
 
   NewProposal: undefined;
+  MyProductList: undefined;
 
   GongguAIScreen: undefined;
   OrderParserScreen: undefined;
@@ -88,6 +91,17 @@ export default function StackNavigator() {
         name="ProductFundingDetail"
         component={ProductFundingDetail}
       />
+
+      <Stack.Screen
+        name="MyFundingList"
+        component={MyFundingList}
+      />
+      <Stack.Screen
+        name="MyProposalList"
+        component={MyProposalList}
+      />
+
+
       <Stack.Screen
         name="MyProductList"
         component={MyProductList}
