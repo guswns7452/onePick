@@ -82,6 +82,19 @@ export default function MyPage({ navigation }: Props) {
                         </View>
                     </TouchableOpacity>
                 </View>
+
+
+                <View style={styles.mainContainer}>
+                    <TouchableOpacity
+                        style={styles.optionContainer}
+                        onPress={() => navigation.navigate('MyProposalFundingList')}
+                    >
+                        <View style={styles.textBox}>
+                            <Text style={text.optionText}>사장이 입찰 요청한 목록</Text>
+                        </View>
+                    </TouchableOpacity>
+                </View>
+
             </View>
         </View>
         <View style={styles.footer}>

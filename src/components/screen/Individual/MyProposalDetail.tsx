@@ -1,5 +1,6 @@
-// ProductFundingDetail.tsx
-// 제품 상세 페이지 — ProductFundingList에서 눌렀을 때 이동
+// MyProposalFunding.tsx
+// (개인) 회원이 쓴 구매 요청 글 상세 화면 — 수신한 입찰 요청 확인 가능
+
 
 import axios from 'axios';
 import React, { useState, useEffect } from 'react';
@@ -7,8 +8,6 @@ import {
   Alert,
   View,
   Text,
-  Modal,
-  TextInput,
   TouchableOpacity,
   ScrollView,
   StyleSheet,
@@ -17,90 +16,92 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../../navigation/StackNavigator';
 import { RouteProp } from '@react-navigation/native';
 
-import { getProduct } from '../../../api/Product/getProduct';
-import { postApplyFunding } from '../../../api/Product/postApplyFunding';
+import { getFundings } from '../../../api/ProposalFunding/getFundings';
+import { patchAcceptFunding } from '../../../api/ProposalFunding/patchAcceptFunding';
+import { patchRejectFunding } from '../../../api/ProposalFunding/patchRejectFunding';
 
 import StatusBadge from './StatusBadge';
 
 type HomeScreenNavigationProp =
   NativeStackNavigationProp<RootStackParamList>;
 
-type ProductFundingDetailRouteProp =
+type MyProposalDetailRouteProp =
     RouteProp<
         RootStackParamList,
-        'ProductFundingDetail'
+        'MyProposalDetail'
     >;
 
 type Props = {
   navigation: HomeScreenNavigationProp;
-    route: ProductFundingDetailRouteProp;
+    route: MyProposalDetailRouteProp;
 };
 
 
-// ── 남은 시간 계산 ─────────────────────────────────────────
-function getRemainingTime(endDate: string): string {
-  const now  = new Date();
-  const end  = new Date(endDate);
-  const diff = end.getTime() - now.getTime();
 
-  if (diff <= 0) return '마감';
 
-  const days    = Math.floor(diff / (1000 * 60 * 60 * 24));
-  const hours   = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-  const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+export default function MyProposalDetail({ navigation, route }: Props) {
+  const { proposalId } = route.params;
 
-  if (days > 0)  return `${days}일 ${hours}시간 남음`;
-  if (hours > 0) return `${hours}시간 ${minutes}분 남음`;
-  return `${minutes}분 남음`;
-}
+  const [proposalFundings, setProposalFundings] = useState<any[]>([]);
 
-export default function ProductFundingDetail({ navigation, route }: Props) {
-  const { productId } = route.params;
-
-  const [product, setProduct] = useState<any>(null);
-
-  const [fulfilled, setFulfilled] = useState(false);
-  const [bidContent, setBidContent] = useState('');
-  const [bidAmount, setBidAmount] = useState('');
-
-  const [modalVisible, setModalVisible] = useState(false);
   
   useEffect(() => {
-
     const fetchProduct = async () => {
         try {
-            const data = await getProduct(productId);
+            const data = await getFundings(proposalId);
             console.log(JSON.stringify(data, null, 2));
 
-            setProduct(data.data);
+            setProposalFundings(data.data);
 
         } catch (error) {
             console.log(error);
         }
     };
-      
+
     fetchProduct();
-
-    const isFilled = bidAmount.trim() !== '';
-    setFulfilled(isFilled);
-
-    }, [productId, bidContent, bidAmount]);
+    
+  }, [proposalId]);
 
 
-
-  const handleApply = async () => {
+  const handleAccept = async (proposalFundingId: number) => {
     try {
-        const body = {
-            content: bidContent,
-            price: Number(bidAmount),
-        }
-
-        const result = await postApplyFunding(productId, body);
+        const result = await patchAcceptFunding(proposalFundingId);
         console.log(result);
         
         Alert.alert(
-            '✅ 입찰 완료',
-            '입찰이 성공적으로 완료됐어요!');
+            '✅ 수락 완료',
+            '입찰을 성공적으로 수락했어요!');
+        
+
+        navigation.goBack();
+
+    } catch (error) {
+        if (axios.isAxiosError(error)) {
+            console.log(error);
+                
+            Alert.alert(
+                '에러 발생',
+                JSON.stringify(error.response?.data)
+                || error.message
+            );
+
+        } else {
+            Alert.alert(
+                '에러 발생',
+                '알 수 없는 오류',
+            );
+        }
+    }
+}
+
+  const handleReject = async (proposalFundingId: number) => {
+    try {
+        const result = await patchRejectFunding(proposalFundingId);
+        console.log(result);
+        
+        Alert.alert(
+            '❎ 거절 완료',
+            '입찰을 성공적으로 거절했어요!');
         
 
         navigation.goBack();
@@ -130,38 +131,8 @@ export default function ProductFundingDetail({ navigation, route }: Props) {
   const isUrgent    = remaining.includes('시간') && !remaining.includes('일');
 */
 
-  
 
-  const handleBid = () => {
-    if (!bidAmount || isNaN(Number(bidAmount))) {
-      Alert.alert('입력 오류', '올바른 입찰 금액을 입력해 주세요.');
-      return;
-    }
-    if (Number(bidAmount) < product.price) {
-      Alert.alert('입찰 오류', `최소 입찰 금액은 ${product.price.toLocaleString()}원입니다.`);
-      return;
-    }
-
-    Alert.alert(
-      '입찰 확인',
-      `${Number(bidAmount).toLocaleString()}원으로 입찰하시겠습니까?`,
-      [
-        { text: '취소', style: 'cancel' },
-        {
-          text: '입찰하기',
-          onPress: () => {
-            setModalVisible(false);
-            setBidAmount('');
-            
-            handleApply();
-          },
-        },
-      ]
-    );
-  };
-
-
-if (!product) {
+if (!proposalFundings) {
     return (
         <View
             style={{
@@ -175,8 +146,7 @@ if (!product) {
     );
  }
 
- //const fundingRate = 0;
-  const fundingRate = product.fundingCount === 0 ? 0 : product.fundingCount / product.minPeople * 100;
+ //const fundingRate = product.fundingCount === 0 ? 0 : product.fundingCount / product.minPeople * 100;
 
   return (
     <View style={styles.container}>
@@ -192,15 +162,16 @@ if (!product) {
           <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backBtn}>
             <Text style={styles.backIcon}>←</Text>
           </TouchableOpacity>
-          <Text style={styles.headerTitle}>제품 상세</Text>
+          <Text style={styles.headerTitle}>입찰 요청 목록</Text>
           <View style={{ width: 40 }} />
         </View>
 
-        {/* 이미지 영역 */}
+        {/* 이미지 영역 
         <View style={styles.imageBox}>
-          <Text style={styles.imageEmoji}>{/*product.emoji ?? */'📦'}</Text>
+          <Text style={styles.imageEmoji}>{'📦'}</Text>
           <StatusBadge status={product.status} />
         </View>
+        */}
 
         {/* 남은 시간 배너
         <View style={[styles.timeBanner, isUrgent && styles.timeBannerUrgent]}>
@@ -209,14 +180,14 @@ if (!product) {
           </Text>
         </View>
         */}
-        {/* 기본 정보 */}
+        {/* 기본 정보 
         <View style={styles.section}>
           <Text style={styles.productName}>{product.title}</Text>
           <Text style={styles.seller}>{product.createdAt}</Text>
           <Text style={styles.price}>{product.price}원</Text>
         </View>
-
-        {/* 펀딩 달성률 */}
+        */}
+        {/* 펀딩 달성률 
         <View style={styles.section}>
           <View style={styles.fundingHeader}>
             <Text style={styles.sectionTitle}>🔥 펀딩 현황</Text>
@@ -232,31 +203,19 @@ if (!product) {
             </Text>
           </View>
         </View>
-        
+        */}
 
         {/* 제품 설명 */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>📋 제품 설명</Text>
-          <Text style={styles.description}>
-            {product.content}
-          </Text>
-        </View>
-
-        {/* 제품 설명 */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>👥 최소 인원</Text>
-          <Text style={styles.description}>
-            {product.minPeople}
-          </Text>
-        </View>
-
-        {/* 제품 설명 */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>📍 카테고리</Text>
-          <Text style={styles.description}>
-            {product.category}
-          </Text>
-        </View>
+        {proposalFundings.map((proposalFunding) => (
+            <View
+                key={proposalFunding.proposalFundingId}
+                style={styles.section}>
+                <Text style={styles.sectionTitle}>📩 입찰 요청</Text>
+                <Text style={styles.description}>
+                    {proposalFunding.price}
+                </Text>
+            </View>
+        ))}
 
         {/* 판매자 정보
         <View style={styles.section}>
@@ -286,77 +245,6 @@ if (!product) {
             </Text>
         </TouchableOpacity>
             */}
-
-      {/* 하단 입찰 버튼 */}
-      <View style={styles.bottomBar}>
-        <View style={styles.bottomPrice}>
-          <Text style={styles.bottomPriceLabel}>시작가</Text>
-          <Text style={styles.bottomPriceValue}>{product.price?.toLocaleString()}원</Text>
-        </View>
-        <TouchableOpacity
-          style={styles.bidButton}
-          onPress={() => setModalVisible(true)}
-        >
-          <Text style={styles.bidButtonText}>입찰하기</Text>
-        </TouchableOpacity>
-      </View>
-    
-      {/* 입찰 모달 */}
-      <Modal
-        visible={modalVisible}
-        transparent
-        animationType="slide"
-        onRequestClose={() => setModalVisible(false)}
-      >
-        <View style={styles.modalOverlay}>
-          <View style={styles.modalBox}>
-            <Text style={styles.modalTitle}>💰 입찰 금액 입력</Text>
-            <Text style={styles.modalSub}>
-              최소 입찰가: {product.price?.toLocaleString()}원
-            </Text>
-
-            <TextInput
-              style={styles.modalInput}
-              placeholder="입찰 금액 입력"
-              placeholderTextColor="#aaa"
-              value={bidAmount}
-              onChangeText={setBidAmount}
-              keyboardType="numeric"
-              autoFocus
-            />
-
-            <TextInput
-              style={styles.modalInput}
-              placeholder="간단한 내용 입력"
-              placeholderTextColor="#aaa"
-              value={bidContent}
-              onChangeText={setBidContent}
-              autoFocus
-            />
-
-            <View style={styles.modalButtons}>
-              <TouchableOpacity
-                style={styles.modalCancelBtn}
-                onPress={() => { setModalVisible(false); setBidAmount(''); }}
-              >
-                <Text style={styles.modalCancelText}>취소</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                disabled={!fulfilled}
-                style={[
-                  styles.button,
-                  !fulfilled &&
-                  styles.modalBidBtn,
-                  //styles.buttonDisabled
-                ]}
-                onPress={handleBid}
-              >
-                <Text style={styles.modalBidText}>입찰하기</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </View>
-      </Modal>
 
       </ScrollView>
     </View>

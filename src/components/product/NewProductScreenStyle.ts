@@ -17,43 +17,41 @@ export const styles = StyleSheet.create({
     },
     main: {
         flex: 1,
-        justifyContent: 'center',
     },
-    mainView: {
+    scrollView: {
         width: '100%',
-        height: 300,
-        alignItems: 'center',
-        top: -25,
+        paddingTop: 12,
+        marginBottom: 10,
     },
     mainContainer: {
-        flex: 1,
-        width: '90%',
+        width: '95%',
         flexDirection: 'row',
+        alignSelf: 'center',
+        padding: 15,
+        marginVertical: 5,
+        borderRadius: 10,
+        borderColor: color.positiveBlue,
+        borderWidth: 1,
+    },
+    pickerContainer: {
+        /*
+        width: '95%',
+        height: 80,
+        flexDirection: 'row',
+        alignSelf: 'center',
+        padding: 15,
+        marginVertical: 5,
+        borderRadius: 10,
+        borderColor: color.positiveBlue,
+        borderWidth: 1,
+        */
+        width: '100%',
+        height: 60,
+        backgroundColor: 'white',
+        borderWidth: 1,
+        borderColor: '#ccc',
         justifyContent: 'center',
-        marginVertical: 10,
-    },
-    optionContainer: {
-        width: '40%',
-        marginHorizontal: 8,
-        alignItems: 'center',
-        justifyContent: 'center',
-        backgroundColor: color.backgroundGray,
-        borderRadius: 20,
-        borderColor: color.positiveLightBlue,
-        borderWidth: 2,
-        // 그림자효과
-    },
-    imageBox: {
-        height: '60%',
-        top: -5,
-    },
-    textBox: {
-        justifyContent: 'center',
-        //backgroundColor: 'pink',
-    },
-    optionImage: {
-        width: 95,
-        height: 95,
+        marginBottom: 20,
     },
     footer: {
         flex: 0.15,
@@ -63,6 +61,10 @@ export const styles = StyleSheet.create({
         left: 15,
         width: 40,
         height: 40,
+    },
+    productImage: {
+        width: 80,
+        height: 80,
     },
 })
 
@@ -80,18 +82,9 @@ export const text = {
         alignSelf: 'center',
         left: 30,
     },
-    optionText: {
+    placeholderText: {
         ...baseText,
-        fontWeight: '500',
         fontSize: 17,
-    },
-    subtitleText: {
-        ...baseText,
-        fontSize: 18,
-    },
-    contentText: {
-        ...baseText,
-        fontSize: 18,
     },
     mainText: {
         color: color.normal,

@@ -1,100 +1,140 @@
-import { StyleSheet, StyleProp, TextStyle } from 'react-native'
-import { color }  from '../../public/style/colors.ts'
+import { StyleSheet } from 'react-native';
 
 export const styles = StyleSheet.create({
-    flex: {
+
+    container: {
         flex: 1,
-        backgroundColor: color.backgroundGray,
+        backgroundColor: '#f5f6fa',
     },
+
+    scroll: {
+        padding: 20,
+        paddingBottom: 40,
+    },
+
     header: {
-        flex: 0.15,
-        justifyContent: 'flex-end',
-        //backgroundColor: 'yellow',
+        marginBottom: 20,
+        paddingTop: 10,
     },
-    headerContainer: {
-        width: '100%',
-        flexDirection: 'row',
+
+    headerTitle: {
+        fontSize: 28,
+        fontWeight: 'bold',
+        color: '#1a1a2e',
+        marginBottom: 6,
     },
-    main: {
-        flex: 1,
+
+    headerSub: {
+        fontSize: 14,
+        color: '#666',
     },
-    scrollView: {
-        width: '100%',
-        paddingTop: 12,
-        marginBottom: 10,
-    },
-    mainContainer: {
-        width: '95%',
-        flexDirection: 'row',
-        alignSelf: 'center',
-        padding: 15,
-        marginVertical: 5,
-        borderRadius: 10,
-        borderColor: color.positiveBlue,
-        borderWidth: 1,
-    },
-    pickerContainer: {
-        /*
-        width: '95%',
-        height: 80,
-        flexDirection: 'row',
-        alignSelf: 'center',
-        padding: 15,
-        marginVertical: 5,
-        borderRadius: 10,
-        borderColor: color.positiveBlue,
-        borderWidth: 1,
-        */
-        width: '100%',
-        height: 60,
-        backgroundColor: 'white',
-        borderWidth: 1,
-        borderColor: '#ccc',
-        justifyContent: 'center',
+
+    card: {
+        backgroundColor: '#fff',
+        borderRadius: 20,
+        padding: 20,
+
+        shadowColor: '#000',
+        shadowOpacity: 0.05,
+        shadowRadius: 10,
+
+        elevation: 3,
+
         marginBottom: 20,
     },
-    footer: {
-        flex: 0.15,
-        backgroundColor: 'green',
-    },
-    iconBack: {
-        left: 15,
-        width: 40,
-        height: 40,
-    },
-    productImage: {
-        width: 80,
-        height: 80,
-    },
-})
 
-const baseText = {
-    fontFamily: 'Pretendard',
-    fontStyle: 'normal',
-    fontWeight: '400',
-}
-
-export const text = {
-    headerText: {
-        color: color.normal,
-        fontSize: 24,
-        fontWeight: 'bold',
-        alignSelf: 'center',
-        left: 30,
-    },
-    placeholderText: {
-        ...baseText,
-        fontSize: 17,
-    },
-    mainText: {
-        color: color.normal,
+    sectionTitle: {
         fontSize: 18,
-        fontWeight: '400',
-        //letterSpacing: -0.7,
-        lineHeight: 22.4,
-        marginTop: 10,
-        left: 15,
+        fontWeight: '700',
+        color: '#1a1a2e',
+        marginBottom: 20,
     },
-} as {
-    [key: string]: StyleProp<TextStyle>
-}
+
+    inputGroup: {
+        marginBottom: 18,
+    },
+
+    inputLabel: {
+        fontSize: 14,
+        fontWeight: '600',
+        color: '#444',
+        marginBottom: 8,
+    },
+
+    input: {
+        borderWidth: 1,
+        borderColor: '#e0e0e0',
+
+        borderRadius: 12,
+
+        paddingHorizontal: 14,
+        paddingVertical: 12,
+
+        fontSize: 14,
+
+        color: '#222',
+        backgroundColor: '#fafafa',
+    },
+
+    dropdown: {
+        height: 58,
+
+        borderWidth: 1,
+        borderColor: '#e0e0e0',
+
+        borderRadius: 12,
+
+        paddingHorizontal: 14,
+
+        backgroundColor: '#fafafa',
+    },
+
+    dropdownContainer: {
+        borderRadius: 12,
+
+        borderColor: '#e0e0e0',
+
+        overflow: 'hidden',
+    },
+
+    dropdownPlaceholder: {
+        color: '#999',
+
+        fontSize: 14,
+    },
+
+    dropdownSelectedText: {
+        color: '#222',
+
+        fontSize: 14,
+
+        fontWeight: '500',
+    },
+
+    dropdownItemText: {
+        color: '#222',
+
+        fontSize: 14,
+    },
+
+    button: {
+        backgroundColor: '#4f46e5',
+
+        borderRadius: 16,
+
+        paddingVertical: 18,
+
+        alignItems: 'center',
+    },
+
+    buttonDisabled: {
+        backgroundColor: '#a5b4fc',
+    },
+
+    buttonText: {
+        color: '#fff',
+
+        fontSize: 16,
+        fontWeight: '700',
+    },
+});

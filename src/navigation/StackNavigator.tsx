@@ -3,14 +3,17 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack'
 
 import Main from '../components/main/Main'
 
+import NewProposal from '../components/screen/Individual/NewProposal'
 import ProductFundingList from '../components/screen/Individual/ProductFundingList'
 import ProductFundingDetail from '../components/screen/Individual/ProductFundingDetail'
 import MyFundingList from '../components/screen/Individual/MyFundingList'
 import MyProposalList from '../components/screen/Individual/MyProposalList'
+import MyProposalDetail from '../components/screen/Individual/MyProposalDetail'
 
+import NewProduct from '../components/screen/Corporation/NewProduct'
 import MyProductList from '../components/screen/Corporation/MyProductList'
+import MyProposalFundingList from '../components/screen/Corporation/MyProposalFundingList'
 
-import NewProposal from '../components/screen/Individual/NewProposal'
 
 import GongguAIScreen from '../components/screen/Ai/GongguAIScreen'
 import OrderParserScreen from '../components/screen/Ai/OrderParserScreen'
@@ -23,8 +26,7 @@ import SetPrice from '../components/SetPrice'
 import IndMain from '../components/main/IndMain'
 import CorMain from '../components/main/CorMain'
 import MyPage from '../components/main/MyPage'
-import NewPost from '../components/product/NewPost'
-import NewProduct from '../components/product/NewProduct'
+
 import ProductList from '../components/board/ProductList'
 import MyList from '../components/funding/MyList'
 import PostBoardDetail from '../components/board/PostBoardDetail'
@@ -34,15 +36,21 @@ import Payment from '../components/payment/Payment'
 
 export type RootStackParamList = {
   Main: undefined;
+
+  NewProposal: undefined;
   ProductFundingList: undefined;
   ProductFundingDetail: {
     productId: number,
   };
   MyFundingList: undefined;
   MyProposalList: undefined;
+  MyProposalDetail: {
+    proposalId: number,
+  };
 
-  NewProposal: undefined;
+  NewProduct: undefined;
   MyProductList: undefined;
+  MyProposalFundingList: undefined;
 
   GongguAIScreen: undefined;
   OrderParserScreen: undefined;
@@ -55,8 +63,7 @@ export type RootStackParamList = {
   IndMain: undefined;
   CorMain: undefined;
   MyPage: undefined;
-  NewProduct: undefined;
-  NewPost: undefined;
+  
   MyList: undefined;
   ProductList: undefined;
   PostBoardDetail: undefined;
@@ -83,6 +90,12 @@ export default function StackNavigator() {
         name="Login"
         component={Login}
       />
+
+
+      <Stack.Screen
+        name="NewProposal"
+        component={NewProposal}
+      />
       <Stack.Screen
         name="ProductFundingList"
         component={ProductFundingList}
@@ -100,18 +113,25 @@ export default function StackNavigator() {
         name="MyProposalList"
         component={MyProposalList}
       />
+      <Stack.Screen
+        name="MyProposalDetail"
+        component={MyProposalDetail}
+      />
 
 
+      <Stack.Screen
+        name="NewProduct"
+        component={NewProduct}
+      />
       <Stack.Screen
         name="MyProductList"
         component={MyProductList}
       />
-
-
       <Stack.Screen
-        name="NewProposal"
-        component={NewProposal}
+        name="MyProposalFundingList"
+        component={MyProposalFundingList}
       />
+
 
 
       <Stack.Screen
@@ -153,14 +173,7 @@ export default function StackNavigator() {
         name="MyPage"
         component={MyPage}
       />
-      <Stack.Screen
-        name="NewPost"
-        component={NewPost}
-      />
-      <Stack.Screen
-        name="NewProduct"
-        component={NewProduct}
-      />
+      
       <Stack.Screen
         name="ProductList"
         component={ProductList}

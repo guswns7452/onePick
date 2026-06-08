@@ -1,14 +1,14 @@
 import axios from 'axios';
 import React, { useState, useEffect } from 'react';
 import { Alert, Text, TouchableOpacity, View, Image, ScrollView, TextInput } from 'react-native'
-import { styles, text } from './NewProductStyle.ts'
-import { buttonStyle, buttonText }  from '../../public/style/button.ts'
+import { styles, text } from '../../product/NewProductScreenStyle.ts'
+import { buttonStyle, buttonText }  from '../../../public/style/button.ts'
 import { Picker } from '@react-native-picker/picker'
 
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
-import { RootStackParamList } from '../../navigation/StackNavigator.tsx'
+import { RootStackParamList } from '../../../navigation/StackNavigator.tsx'
 
-import { postProduct } from '../../api/Product/postProduct.ts'
+import { postProduct } from '../../../api/Product/postProduct.ts'
 
 type HomeScreenNavigationProp =
   NativeStackNavigationProp<RootStackParamList>;

@@ -1,6 +1,6 @@
-// MyProposalList.tsx
-// (개인) 회원이 쓴 구매 요청 글 목록 화면
-// 카드 클릭 시 MyProposalFunding 이동
+// MyProposalFundingList.tsx
+// (기업) 회원이 요청한 입찰 목록 화면
+// ~
 
 import axios from 'axios';
 import React, { useState, useEffect } from 'react';
@@ -18,8 +18,8 @@ import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../../navigation/StackNavigator';
 
-import { getMyProposals } from '../../../api/Proposal/getMyProposals';
-import { deleteProposal } from '../../../api/Proposal/deleteProposal';
+import { getMyFundings } from '../../../api/ProposalFunding/getMyFundings';
+import { deleteProposalFunding } from '../../../api/ProposalFunding/deleteProposalFunding';
 
 type HomeScreenNavigationProp =
   NativeStackNavigationProp<RootStackParamList>;
@@ -33,17 +33,13 @@ type Props = {
 type BidStatus = 'PENDING' | 'FINISHED' | 'CANCELLED';
 
 interface Bid {
-  proposalId: number;
-  title: string;
+  proposalFundingId: number;
+  price: number;
   content: string;
-  proposalCategory: string;
-  maxPrice: number;
-  proposalStatus: BidStatus;
-  writerNickname: string;
-  createdAt: any;
-  deadlineDays: number,
-  fundingCount: number;
-  thumbnail: any;
+  status: BidStatus;
+  proposalId: number,
+  ceoId: number;
+  ceoNickname: string;
 }
 
 // ── 탭 설정 ────────────────────────────────────────────────
@@ -89,27 +85,27 @@ function StatusBadge({ status }: { status: BidStatus }) {
 function BidCard({ bid }: { bid: Bid }) {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   /*const remaining  = getRemainingTime(bid.endDate);*/
-  const isPending   = bid.proposalStatus === 'PENDING';
+  const isPending   = bid.status === 'PENDING';
   /*const isUrgent   = isActive && remaining.includes('시간') && !remaining.includes('일');*/
 
-  const deleteMyProposal = async (proposalId: number) => {
+  const cancelMyProposalFunding = async (proposalFundingId: number) => {
 
     Alert.alert(
-      '구매 요청 삭제',
-      '정말 요청을 삭제하시겠습니까?',
+      '입찰 요청 취소',
+      '정말 입찰 요청을 취소하시겠습니까?',
       [
         {
           text: '아니오',
           style: 'cancel',
         },
         {
-          text: '삭제하기',
+          text: '취소하기',
           style: 'destructive',
 
           onPress: async () => {
             try {
                 
-              const result = await deleteProposal(proposalId);
+              const result = await deleteProposalFunding(proposalFundingId);
               console.log(result);
 
               Alert.alert(
@@ -147,35 +143,30 @@ function BidCard({ bid }: { bid: Bid }) {
     <TouchableOpacity
       style={styles.card}
       activeOpacity={0.8}
-      onPress={() =>
+      /*onPress={() =>
         navigation.navigate('MyProposalDetail', {
           proposalId: bid.proposalId
         })
-      }
+      }*/
     >
       {/* 왼쪽 이모지 */}
       <View style={styles.cardEmoji}>
-        {bid.thumbnail !== null ?
-        <Image
-            source={{ uri: bid.thumbnail.imageUrl }}
-            style={styles.cardImage}
-        /> :
-        <Text style={styles.emojiText}>❌</Text>}
+        <Text style={styles.emojiText}>😄</Text>
       </View>
 
       {/* 중앙 정보 */}
       <View style={styles.cardContent}>
         <View style={styles.cardTopRow}>
-          <Text style={styles.productName} numberOfLines={1}>{bid.title}</Text>
+          <Text style={styles.productName} numberOfLines={1}>{bid.content}</Text>
           {/*<StatusBadge status={bid.productStatus} />*/}
         </View>
-        <Text style={styles.remainText}>{bid.proposalCategory}</Text>
-        <Text style={styles.bidAmount}>최대 {bid.maxPrice.toLocaleString()}원</Text>
+        <Text style={styles.remainText}>{bid.ceoNickname}</Text>
+        <Text style={styles.bidAmount}>최대 {bid.price.toLocaleString()}원</Text>
 
-        {bid.proposalStatus === 'PENDING' ?
+        {bid.status === 'PENDING' ?
         <TouchableOpacity
           style={styles.btn}
-          onPress={() => deleteMyProposal(bid.proposalId)}
+          onPress={() => cancelMyProposalFunding(bid.proposalId)}
         >
           <Text style={styles.btnText}>
             요청 삭제
@@ -183,11 +174,14 @@ function BidCard({ bid }: { bid: Bid }) {
         </TouchableOpacity>
         : <></>}
 
+
+        {/*
         <View style={styles.cardBottomRow}>
           <Text style={styles.dateText}>📅 {bid.deadlineDays}</Text>
           <Text style={styles.dateText}>🔥 {bid.fundingCount}</Text>
           <Text style={styles.categoryText}>{bid.proposalCategory}</Text>
         </View>
+        */}
 
         {/*
         <View style={styles.cardBottomRow}>
@@ -210,25 +204,25 @@ function BidCard({ bid }: { bid: Bid }) {
 }
 
 // ── 메인 화면 ──────────────────────────────────────────────
-export default function MyProposalList({ navigation }: Props) {
+export default function MyProposalFundingList({ navigation }: Props) {
 
-    const [myProposals, setMyProposals] = useState<any[]>([]);
+    const [myProposalFundings, setMyProposalFundings] = useState<any[]>([]);
     
     useEffect(() => {
-        fetchMyProposalList();
+        fetchMyProposalFundingList();
     }, []);
     
-    const fetchMyProposalList = async () => {
+    const fetchMyProposalFundingList = async () => {
         try {
-            const data = await getMyProposals();
+            const data = await getMyFundings();
             console.log(JSON.stringify(data, null, 2));
             
             if (Array.isArray(data)) {
-                setMyProposals(data);
+                setMyProposalFundings(data);
             } else if (Array.isArray(data.data)) {
-                setMyProposals(data.data);
+                setMyProposalFundings(data.data);
             } else {
-                setMyProposals([]);
+                setMyProposalFundings([]);
             }
 
         } catch (error) {
@@ -242,7 +236,7 @@ export default function MyProposalList({ navigation }: Props) {
   const [activeTab, setActiveTab]   = useState<BidStatus>('PENDING');
   const [refreshing, setRefreshing] = useState(false);
 
-  const filtered = myProposals.filter( (myProposal) => myProposal.proposalStatus === activeTab,);
+  const filtered = myProposalFundings.filter( (myProposalFunding) => myProposalFunding.status === activeTab,);
 
   const onRefresh = async () => {
     setRefreshing(true);
@@ -250,9 +244,9 @@ export default function MyProposalList({ navigation }: Props) {
   };
 
   const counts = {
-    PENDING: myProposals.filter( (mp) => mp.proposalStatus === 'PENDING' ).length,
-    FINISHED: myProposals.filter( (mp) => mp.proposalStatus === 'FINISHED' ).length,
-    CANCELLED: myProposals.filter( (mp) => mp.proposalStatus === 'CANCELLED' ).length,
+    PENDING: myProposalFundings.filter( (mpf) => mpf.status === 'PENDING' ).length,
+    FINISHED: myProposalFundings.filter( (mpf) => mpf.status === 'FINISHED' ).length,
+    CANCELLED: myProposalFundings.filter( (mpf) => mpf.status === 'CANCELLED' ).length,
   };
 
 
@@ -264,8 +258,8 @@ export default function MyProposalList({ navigation }: Props) {
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backBtn}>
           <Text style={styles.backIcon}>←</Text>
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>입찰 내역</Text>
-        <Text style={styles.headerSub}>총 {myProposals.length}건의 입찰</Text>
+        <Text style={styles.headerTitle}>입찰 요청 내역</Text>
+        <Text style={styles.headerSub}>총 {myProposalFundings.length}건의 입찰 요청</Text>
       </View>
 
       {/* 탭 */}
@@ -312,7 +306,7 @@ export default function MyProposalList({ navigation }: Props) {
             </Text>
           </View>
         ) : (
-          filtered.map(myProposal => <BidCard key={myProposal.proposalId} bid={myProposal} />)
+          filtered.map(myProposalFunding => <BidCard key={myProposalFunding.proposalId} bid={myProposalFunding} />)
         )}
       </ScrollView>
 

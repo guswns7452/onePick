@@ -1,3 +1,8 @@
+// NewProduct.tsx
+// (기업) 새로운 펀딩 모집 글 작성 화면
+// ~
+
+
 import axios from 'axios';
 import React, { useState, useEffect } from 'react';
 import {
@@ -19,11 +24,11 @@ import {
 } from '@react-navigation/native-stack';
 
 import { RootStackParamList }
-from '../../navigation/StackNavigator';
+from '../../../navigation/StackNavigator';
 
-import { styles } from './NewPostStyle';
+import { styles } from '../../product/NewProductStyle';
 
-import { postProduct } from '../../api/Product/postProduct';
+import { postProduct } from '../../../api/Product/postProduct';
 
 
 type HomeScreenNavigationProp =
