@@ -43,7 +43,7 @@ export default function MyPage({ navigation }: Props) {
                     </TouchableOpacity>
                     <TouchableOpacity
                         style={styles.optionContainer}
-                        onPress={() => navigation.navigate('NewPost')}
+                        onPress={() => navigation.navigate('NewProposal')}
                         /*onPress={() => navigation.navigate('NewProduct')}*/
                     >
                         <View style={styles.imageBox}>

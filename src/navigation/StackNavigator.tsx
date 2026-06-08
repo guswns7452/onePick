@@ -9,6 +9,8 @@ import MyFundingList from '../components/screen/Individual/MyFundingList'
 
 import MyProductList from '../components/screen/Corporation/MyProductList'
 
+import NewProposal from '../components/screen/Individual/NewProposal'
+
 import GongguAIScreen from '../components/screen/Ai/GongguAIScreen'
 import OrderParserScreen from '../components/screen/Ai/OrderParserScreen'
 import RecommendScreen from '../components/screen/Ai/RecommendScreen'
@@ -36,6 +38,8 @@ export type RootStackParamList = {
   };
   MyProductList: undefined;
   MyFundingList: undefined;
+
+  NewProposal: undefined;
 
   GongguAIScreen: undefined;
   OrderParserScreen: undefined;
@@ -88,9 +92,11 @@ export default function StackNavigator() {
         name="MyProductList"
         component={MyProductList}
       />
+
+
       <Stack.Screen
-        name="MyFundingList"
-        component={MyFundingList}
+        name="NewProposal"
+        component={NewProposal}
       />
 
 

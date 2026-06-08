@@ -7,6 +7,7 @@ export interface CreatePostRequest {
     category: string;
     maxPrice: number;
     deadlineDays: number;
+    imageMetas: any[];
 }
 
 // POST API

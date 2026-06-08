@@ -1,5 +1,5 @@
-// MyProductList.tsx
-// (기업) 사장이 올린 펀딩 모집 글 목록 화면
+// MyFundingList.tsx
+// (개인) 회원이 쓴 구매 요청 글 목록 화면
 // 카드 클릭 시 ProductFundingDetail로 이동 ???(개발필요)
 
 import axios from 'axios';
@@ -17,9 +17,8 @@ import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../../navigation/StackNavigator';
 
-import { getMyProducts } from '../../../api/Product/getMyProducts';
-import { patchFunding } from '../../../api/Product/patchFunding';
-import { deleteProduct } from '../../../api/Product/deleteProduct';
+import { getMyProposals } from '../../../api/Proposal/getMyProposals';
+import { deleteProposal } from '../../../api/Proposal/deleteProposal';
 
 type HomeScreenNavigationProp =
   NativeStackNavigationProp<RootStackParamList>;
@@ -33,12 +32,12 @@ type Props = {
 type BidStatus = 'PENDING' | 'FINISHED' | 'CANCELLED';
 
 interface Bid {
+  fundingId: number;
   productId: number;
-  title: string;
-  price: number;
-  minPeople: number;
-  status: BidStatus;
-  category: string;
+  productTitle: string;
+  quantity: number;
+  productStatus: BidStatus;
+  //category: string;
 }
 
 // ── 탭 설정 ────────────────────────────────────────────────
@@ -65,71 +64,33 @@ function getRemainingTime(endDate: string): string {
   return `${minutes}분 남음`;
 }
 
+// ── 상태 뱃지 ──────────────────────────────────────────────
+function StatusBadge({ status }: { status: BidStatus }) {
+  const config = {
+    PENDING:    { label: '진행중', bg: '#eef2ff', color: '#4f46e5' },
+    FINISHED: { label: '종료',   bg: '#d1fae5', color: '#065f46' },
+    CANCELLED: { label: '취소',   bg: '#fee2e2', color: '#991b1b' },
+  }[status];
+
+  return (
+    <View style={[styles.badge, { backgroundColor: config.bg }]}>
+      <Text style={[styles.badgeText, { color: config.color }]}>{config.label}</Text>
+    </View>
+  );
+}
+
 // ── 입찰 카드 ──────────────────────────────────────────────
 function BidCard({ bid }: { bid: Bid }) {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   /*const remaining  = getRemainingTime(bid.endDate);*/
-  const isPending   = bid.status === 'PENDING';
+  const isPending   = bid.productStatus === 'PENDING';
   /*const isUrgent   = isActive && remaining.includes('시간') && !remaining.includes('일');*/
 
-
-
-  const finishMyProduct = async (productId: number) => {
+  const deleteMyProposal = async (proposalId: number) => {
 
     Alert.alert(
-      '조기 종료',
-      '정말 펀딩을 종료하시겠습니까?',
-      [
-        {
-          text: '아니오',
-          style: 'cancel',
-        },
-        {
-          text: '종료하기',
-          style: 'destructive',
-
-          onPress: async () => {
-            try {
-                
-              const result = await patchFunding(productId);
-              console.log(result);
-
-              Alert.alert(
-                '종료 완료',
-                '펀딩이 종료되었습니다.',
-              );
-
-              navigation.goBack();
-
-            } catch (error) {
-                
-              if (axios.isAxiosError(error)) {
-                console.log(error);
-
-                Alert.alert(
-                  '에러 발생',
-                  JSON.stringify(error.response?.data,) || error.message,);
-
-              } else {
-                  
-                Alert.alert(
-                  '에러 발생',
-                  '알 수 없는 오류',
-                );
-              }
-            }
-          },
-        },
-      ],
-    );
-  };
-
-
-  const deleteMyProduct = async (productId: number) => {
-
-    Alert.alert(
-      '펀딩 취소',
-      '정말 펀딩을 취소하시겠습니까?',
+      '구매 요청 삭제',
+      '정말 요청을 삭제하시겠습니까?',
       [
         {
           text: '아니오',
@@ -142,12 +103,12 @@ function BidCard({ bid }: { bid: Bid }) {
           onPress: async () => {
             try {
                 
-              const result = await deleteProduct(productId);
+              const result = await deleteProposal(proposalId);
               console.log(result);
 
               Alert.alert(
-                '취소 완료',
-                '펀딩이 취소되었습니다.',
+                '삭제 완료',
+                '구매 요청이 삭제되었습니다.',
               );
 
               navigation.goBack();
@@ -181,7 +142,7 @@ function BidCard({ bid }: { bid: Bid }) {
       style={styles.card}
       activeOpacity={0.8}
       /*onPress={() =>
-        navigation.navigate('', {
+        navigation.navigate('ProductFundingDetail', {
           productId: bid.productId
         })
       }*/
@@ -194,31 +155,20 @@ function BidCard({ bid }: { bid: Bid }) {
       {/* 중앙 정보 */}
       <View style={styles.cardContent}>
         <View style={styles.cardTopRow}>
-          <Text style={styles.productName} numberOfLines={1}>{bid.title}</Text>
+          <Text style={styles.productName} numberOfLines={1}>{bid.productTitle}</Text>
+          {/*<StatusBadge status={bid.productStatus} />*/}
         </View>
-
-        <Text style={styles.bidAmount}>{bid.price.toLocaleString()}원</Text>
-        
-        <View style={styles.btnView}>
-        <TouchableOpacity
-          style={[styles.btn, { backgroundColor: '#065f46' }]}
-          onPress={() => finishMyProduct(bid.productId)}
-        >
-          <Text style={styles.btnText}>
-            조기 종료
-          </Text>
-        </TouchableOpacity>
+        <Text style={styles.remainText}>{bid.quantity}</Text>
 
         <TouchableOpacity
-          style={[styles.btn, { backgroundColor: '#ef4444' }]}
-          onPress={() => deleteMyProduct(bid.productId)}
+          style={styles.btn}
+          onPress={() => deleteMyProposal(bid.productId)}
         >
           <Text style={styles.btnText}>
             참여 취소
           </Text>
         </TouchableOpacity>
-        </View>
-        
+
         {/*
         <View style={styles.cardBottomRow}>
           <Text style={styles.dateText}>📅 {bid.date}</Text>
@@ -240,36 +190,39 @@ function BidCard({ bid }: { bid: Bid }) {
 }
 
 // ── 메인 화면 ──────────────────────────────────────────────
-export default function MyProductList({ navigation }: Props) {
+export default function MyProposalList({ navigation }: Props) {
 
-    const [myProducts, setMyProducts] = useState<any[]>([]);
+    const [myProposals, setMyProposals] = useState<any[]>([]);
     
     useEffect(() => {
-        fetchMyProductList();
+        fetchMyProposalList();
     }, []);
     
-    const fetchMyProductList = async () => {
+    const fetchMyProposalList = async () => {
         try {
-            const data = await getMyProducts();
+            const data = await getMyProposals();
             console.log(JSON.stringify(data, null, 2));
             
             if (Array.isArray(data)) {
-                setMyProducts(data);
+                setMyProposals(data);
             } else if (Array.isArray(data.data)) {
-                setMyProducts(data.data);
+                setMyProposals(data.data);
             } else {
-                setMyProducts([]);
+                setMyProposals([]);
             }
+
         } catch (error) {
             console.log(error);
         }
     };
 
+
+
   
   const [activeTab, setActiveTab]   = useState<BidStatus>('PENDING');
   const [refreshing, setRefreshing] = useState(false);
 
-  const filtered = myProducts.filter( (myProduct) => myProduct.status === activeTab,);
+  const filtered = myProposals.filter( (myProposal) => myProposal.productStatus === activeTab,);
 
   const onRefresh = async () => {
     setRefreshing(true);
@@ -277,9 +230,9 @@ export default function MyProductList({ navigation }: Props) {
   };
 
   const counts = {
-    PENDING: myProducts.filter( (mp) => mp.status === 'PENDING' ).length,
-    FINISHED: myProducts.filter( (mp) => mp.status === 'FINISHED' ).length,
-    CANCELLED: myProducts.filter( (mp) => mp.status === 'CANCELLED' ).length,
+    PENDING: myProposals.filter( (mp) => mp.productStatus === 'PENDING' ).length,
+    FINISHED: myProposals.filter( (mp) => mp.productStatus === 'FINISHED' ).length,
+    CANCELLED: myProposals.filter( (mp) => mp.productStatus === 'CANCELLED' ).length,
   };
 
 
@@ -292,9 +245,7 @@ export default function MyProductList({ navigation }: Props) {
           <Text style={styles.backIcon}>←</Text>
         </TouchableOpacity>
         <Text style={styles.headerTitle}>입찰 내역</Text>
-        <Text style={styles.headerSub}>
-          총 {myProducts.filter((myProduct) => myProduct.status !== 'WRITING').length}건의 입찰
-          </Text>
+        <Text style={styles.headerSub}>총 {myProposals.length}건의 입찰</Text>
       </View>
 
       {/* 탭 */}
@@ -335,13 +286,13 @@ export default function MyProductList({ navigation }: Props) {
               {activeTab === 'PENDING' ? '🔍' : activeTab === 'FINISHED' ? '✅' : '❌'}
             </Text>
             <Text style={styles.emptyText}>
-              {activeTab === 'PENDING'    ? '진행 중인 내 입찰이 없어요'  :
-               activeTab === 'FINISHED' ? '종료된 내 입찰이 없어요'     :
-                                          '취소된 내 입찰이 없어요'}
+              {activeTab === 'PENDING'    ? '진행 중인 참여한 입찰이 없어요'  :
+               activeTab === 'FINISHED' ? '종료된 참여한 입찰이 없어요'     :
+                                          '취소된 참여한 입찰이 없어요'}
             </Text>
           </View>
         ) : (
-          filtered.map(product => <BidCard key={product.productId} bid={product} />)
+          filtered.map(myProposal => <BidCard key={myProposal} bid={myProposal} />)
         )}
       </ScrollView>
 
@@ -406,15 +357,13 @@ const styles = StyleSheet.create({
   emptyBox:     { alignItems: 'center', paddingVertical: 60, gap: 12 },
   emptyEmoji:   { fontSize: 40 },
   emptyText:    { fontSize: 15, color: '#aaa' },
-  btnView: {
-    right: 8,
-    alignSelf: 'flex-end',
-  },
   btn: {
-    marginTop: 5,
-    paddingHorizontal: 8,
-    paddingVertical: 4,
+    right: 8,
+    paddingHorizontal: 6,
+    paddingVertical: 3,
     borderRadius: 8,
+    alignSelf: 'flex-end',
+    backgroundColor: '#ef4444'
     },
   btnText: {
     color: '#fff',
