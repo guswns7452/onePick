@@ -1,5 +1,6 @@
 // LoginStyle.ts
 
+
 import { StyleSheet } from 'react-native';
 
 export const styles = StyleSheet.create({
@@ -7,7 +8,6 @@ export const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#f5f6fa',
-
         justifyContent: 'space-between',
     },
 

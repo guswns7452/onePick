@@ -4,8 +4,11 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import Main from '../components/main/Main'
 
 import Login from '../components/screen/Member/Login'
+import MyPage from '../components/screen/Member/MyPage'
 
-import IndMyPage from '../components/screen/IndMyPage'
+import Payment from '../components/screen/Payment'
+
+
 import NewProposal from '../components/screen/Individual/NewProposal'
 import ProductFundingList from '../components/screen/Individual/ProductFundingList'
 import ProductFundingDetail from '../components/screen/Individual/ProductFundingDetail'
@@ -13,9 +16,9 @@ import MyFundingList from '../components/screen/Individual/MyFundingList'
 import MyProposalList from '../components/screen/Individual/MyProposalList'
 import MyProposalDetail from '../components/screen/Individual/MyProposalDetail'
 
-import NewProduct from '../components/screen/Corporation/NewProduct'
-import MyProductList from '../components/screen/Corporation/MyProductList'
-import MyProposalFundingList from '../components/screen/Corporation/MyProposalFundingList'
+import NewProduct from '../components/screen/Ceo/NewProduct'
+import MyProductList from '../components/screen/Ceo/MyProductList'
+import MyProposalFundingList from '../components/screen/Ceo/MyProposalFundingList'
 
 
 import GongguAIScreen from '../components/screen/Ai/GongguAIScreen'
@@ -32,7 +35,6 @@ import ProductList from '../components/board/ProductList'
 import MyList from '../components/funding/MyList'
 import PostBoardDetail from '../components/board/PostBoardDetail'
 import ProductDetail from '../components/board/ProductDetail'
-import Payment from '../components/payment/Payment'
 
 
 
@@ -45,11 +47,14 @@ export type RootStackParamList = {
 
 
   Login: undefined;
-
-
-  IndMyPage: {
+  MyPage: {
     member: Member;
-  }
+  };
+
+  Payment: undefined;
+
+
+  
   NewProposal: undefined;
   ProductFundingList: undefined;
   ProductFundingDetail: {
@@ -61,6 +66,8 @@ export type RootStackParamList = {
     proposalId: number,
   };
 
+
+  
   NewProduct: undefined;
   MyProductList: undefined;
   MyProposalFundingList: undefined;
@@ -85,7 +92,6 @@ export type RootStackParamList = {
     status: string,
     category: string;
   };
-  Payment: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -101,13 +107,19 @@ export default function StackNavigator() {
         name="Login"
         component={Login}
       />
-
+      <Stack.Screen
+        name="MyPage"
+        component={MyPage}
+      />
 
 
       <Stack.Screen
-        name="IndMyPage"
-        component={IndMyPage}
+        name="Payment"
+        component={Payment}
       />
+
+
+
       <Stack.Screen
         name="NewProposal"
         component={NewProposal}
@@ -201,10 +213,6 @@ export default function StackNavigator() {
       <Stack.Screen
         name="ProductDetail"
         component={ProductDetail}
-      />
-      <Stack.Screen
-        name="Payment"
-        component={Payment}
       />
 
     </Stack.Navigator>

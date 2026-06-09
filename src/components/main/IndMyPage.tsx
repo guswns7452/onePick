@@ -56,39 +56,131 @@ export default function IndMypage({ navigation, route }: Props) {
 
                 </View>
 
-                {/* USER CARD */}
-                <View style={styles.card}>
 
-                    <Text style={styles.sectionTitle}>
-                        📌 회원 정보
-                    </Text>
+{/* PROFILE CARD */}
+<View style={styles.profileCard}>
 
-                    <View style={styles.infoRow}>
-                        <Text style={styles.infoLabel}>
-                            닉네임
-                        </Text>
+    {/* 상단 */}
+    <View style={styles.profileTop}>
 
-                        <Text style={styles.infoValue}>
-                            {user.member.nickname}
-                        </Text>
-                    </View>
+        {/* 프로필 원 */}
+        <View style={styles.profileCircle}>
+            <Text style={styles.profileInitial}>
+                {user.member.nickname.charAt(0)}
+            </Text>
+        </View>
 
-                    <View style={styles.divider} />
+        {/* 유저 정보 */}
+        <View style={styles.profileInfo}>
 
-                    <View style={styles.infoRow}>
-                        {/*
-                        <Text style={styles.infoLabel}>
-                            휴대폰번호
-                        </Text>
-                        */}
+            <Text style={styles.profileName}>
+                {user.member.nickname}
+            </Text>
 
-                        <Text style={styles.infoValue}>
-                            {user.member.type === 'CEO' ? '기업회원' : '개인회원'}
-                        </Text>
-                    </View>
+            <View style={styles.typeBadge}>
 
-                </View>
+                <Text style={styles.typeBadgeText}>
+                    {
+                        user.member.type === 'CEO'
+                            ? '기업회원'
+                            : '개인회원'
+                    }
+                </Text>
 
+            </View>
+
+        </View>
+
+    </View>
+
+    {/* 하단 */}
+    <TouchableOpacity
+        style={styles.profilePaymentBox}
+        /*onPress={}*/
+    >
+        <Text style={styles.profilePaymentText}>
+            내 결제 수단
+        </Text>
+    </TouchableOpacity>
+        {/*
+        <View style={styles.profileBottom}>
+        
+        <View style={styles.profileStatBox}>
+            <Text style={styles.profileStatLabel}>
+                결제 수단
+            </Text>
+
+            <Text style={styles.profileStatValue}>
+                통장
+            </Text>
+        </View>
+
+        <View style={styles.profileDivider} />
+
+        <View style={styles.profileStatBox}>
+            <Text style={styles.profileStatLabel}>
+                결제 수단
+            </Text>
+
+            <Text style={styles.profileStatValue}>
+                카드
+            </Text>
+        </View>
+    </View>
+        */}
+
+</View>
+
+{/* HORIZONTAL DASHBOARD */}
+<View style={styles.dashboardRow}>
+
+    <TouchableOpacity
+        style={styles.dashboardCard}
+        onPress={() =>
+            navigation.navigate('MyFundingList')
+        }
+    >
+
+        <Text style={styles.dashboardEmoji}>
+            📩
+        </Text>
+
+        <Text style={styles.dashboardTitle}>
+            참여한 펀딩
+        </Text>
+
+        <Text style={styles.dashboardValue}>
+            12건
+        </Text>
+
+    </TouchableOpacity>
+
+    <TouchableOpacity
+        style={styles.dashboardCard}
+        onPress={() =>
+            navigation.navigate('MyProposalList')
+        }
+    >
+
+        <Text style={styles.dashboardEmoji}>
+            🛒
+        </Text>
+
+        <Text style={styles.dashboardTitle}>
+            내가 요청한
+        </Text>
+
+        <Text style={styles.dashboardValue}>
+            공구
+        </Text>
+
+    </TouchableOpacity>
+
+</View>
+
+
+
+                    
                 {/* MENU CARD */}
                 <View style={styles.card}>
 
@@ -122,47 +214,6 @@ export default function IndMypage({ navigation, route }: Props) {
                     >
                         <Text style={styles.menuText}>
                             🛒 전체 펀딩 모집 글 보러 가기
-                        </Text>
-                        <Text style={styles.arrow}>
-                            ›
-                        </Text>
-                    </TouchableOpacity>
-
-                </View>
-
-                {/* MENU CARD */}
-                <View style={styles.card}>
-
-                    <Text style={styles.sectionTitle}>
-                        🙋🏻 내 활동
-                    </Text>
-
-                    <TouchableOpacity
-                        style={styles.menuButton}
-                        onPress={() =>
-                            navigation.navigate(
-                                'MyFundingList'
-                            )
-                        }
-                    >
-                        <Text style={styles.menuText}>
-                            📩 내가 참여한 펀딩 목록
-                        </Text>
-                        <Text style={styles.arrow}>
-                            ›
-                        </Text>
-                    </TouchableOpacity>
-
-                    <TouchableOpacity
-                        style={styles.menuButton}
-                        onPress={() =>
-                            navigation.navigate(
-                                'MyProposalList'
-                            )
-                        }
-                    >
-                        <Text style={styles.menuText}>
-                            🛒 내가 쓴 공구 요청 목록
                         </Text>
                         <Text style={styles.arrow}>
                             ›

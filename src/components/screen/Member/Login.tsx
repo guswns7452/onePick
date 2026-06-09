@@ -23,7 +23,6 @@ type Props = {
 export default function Login({navigation}: Props) {
 
     const [fulfilled, setFulfilled] = useState(false)
-
     const [phoneNumber, setPhoneNumber] = useState('')
 
 
@@ -42,18 +41,10 @@ export default function Login({navigation}: Props) {
 
             console.log(`${result.data.type === 'CEO' ? '기업' : '개인'}회원 ${result.data.nickname} 님 로그인 성공 !`);
             
-            if (result.data.type === 'CEO') {
-                //navigation.navigate('CorMain');
-                //navigation.navigate('IndMain');
-                navigation.navigate('IndMyPage', {
-                    member: result.data
-                });
-            } else {
-                //navigation.navigate('IndMain');
-                navigation.navigate('IndMyPage', {
-                    member: result.data
-                });
-            }
+            
+            navigation.navigate('MyPage', {
+                member: result.data
+            });
 
         } catch (error) {
 
@@ -96,11 +87,11 @@ export default function Login({navigation}: Props) {
 
                 {/* CARD */}
                 <View style={styles.card}>
-
+                    {/*
                     <Text style={styles.inputLabel}>
                         휴대폰번호
                     </Text>
-
+                    */}
                     <TextInput
                         style={styles.input}
                         placeholder="휴대폰번호 입력"

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Text, TouchableOpacity, View, Image } from 'react-native'
-import PaymentSelect from './PaymentSelect'
-import { styles, text } from './PaymentStyle'
+import PaymentSelect from './PaymentSelectScreen.tsx'
+import { styles, text } from './PaymentScreenStyle.ts'
 import { buttonStyle, buttonText }  from '../../public/style/button.ts'
 
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'

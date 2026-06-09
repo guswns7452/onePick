@@ -1,152 +1,101 @@
-// MyProposalFunding.tsx
-// (개인) 회원이 쓴 구매 요청 글 상세 화면 — 수신한 입찰 요청 확인 가능
-
+// MyProposalDetail.tsx
+// (개인) 구매 요청 글 상세 화면 — 이미지, 제목, 설명 + 입찰 요청 목록
 
 import axios from 'axios';
 import React, { useState, useEffect } from 'react';
 import {
-  Alert,
-  View,
-  Text,
-  TouchableOpacity,
-  ScrollView,
-  StyleSheet,
+  Alert, View, Text, Image, TouchableOpacity,
+  ScrollView, StyleSheet, ActivityIndicator,
 } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../../navigation/StackNavigator';
 import { RouteProp } from '@react-navigation/native';
-
 import { getFundings } from '../../../api/ProposalFunding/getFundings';
 import { patchAcceptFunding } from '../../../api/ProposalFunding/patchAcceptFunding';
 import { patchRejectFunding } from '../../../api/ProposalFunding/patchRejectFunding';
-
-import StatusBadge from './StatusBadge';
-
-type HomeScreenNavigationProp =
-  NativeStackNavigationProp<RootStackParamList>;
-
-type MyProposalDetailRouteProp =
-    RouteProp<
-        RootStackParamList,
-        'MyProposalDetail'
-    >;
+import { api } from '../../../api/axios';
 
 type Props = {
-  navigation: HomeScreenNavigationProp;
-    route: MyProposalDetailRouteProp;
+  navigation: NativeStackNavigationProp<RootStackParamList>;
+  route:      RouteProp<RootStackParamList, 'MyProposalDetail'>;
 };
 
-
-
+const CATEGORY_LABELS: Record<string, string> = {
+  FOOD: '식품', FURNITURE: '가구', DIGITAL: '디지털',
+  FASHION: '패션', BEAUTY: '뷰티', ETC: '기타',
+};
 
 export default function MyProposalDetail({ navigation, route }: Props) {
   const { proposalId } = route.params;
 
+  const [proposal, setProposal]               = useState<any>(null);
   const [proposalFundings, setProposalFundings] = useState<any[]>([]);
+  const [loading, setLoading]                 = useState(true);
 
-  
   useEffect(() => {
-    const fetchProduct = async () => {
-        try {
-            const data = await getFundings(proposalId);
-            console.log(JSON.stringify(data, null, 2));
-
-            setProposalFundings(data.data);
-
-        } catch (error) {
-            console.log(error);
-        }
-    };
-
-    fetchProduct();
-    
+    fetchAll();
   }, [proposalId]);
 
+  const fetchAll = async () => {
+    try {
+      // 제품 상세 + 입찰 목록 동시 호출
+      const [proposalRes, fundingsRes] = await Promise.all([
+        api.get(`/api/v1/proposals/${proposalId}`),
+        getFundings(proposalId),
+      ]);
+      setProposal(proposalRes.data.data);
+      setProposalFundings(fundingsRes.data ?? []);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleAccept = async (proposalFundingId: number) => {
     try {
-        const result = await patchAcceptFunding(proposalFundingId);
-        console.log(result);
-        
-        Alert.alert(
-            '✅ 수락 완료',
-            '입찰을 성공적으로 수락했어요!');
-        
-
-        navigation.goBack();
-
+      const result = await patchAcceptFunding(proposalFundingId);
+      Alert.alert('✅ 수락 완료', '입찰을 성공적으로 수락했어요!');
+      navigation.goBack();
     } catch (error) {
-        if (axios.isAxiosError(error)) {
-            console.log(error);
-                
-            Alert.alert(
-                '에러 발생',
-                JSON.stringify(error.response?.data)
-                || error.message
-            );
-
-        } else {
-            Alert.alert(
-                '에러 발생',
-                '알 수 없는 오류',
-            );
-        }
+      if (axios.isAxiosError(error)) {
+        Alert.alert('에러 발생', JSON.stringify(error.response?.data) || error.message);
+      } else {
+        Alert.alert('에러 발생', '알 수 없는 오류');
+      }
     }
-}
+  };
 
   const handleReject = async (proposalFundingId: number) => {
     try {
-        const result = await patchRejectFunding(proposalFundingId);
-        console.log(result);
-        
-        Alert.alert(
-            '❎ 거절 완료',
-            '입찰을 성공적으로 거절했어요!');
-        
-
-        navigation.goBack();
-
+      const result = await patchRejectFunding(proposalFundingId);
+      Alert.alert('❎ 거절 완료', '입찰을 성공적으로 거절했어요!');
+      navigation.goBack();
     } catch (error) {
-        if (axios.isAxiosError(error)) {
-            console.log(error);
-                
-            Alert.alert(
-                '에러 발생',
-                JSON.stringify(error.response?.data)
-                || error.message
-            );
-
-        } else {
-            Alert.alert(
-                '에러 발생',
-                '알 수 없는 오류',
-            );
-        }
+      if (axios.isAxiosError(error)) {
+        Alert.alert('에러 발생', JSON.stringify(error.response?.data) || error.message);
+      } else {
+        Alert.alert('에러 발생', '알 수 없는 오류');
+      }
     }
-}
+  };
 
-
-/*
-  const remaining   = getRemainingTime(product.endDate ?? '2026-12-31T18:00:00');
-  const isUrgent    = remaining.includes('시간') && !remaining.includes('일');
-*/
-
-
-if (!proposalFundings) {
+  if (loading) {
     return (
-        <View
-            style={{
-                flex: 1,
-                justifyContent: 'center',
-                alignItems: 'center',
-            }}
-        >
-            <Text>불러오는 중...</Text>
-        </View>
+      <View style={styles.loadingBox}>
+        <ActivityIndicator size="large" color="#4f46e5" />
+      </View>
     );
- }
+  }
 
- //const fundingRate = product.fundingCount === 0 ? 0 : product.fundingCount / product.minPeople * 100;
+  // AI 이미지 상태 확인
+  const mainImage = proposal?.images?.find((img: any) => img.aiStatus === 'SUCCESS' && img.imageUrl)
+    ?? proposal?.images?.find((img: any) => img.imageUrl)
+    ?? proposal?.thumbnail;
+
+  const aiRunning = proposal?.images?.some(
+    (img: any) => img.aiStatus === 'QUEUED' || img.aiStatus === 'RUNNING'
+  );
 
   return (
     <View style={styles.container}>
@@ -156,385 +105,160 @@ if (!proposalFundings) {
         showsVerticalScrollIndicator={false}
         bounces={true}
       >
-
         {/* 헤더 */}
         <View style={styles.header}>
           <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backBtn}>
             <Text style={styles.backIcon}>←</Text>
           </TouchableOpacity>
-          <Text style={styles.headerTitle}>입찰 요청 목록</Text>
+          <Text style={styles.headerTitle}>구매 요청 상세</Text>
           <View style={{ width: 40 }} />
         </View>
 
-        {/* 이미지 영역 
+        {/* 이미지 영역 */}
         <View style={styles.imageBox}>
-          <Text style={styles.imageEmoji}>{'📦'}</Text>
-          <StatusBadge status={product.status} />
+          {mainImage?.imageUrl ? (
+            <Image source={{ uri: mainImage.imageUrl }} style={styles.productImage} resizeMode="cover" />
+          ) : (
+            <View style={styles.imagePlaceholder}>
+              {aiRunning ? (
+                <>
+                  <ActivityIndicator color="#4f46e5" />
+                  <Text style={styles.imagePlaceholderText}>AI 이미지 생성 중...</Text>
+                </>
+              ) : (
+                <Text style={styles.imagePlaceholderEmoji}>📦</Text>
+              )}
+            </View>
+          )}
+          {mainImage?.sourceType === 'AI' && mainImage?.aiStatus === 'SUCCESS' && (
+            <View style={styles.aiBadge}>
+              <Text style={styles.aiBadgeText}>🤖 AI 생성</Text>
+            </View>
+          )}
         </View>
-        */}
 
-        {/* 남은 시간 배너
-        <View style={[styles.timeBanner, isUrgent && styles.timeBannerUrgent]}>
-          <Text style={styles.timeBannerText}>
-            ⏱ {remaining}
-          </Text>
-        </View>
-        */}
-        {/* 기본 정보 
+        {/* 기본 정보 */}
         <View style={styles.section}>
-          <Text style={styles.productName}>{product.title}</Text>
-          <Text style={styles.seller}>{product.createdAt}</Text>
-          <Text style={styles.price}>{product.price}원</Text>
-        </View>
-        */}
-        {/* 펀딩 달성률 
-        <View style={styles.section}>
-          <View style={styles.fundingHeader}>
-            <Text style={styles.sectionTitle}>🔥 펀딩 현황</Text>
-            <Text style={styles.fundingRate}>{Math.round(fundingRate)}% 달성</Text>
-          </View>
-          <View style={styles.progressBar}>
-            <View style={[styles.progressFill, { width: `${fundingRate}%` }]} />
-          </View>
-          <View style={styles.fundingInfo}>
-            <Text style={styles.fundingInfoText}>목표 달성률</Text>
-            <Text style={[styles.fundingInfoText, fundingRate >= 100 && styles.fundingSuccess]}>
-              {fundingRate >= 100 ? '🎉 목표 달성!' : `${Math.round(fundingRate)}%`}
+          <View style={styles.categoryBadge}>
+            <Text style={styles.categoryBadgeText}>
+              {CATEGORY_LABELS[proposal?.proposalCategory] ?? proposal?.proposalCategory}
             </Text>
           </View>
+          <Text style={styles.productName}>{proposal?.title}</Text>
+          <Text style={styles.price}>{proposal?.maxPrice?.toLocaleString()}원</Text>
+          <Text style={styles.seller}>by {proposal?.writerNickname}</Text>
         </View>
-        */}
 
         {/* 제품 설명 */}
-        {proposalFundings.map((proposalFunding) => (
-            <View
-                key={proposalFunding.proposalFundingId}
-                style={styles.section}>
-                <Text style={styles.sectionTitle}>📩 입찰 요청</Text>
-                <Text style={styles.description}>
-                    {proposalFunding.price}
-                </Text>
-            </View>
-        ))}
-
-        {/* 판매자 정보
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>👤 판매자 정보</Text>
-          <View style={styles.sellerBox}>
-            <View style={styles.sellerAvatar}>
-              <Text style={styles.sellerAvatarText}>
-                {(product.seller ?? '판').charAt(0)}
-              </Text>
-            </View>
-            <View>
-              <Text style={styles.sellerName}>{product.seller ?? '판매자'}</Text>
-              <Text style={styles.sellerSub}>크라우드펀딩 판매자</Text>
-            </View>
+          <Text style={styles.sectionTitle}>📋 제품 설명</Text>
+          <Text style={styles.description}>{proposal?.content}</Text>
+        </View>
+
+        {/* 펀딩 정보 */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>📊 요청 정보</Text>
+          <View style={styles.infoGrid}>
+            <InfoItem label="마감 기간" value={`${proposal?.deadlineDays}일`} />
+            <InfoItem label="입찰 수"   value={`${proposal?.fundingCount}건`} />
+            <InfoItem label="상태"      value={proposal?.proposalStatus === 'PENDING' ? '진행중' : '완료'} />
+            <InfoItem label="등록일"    value={proposal?.createdAt?.slice(0, 10) ?? '-'} />
           </View>
         </View>
-             */}
-        <View style={{ height: 100 }} />
 
-        {/* BUTTON 
-        <TouchableOpacity
-            style={styles.button}
-            onPress={handleApply}
-        >
-            <Text style={styles.buttonText}>
-                완료
-            </Text>
-        </TouchableOpacity>
-            */}
+        {/* 입찰 요청 목록 */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>📩 입찰 요청 목록</Text>
+          {proposalFundings.length === 0 ? (
+            <Text style={styles.emptyText}>아직 입찰 요청이 없어요</Text>
+          ) : (
+            proposalFundings.map((funding: any) => (
+              <View key={funding.proposalFundingId} style={styles.fundingCard}>
+                <View style={styles.fundingInfo}>
+                  <Text style={styles.fundingNickname}>{funding.sellerNickname ?? '판매자'}</Text>
+                  <Text style={styles.fundingPrice}>{funding.price?.toLocaleString()}원</Text>
+                </View>
+                <View style={styles.fundingBtns}>
+                  <TouchableOpacity
+                    style={styles.rejectBtn}
+                    onPress={() => handleReject(funding.proposalFundingId)}
+                  >
+                    <Text style={styles.rejectBtnText}>거절</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={styles.acceptBtn}
+                    onPress={() => handleAccept(funding.proposalFundingId)}
+                  >
+                    <Text style={styles.acceptBtnText}>수락</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            ))
+          )}
+        </View>
 
+        <View style={{ height: 40 }} />
       </ScrollView>
     </View>
   );
 }
 
+function InfoItem({ label, value }: { label: string; value: string }) {
+  return (
+    <View style={styles.infoItem}>
+      <Text style={styles.infoLabel}>{label}</Text>
+      <Text style={styles.infoValue}>{value}</Text>
+    </View>
+  );
+}
+
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#f5f6fa',
-  },
-  scroll: {
-    paddingBottom: 40,
-  },
+  container:    { flex: 1, backgroundColor: '#f5f6fa' },
+  loadingBox:   { flex: 1, alignItems: 'center', justifyContent: 'center' },
+  scroll:       { paddingBottom: 40 },
 
-  // 헤더
   header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 16,
-    paddingVertical: 14,
-    backgroundColor: '#fff',
+    flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
+    paddingHorizontal: 16, paddingVertical: 14, backgroundColor: '#fff',
   },
-  backBtn: {
-    width: 40,
-    height: 40,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  backIcon: {
-    fontSize: 22,
-    color: '#1a1a2e',
-  },
-  headerTitle: {
-    fontSize: 17,
-    fontWeight: '700',
-    color: '#1a1a2e',
-  },
+  backBtn:     { width: 40, height: 40, alignItems: 'center', justifyContent: 'center' },
+  backIcon:    { fontSize: 22, color: '#1a1a2e' },
+  headerTitle: { fontSize: 17, fontWeight: '700', color: '#1a1a2e' },
 
-  // 이미지
-  imageBox: {
-    height: 260,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  imageEmoji: {
-    fontSize: 100,
-  },
+  imageBox:             { height: 280, backgroundColor: '#fff', position: 'relative' },
+  productImage:         { width: '100%', height: '100%' },
+  imagePlaceholder:     { flex: 1, alignItems: 'center', justifyContent: 'center', gap: 8 },
+  imagePlaceholderEmoji:{ fontSize: 60 },
+  imagePlaceholderText: { fontSize: 14, color: '#888' },
+  aiBadge:     { position: 'absolute', top: 12, right: 12, backgroundColor: '#4f46e5', borderRadius: 8, paddingHorizontal: 10, paddingVertical: 5 },
+  aiBadgeText: { fontSize: 12, color: '#fff', fontWeight: '700' },
 
-  // 남은 시간 배너
-  timeBanner: {
-    backgroundColor: '#eef2ff',
-    paddingVertical: 10,
-    alignItems: 'center',
-  },
-  timeBannerUrgent: {
-    backgroundColor: '#fee2e2',
-  },
-  timeBannerText: {
-    fontSize: 14,
-    fontWeight: '700',
-    color: '#4f46e5',
-  },
+  section:      { backgroundColor: '#fff', padding: 20, marginTop: 8 },
+  sectionTitle: { fontSize: 15, fontWeight: '700', color: '#1a1a2e', marginBottom: 12 },
 
-  // 섹션
-  section: {
-    backgroundColor: '#fff',
-    padding: 20,
-    marginTop: 8,
-  },
-  sectionTitle: {
-    fontSize: 15,
-    fontWeight: '700',
-    color: '#1a1a2e',
-    marginBottom: 12,
-  },
+  categoryBadge:     { backgroundColor: '#eef2ff', borderRadius: 8, paddingHorizontal: 10, paddingVertical: 4, alignSelf: 'flex-start', marginBottom: 8 },
+  categoryBadgeText: { fontSize: 12, color: '#4f46e5', fontWeight: '600' },
+  productName: { fontSize: 22, fontWeight: 'bold', color: '#1a1a2e', marginBottom: 8 },
+  price:       { fontSize: 20, fontWeight: 'bold', color: '#4f46e5', marginBottom: 4 },
+  seller:      { fontSize: 13, color: '#888' },
+  description: { fontSize: 14, color: '#555', lineHeight: 22 },
+  emptyText:   { fontSize: 14, color: '#aaa', textAlign: 'center', paddingVertical: 20 },
 
-  // 기본 정보
-  productName: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#1a1a2e',
-    marginBottom: 4,
-  },
-  seller: {
-    fontSize: 13,
-    color: '#888',
-    marginBottom: 12,
-  },
-  price: {
-    fontSize: 26,
-    fontWeight: 'bold',
-    color: '#4f46e5',
-  },
+  infoGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: 12 },
+  infoItem: { width: '47%', backgroundColor: '#f8f8ff', borderRadius: 12, padding: 14 },
+  infoLabel:{ fontSize: 12, color: '#888', marginBottom: 4 },
+  infoValue:{ fontSize: 16, fontWeight: '700', color: '#1a1a2e' },
 
-  // 펀딩
-  fundingHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 12,
+  fundingCard: {
+    backgroundColor: '#f8f8ff', borderRadius: 12, padding: 14,
+    marginBottom: 10, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
   },
-  fundingRate: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#ef4444',
-  },
-  progressBar: {
-    height: 10,
-    backgroundColor: '#f0f0f0',
-    borderRadius: 5,
-    overflow: 'hidden',
-    marginBottom: 8,
-  },
-  progressFill: {
-    height: '100%',
-    backgroundColor: '#4f46e5',
-    borderRadius: 5,
-  },
-  fundingInfo: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  fundingInfoText: {
-    fontSize: 12,
-    color: '#888',
-  },
-  fundingSuccess: {
-    color: '#10b981',
-    fontWeight: '700',
-  },
-
-  // 설명
-  description: {
-    fontSize: 14,
-    color: '#555',
-    lineHeight: 22,
-  },
-
-  // 판매자
-  sellerBox: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 12,
-  },
-  sellerAvatar: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    backgroundColor: '#eef2ff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  sellerAvatarText: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#4f46e5',
-  },
-  sellerName: {
-    fontSize: 15,
-    fontWeight: '700',
-    color: '#1a1a2e',
-  },
-  sellerSub: {
-    fontSize: 12,
-    color: '#888',
-  },
-
-  // 하단 바
-  bottomBar: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#fff',
-    padding: 16,
-    paddingBottom: 30,
-    borderTopWidth: 1,
-    borderTopColor: '#f0f0f0',
-    gap: 12,
-  },
-  bottomPrice: {
-    flex: 1,
-  },
-  bottomPriceLabel: {
-    fontSize: 12,
-    color: '#888',
-  },
-  bottomPriceValue: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#1a1a2e',
-  },
-  bidButton: {
-    backgroundColor: '#4f46e5',
-    borderRadius: 14,
-    paddingVertical: 14,
-    paddingHorizontal: 32,
-    alignItems: 'center',
-  },
-  bidButtonText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: '700',
-  },
-
-  // 모달
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.4)',
-    justifyContent: 'flex-end',
-  },
-  modalBox: {
-    backgroundColor: '#fff',
-    borderTopLeftRadius: 24,
-    borderTopRightRadius: 24,
-    padding: 24,
-    paddingBottom: 40,
-  },
-  modalTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#1a1a2e',
-    marginBottom: 6,
-  },
-  modalSub: {
-    fontSize: 13,
-    color: '#888',
-    marginBottom: 20,
-  },
-  modalInput: {
-    borderWidth: 1.5,
-    borderColor: '#4f46e5',
-    borderRadius: 12,
-    paddingHorizontal: 16,
-    paddingVertical: 14,
-    fontSize: 18,
-    color: '#1a1a2e',
-    marginBottom: 20,
-  },
-  modalButtons: {
-    flexDirection: 'row',
-    gap: 12,
-  },
-  modalCancelBtn: {
-    flex: 1,
-    borderWidth: 1,
-    borderColor: '#e0e0e0',
-    borderRadius: 12,
-    paddingVertical: 14,
-    alignItems: 'center',
-  },
-  modalCancelText: {
-    fontSize: 15,
-    color: '#888',
-    fontWeight: '600',
-  },
-  modalBidBtn: {
-    flex: 2,
-    backgroundColor: '#4f46e5',
-    borderRadius: 12,
-    paddingVertical: 14,
-    alignItems: 'center',
-  },
-  modalBidText: {
-    fontSize: 15,
-    color: '#fff',
-    fontWeight: '700',
-  },
-
-  // 버튼
-  button: {
-    width: '92%',
-    backgroundColor: '#4f46e5',
-    borderRadius: 16,
-    paddingVertical: 18,
-    alignSelf: 'center',
-    alignItems: 'center',
-  },
-  buttonDisabled: {
-    backgroundColor: '#a5b4fc',
-  },
-  buttonText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: '700',
-  },
-  
+  fundingInfo:     { flex: 1 },
+  fundingNickname: { fontSize: 14, fontWeight: '600', color: '#1a1a2e', marginBottom: 4 },
+  fundingPrice:    { fontSize: 16, fontWeight: 'bold', color: '#4f46e5' },
+  fundingBtns:     { flexDirection: 'row', gap: 8 },
+  rejectBtn:       { borderWidth: 1, borderColor: '#ef4444', borderRadius: 8, paddingHorizontal: 12, paddingVertical: 6 },
+  rejectBtnText:   { color: '#ef4444', fontSize: 13, fontWeight: '600' },
+  acceptBtn:       { backgroundColor: '#4f46e5', borderRadius: 8, paddingHorizontal: 12, paddingVertical: 6 },
+  acceptBtnText:   { color: '#fff', fontSize: 13, fontWeight: '600' },
 });

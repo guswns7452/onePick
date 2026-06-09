@@ -1,6 +1,6 @@
-// MyProductList.tsx
-// (기업) 사장이 올린 펀딩 모집 글 목록 화면
-// 카드 클릭 시 ProductFundingDetail로 이동 ???(개발필요)
+// MyProposalFundingList.tsx
+// (기업) 회원이 요청한 입찰 목록 화면
+// ~
 
 import axios from 'axios';
 import React, { useState, useEffect } from 'react';
@@ -8,6 +8,7 @@ import {
   Alert,
   View,
   Text,
+  Image,
   TouchableOpacity,
   ScrollView,
   StyleSheet,
@@ -17,9 +18,8 @@ import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../../navigation/StackNavigator';
 
-import { getMyProducts } from '../../../api/Product/getMyProducts';
-import { patchFunding } from '../../../api/Product/patchFunding';
-import { deleteProduct } from '../../../api/Product/deleteProduct';
+import { getMyFundings } from '../../../api/ProposalFunding/getMyFundings';
+import { deleteProposalFunding } from '../../../api/ProposalFunding/deleteProposalFunding';
 
 type HomeScreenNavigationProp =
   NativeStackNavigationProp<RootStackParamList>;
@@ -30,22 +30,23 @@ type Props = {
 
 
 // ── 타입 정의 ──────────────────────────────────────────────
-type BidStatus = 'PENDING' | 'FINISHED' | 'CANCELLED';
+type BidStatus = 'PENDING' | 'CHOSEN' | 'REJECTED';
 
 interface Bid {
-  productId: number;
-  title: string;
+  proposalFundingId: number;
   price: number;
-  minPeople: number;
+  content: string;
   status: BidStatus;
-  category: string;
+  proposalId: number,
+  ceoId: number;
+  ceoNickname: string;
 }
 
 // ── 탭 설정 ────────────────────────────────────────────────
 const TABS: { key: BidStatus; label: string; color: string }[] = [
-  { key: 'PENDING',    label: '진행중', color: '#4f46e5' },
-  { key: 'FINISHED', label: '종료',   color: '#10b981' },
-  { key: 'CANCELLED', label: '취소',   color: '#ef4444' },
+  { key: 'PENDING',    label: '대기중', color: '#4f46e5' },
+  { key: 'CHOSEN', label: '낙찰',   color: '#10b981' },
+  { key: 'REJECTED', label: '거절',   color: '#ef4444' },
 ];
 
 // ── 남은 시간 계산 ─────────────────────────────────────────
@@ -65,6 +66,21 @@ function getRemainingTime(endDate: string): string {
   return `${minutes}분 남음`;
 }
 
+// ── 상태 뱃지 ──────────────────────────────────────────────
+function StatusBadge({ status }: { status: BidStatus }) {
+  const config = {
+    PENDING:    { label: '대기중', bg: '#eef2ff', color: '#4f46e5' },
+    CHOSEN: { label: '낙찰',   bg: '#d1fae5', color: '#065f46' },
+    REJECTED: { label: '거절',   bg: '#fee2e2', color: '#991b1b' },
+  }[status];
+
+  return (
+    <View style={[styles.badge, { backgroundColor: config.bg }]}>
+      <Text style={[styles.badgeText, { color: config.color }]}>{config.label}</Text>
+    </View>
+  );
+}
+
 // ── 입찰 카드 ──────────────────────────────────────────────
 function BidCard({ bid }: { bid: Bid }) {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
@@ -72,64 +88,11 @@ function BidCard({ bid }: { bid: Bid }) {
   const isPending   = bid.status === 'PENDING';
   /*const isUrgent   = isActive && remaining.includes('시간') && !remaining.includes('일');*/
 
-
-
-  const finishMyProduct = async (productId: number) => {
+  const cancelMyProposalFunding = async (proposalFundingId: number) => {
 
     Alert.alert(
-      '조기 종료',
-      '정말 펀딩을 종료하시겠습니까?',
-      [
-        {
-          text: '아니오',
-          style: 'cancel',
-        },
-        {
-          text: '종료하기',
-          style: 'destructive',
-
-          onPress: async () => {
-            try {
-                
-              const result = await patchFunding(productId);
-              console.log(result);
-
-              Alert.alert(
-                '종료 완료',
-                '펀딩이 종료되었습니다.',
-              );
-
-              navigation.goBack();
-
-            } catch (error) {
-                
-              if (axios.isAxiosError(error)) {
-                console.log(error);
-
-                Alert.alert(
-                  '에러 발생',
-                  JSON.stringify(error.response?.data,) || error.message,);
-
-              } else {
-                  
-                Alert.alert(
-                  '에러 발생',
-                  '알 수 없는 오류',
-                );
-              }
-            }
-          },
-        },
-      ],
-    );
-  };
-
-
-  const deleteMyProduct = async (productId: number) => {
-
-    Alert.alert(
-      '펀딩 취소',
-      '정말 펀딩을 취소하시겠습니까?',
+      '입찰 요청 취소',
+      '정말 입찰 요청을 취소하시겠습니까?',
       [
         {
           text: '아니오',
@@ -142,12 +105,12 @@ function BidCard({ bid }: { bid: Bid }) {
           onPress: async () => {
             try {
                 
-              const result = await deleteProduct(productId);
+              const result = await deleteProposalFunding(proposalFundingId);
               console.log(result);
 
               Alert.alert(
                 '취소 완료',
-                '펀딩이 취소되었습니다.',
+                '입찰 요청이 취소되었습니다.',
               );
 
               navigation.goBack();
@@ -181,44 +144,45 @@ function BidCard({ bid }: { bid: Bid }) {
       style={styles.card}
       activeOpacity={0.8}
       /*onPress={() =>
-        navigation.navigate('', {
-          productId: bid.productId
+        navigation.navigate('MyProposalDetail', {
+          proposalId: bid.proposalId
         })
       }*/
     >
       {/* 왼쪽 이모지 */}
       <View style={styles.cardEmoji}>
-        <Text style={styles.emojiText}>{/* EMOJI */}</Text>
+        <Text style={styles.emojiText}>😄</Text>
       </View>
 
       {/* 중앙 정보 */}
       <View style={styles.cardContent}>
         <View style={styles.cardTopRow}>
-          <Text style={styles.productName} numberOfLines={1}>{bid.title}</Text>
+          <Text style={styles.productName} numberOfLines={1}>{bid.content}</Text>
+          {/*<StatusBadge status={bid.productStatus} />*/}
         </View>
+        <Text style={styles.remainText}>{bid.ceoNickname}</Text>
+        <Text style={styles.bidAmount}>최대 {bid.price.toLocaleString()}원</Text>
 
-        <Text style={styles.bidAmount}>{bid.price.toLocaleString()}원</Text>
-        
-        <View style={styles.btnView}>
+        {bid.status === 'PENDING' ?
         <TouchableOpacity
-          style={[styles.btn, { backgroundColor: '#065f46' }]}
-          onPress={() => finishMyProduct(bid.productId)}
+          style={styles.btn}
+          onPress={() => cancelMyProposalFunding(bid.proposalId)}
         >
           <Text style={styles.btnText}>
-            조기 종료
+            요청 취소
           </Text>
         </TouchableOpacity>
+        : <></>}
 
-        <TouchableOpacity
-          style={[styles.btn, { backgroundColor: '#ef4444' }]}
-          onPress={() => deleteMyProduct(bid.productId)}
-        >
-          <Text style={styles.btnText}>
-            참여 취소
-          </Text>
-        </TouchableOpacity>
+
+        {/*
+        <View style={styles.cardBottomRow}>
+          <Text style={styles.dateText}>📅 {bid.deadlineDays}</Text>
+          <Text style={styles.dateText}>🔥 {bid.fundingCount}</Text>
+          <Text style={styles.categoryText}>{bid.proposalCategory}</Text>
         </View>
-        
+        */}
+
         {/*
         <View style={styles.cardBottomRow}>
           <Text style={styles.dateText}>📅 {bid.date}</Text>
@@ -240,36 +204,39 @@ function BidCard({ bid }: { bid: Bid }) {
 }
 
 // ── 메인 화면 ──────────────────────────────────────────────
-export default function MyProductList({ navigation }: Props) {
+export default function MyProposalFundingList({ navigation }: Props) {
 
-    const [myProducts, setMyProducts] = useState<any[]>([]);
+    const [myProposalFundings, setMyProposalFundings] = useState<any[]>([]);
     
     useEffect(() => {
-        fetchMyProductList();
+        fetchMyProposalFundingList();
     }, []);
     
-    const fetchMyProductList = async () => {
+    const fetchMyProposalFundingList = async () => {
         try {
-            const data = await getMyProducts();
+            const data = await getMyFundings();
             console.log(JSON.stringify(data, null, 2));
             
             if (Array.isArray(data)) {
-                setMyProducts(data);
+                setMyProposalFundings(data);
             } else if (Array.isArray(data.data)) {
-                setMyProducts(data.data);
+                setMyProposalFundings(data.data);
             } else {
-                setMyProducts([]);
+                setMyProposalFundings([]);
             }
+
         } catch (error) {
             console.log(error);
         }
     };
 
+
+
   
   const [activeTab, setActiveTab]   = useState<BidStatus>('PENDING');
   const [refreshing, setRefreshing] = useState(false);
 
-  const filtered = myProducts.filter( (myProduct) => myProduct.status === activeTab,);
+  const filtered = myProposalFundings.filter( (myProposalFunding) => myProposalFunding.status === activeTab,);
 
   const onRefresh = async () => {
     setRefreshing(true);
@@ -277,9 +244,9 @@ export default function MyProductList({ navigation }: Props) {
   };
 
   const counts = {
-    PENDING: myProducts.filter( (mp) => mp.status === 'PENDING' ).length,
-    FINISHED: myProducts.filter( (mp) => mp.status === 'FINISHED' ).length,
-    CANCELLED: myProducts.filter( (mp) => mp.status === 'CANCELLED' ).length,
+    PENDING: myProposalFundings.filter( (mpf) => mpf.status === 'PENDING' ).length,
+    FINISHED: myProposalFundings.filter( (mpf) => mpf.status === 'FINISHED' ).length,
+    CANCELLED: myProposalFundings.filter( (mpf) => mpf.status === 'CANCELLED' ).length,
   };
 
 
@@ -291,10 +258,8 @@ export default function MyProductList({ navigation }: Props) {
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backBtn}>
           <Text style={styles.backIcon}>←</Text>
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>입찰 내역</Text>
-        <Text style={styles.headerSub}>
-          총 {myProducts.filter((myProduct) => myProduct.status !== 'WRITING').length}건의 입찰
-          </Text>
+        <Text style={styles.headerTitle}>입찰 요청 내역</Text>
+        <Text style={styles.headerSub}>총 {myProposalFundings.length}건의 입찰 요청</Text>
       </View>
 
       {/* 탭 */}
@@ -335,13 +300,13 @@ export default function MyProductList({ navigation }: Props) {
               {activeTab === 'PENDING' ? '🔍' : activeTab === 'FINISHED' ? '✅' : '❌'}
             </Text>
             <Text style={styles.emptyText}>
-              {activeTab === 'PENDING'    ? '진행 중인 내 입찰이 없어요'  :
-               activeTab === 'FINISHED' ? '종료된 내 입찰이 없어요'     :
-                                          '취소된 내 입찰이 없어요'}
+              {activeTab === 'PENDING'    ? '진행 중인 참여한 입찰이 없어요'  :
+               activeTab === 'FINISHED' ? '종료된 참여한 입찰이 없어요'     :
+                                          '취소된 참여한 입찰이 없어요'}
             </Text>
           </View>
         ) : (
-          filtered.map(product => <BidCard key={product.productId} bid={product} />)
+          filtered.map(myProposalFunding => <BidCard key={myProposalFunding.proposalId} bid={myProposalFunding} />)
         )}
       </ScrollView>
 
@@ -391,14 +356,18 @@ const styles = StyleSheet.create({
     width: 52, height: 52, borderRadius: 14,
     backgroundColor: '#f5f6fa', alignItems: 'center', justifyContent: 'center',
   },
-  emojiText:    { fontSize: 26 },
+  cardImage: {
+    width: 52, height: 52, borderRadius: 14,
+  },
+  emojiText:    { fontSize: 18 },
   cardContent:  { flex: 1, gap: 4 },
   cardTopRow:   { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
   productName:  { fontSize: 14, fontWeight: '700', color: '#1a1a2e', flex: 1, marginRight: 8 },
   bidAmount:    { fontSize: 18, fontWeight: 'bold', color: '#4f46e5' },
-  cardBottomRow:{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 2 },
-  dateText:     { fontSize: 12, color: '#aaa' },
-  remainText:   { fontSize: 12, color: '#4f46e5', fontWeight: '600' },
+  cardBottomRow:{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', marginTop: 2, },
+  dateText:     { marginRight: 10, fontSize: 12, color: '#737684' },
+  categoryText: { fontWeight: '600', fontSize: 13, },
+  remainText:   { fontSize: 12, color: 'gray', fontWeight: '600' },
   remainUrgent: { color: '#ef4444' },
   endDateText:  { fontSize: 12, color: '#aaa' },
   badge:        { paddingHorizontal: 8, paddingVertical: 3, borderRadius: 8 },
@@ -406,15 +375,13 @@ const styles = StyleSheet.create({
   emptyBox:     { alignItems: 'center', paddingVertical: 60, gap: 12 },
   emptyEmoji:   { fontSize: 40 },
   emptyText:    { fontSize: 15, color: '#aaa' },
-  btnView: {
-    right: 8,
-    alignSelf: 'flex-end',
-  },
   btn: {
-    marginTop: 5,
-    paddingHorizontal: 8,
-    paddingVertical: 4,
+    right: 8,
+    paddingHorizontal: 6,
+    paddingVertical: 3,
     borderRadius: 8,
+    alignSelf: 'flex-end',
+    backgroundColor: '#ef4444'
     },
   btnText: {
     color: '#fff',

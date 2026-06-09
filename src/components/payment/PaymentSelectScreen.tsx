@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, Image } from 'react-native'
-import { styles, text } from './PaymentSelectStyle'
+import { styles, text } from './PaymentSelectScreenStyle'
 
 const options = [
     { id: 'bank-account', label: '통장에서 결제', source: require('../../public/assets/bank-account.png') },
