@@ -3,14 +3,14 @@
 
 import axios from 'axios';
 import React, { useState, useEffect } from 'react';
-import { Alert, Text, TouchableOpacity, View, TextInput } from 'react-native'
-
-import { NativeStackNavigationProp } from '@react-navigation/native-stack'
-import { RootStackParamList } from '../../../navigation/StackNavigator.tsx'
-
-import { postLogin } from '../../../api/Member/postLogin.ts'
+import { Alert, Text, TouchableOpacity, View, TextInput } from 'react-native';
+import CookieManager from '@react-native-cookies/cookies';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../../../navigation/StackNavigator.tsx';
 
 import { styles } from './LoginStyle';
+
+const BASE_URL = 'http://13.209.73.31:8080';
 
 
 type HomeScreenNavigationProp =
@@ -32,38 +32,37 @@ export default function Login({navigation}: Props) {
 
     const handleLogin = async () => {
         try {
-            const body = {
-                phoneNumber
-            };
-
-            const result = await postLogin(body);
-            console.log(result);
-
-            console.log(`${result.data.type === 'CEO' ? '기업' : '개인'}회원 ${result.data.nickname} 님 로그인 성공 !`);
-            
-            
-            navigation.navigate('MyPage', {
-                member: result.data
+            // ✅ fetch로 로그인 — 응답 헤더에서 JSESSIONID 추출 후 저장
+            const response = await fetch(`${BASE_URL}/api/v1/member/login`, {
+                method:  'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body:    JSON.stringify({ phoneNumber }),
             });
 
+            const cookies = await CookieManager.getAll();
+            console.log('모든 쿠키:', JSON.stringify(cookies));
+
+            const result = await response.json();
+            console.log(result);
+            console.log(`${result.data.type === 'CEO' ? '기업' : '개인'}회원 ${result.data.nickname} 님 로그인 성공 !`);
+
+
+            navigation.navigate('MyPage',
+                {
+                    member: result.data
+                }
+            );
+
+
         } catch (error) {
-
             if (axios.isAxiosError(error)) {
-
-                Alert.alert(
-                    '에러 발생',
-                    error.response?.data?.message
-                    || '로그인 실패',
-                );
-
-                } else {
-                    Alert.alert(
-                        '에러 발생',
-                        '알 수 없는 오류',
-                );
+                Alert.alert('에러 발생', error.response?.data?.message || '로그인 실패');
+            } else {
+                Alert.alert('에러 발생', '알 수 없는 오류');
             }
         }
     };
+
 
     return (
 

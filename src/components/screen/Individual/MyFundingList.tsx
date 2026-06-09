@@ -17,8 +17,11 @@ import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../../navigation/StackNavigator';
 
+import ListHeader from '../../../public/screen/ListHeader';
+
 import { getMyFundings } from '../../../api/Product/getMyFundings';
 import { deleteApplyFunding } from '../../../api/Product/deleteApplyFunding';
+import { List } from 'react-native-paper';
 
 type HomeScreenNavigationProp =
   NativeStackNavigationProp<RootStackParamList>;
@@ -239,7 +242,12 @@ export default function MyFundingList({ navigation }: Props) {
   return (
     <View style={styles.container}>
 
-      {/* 헤더 */}
+      <ListHeader
+        title='내가 참여한 펀딩 목록'
+        count={myFundings.length}
+        onPressBack={() => navigation.goBack()}
+      />
+      {/* 헤더 
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backBtn}>
           <Text style={styles.backIcon}>←</Text>
@@ -247,7 +255,7 @@ export default function MyFundingList({ navigation }: Props) {
         <Text style={styles.headerTitle}>입찰 내역</Text>
         <Text style={styles.headerSub}>총 {myFundings.length}건의 입찰</Text>
       </View>
-
+      */}
       {/* 탭 */}
       <View style={styles.tabRow}>
         {TABS.map(tab => {
