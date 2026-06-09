@@ -1,11 +1,13 @@
 import axios from 'axios';
 import React, { useState, useEffect } from 'react';
 import { Alert, Text, TouchableOpacity, View, TextInput } from 'react-native'
-import { styles, text } from './LoginStyle.ts'
+import { styles, text } from './LoginScreenStyle.ts'
 import { buttonStyle, buttonText }  from '../../public/style/button.ts'
 
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { RootStackParamList } from '../../navigation/StackNavigator.tsx'
+
+import { Member } from '../../interface/member.ts';
 
 import { postLogin } from '../../api/Member/postLogin.ts'
 
@@ -42,9 +44,15 @@ export default function Login({ navigation }: Props) {
             
             if (result.data.type === 'CEO') {
                 //navigation.navigate('CorMain');
-                navigation.navigate('IndMain');
+                //navigation.navigate('IndMain');
+                navigation.navigate('IndMyPage', {
+                    member: result.data
+                });
             } else {
-                navigation.navigate('IndMain');
+                //navigation.navigate('IndMain');
+                navigation.navigate('IndMyPage', {
+                    member: result.data
+                });
             }
 
         } catch (error) {

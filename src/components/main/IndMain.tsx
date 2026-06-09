@@ -1,6 +1,6 @@
 import React from 'react'
 import { Text, TouchableOpacity, View, Image } from 'react-native'
-import { styles, text } from './MyPageStyle'
+import { styles, text } from './MyPageScreenStyle'
 
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { RootStackParamList } from '../../navigation/StackNavigator'

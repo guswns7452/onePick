@@ -1,6 +1,6 @@
 // MyFundingList.tsx
 // (개인) 회원이 참여한 펀딩 모집 글 목록 화면
-// 카드 클릭 시 ProductFundingDetail로 이동 ???(개발필요)
+// ~~~ 카드 클릭 시 ProductFundingDetail로 이동 ???(개발필요)
 
 import axios from 'axios';
 import React, { useState, useEffect } from 'react';

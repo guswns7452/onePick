@@ -3,6 +3,9 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack'
 
 import Main from '../components/main/Main'
 
+import Login from '../components/screen/Member/Login'
+
+import IndMyPage from '../components/screen/IndMyPage'
 import NewProposal from '../components/screen/Individual/NewProposal'
 import ProductFundingList from '../components/screen/Individual/ProductFundingList'
 import ProductFundingDetail from '../components/screen/Individual/ProductFundingDetail'
@@ -21,11 +24,9 @@ import RecommendScreen from '../components/screen/Ai/RecommendScreen'
 import Sketch2ProductScreen from '../components/screen/Ai/Sketch2ProductScreen'
 
 
-import Login from '../components/main/Login'
 import SetPrice from '../components/SetPrice'
 import IndMain from '../components/main/IndMain'
 import CorMain from '../components/main/CorMain'
-import MyPage from '../components/main/MyPage'
 
 import ProductList from '../components/board/ProductList'
 import MyList from '../components/funding/MyList'
@@ -34,9 +35,21 @@ import ProductDetail from '../components/board/ProductDetail'
 import Payment from '../components/payment/Payment'
 
 
+
+import { Member } from '../interface/member'
+
+
 export type RootStackParamList = {
   Main: undefined;
 
+
+
+  Login: undefined;
+
+
+  IndMyPage: {
+    member: Member;
+  }
   NewProposal: undefined;
   ProductFundingList: undefined;
   ProductFundingDetail: {
@@ -58,11 +71,9 @@ export type RootStackParamList = {
   Sketch2ProductScreen: undefined;
 
 
-  Login: undefined;
   SetPrice: undefined;
   IndMain: undefined;
   CorMain: undefined;
-  MyPage: undefined;
   
   MyList: undefined;
   ProductList: undefined;
@@ -92,6 +103,11 @@ export default function StackNavigator() {
       />
 
 
+
+      <Stack.Screen
+        name="IndMyPage"
+        component={IndMyPage}
+      />
       <Stack.Screen
         name="NewProposal"
         component={NewProposal}
@@ -168,10 +184,6 @@ export default function StackNavigator() {
       <Stack.Screen
         name="CorMain"
         component={CorMain}
-      />
-      <Stack.Screen
-        name="MyPage"
-        component={MyPage}
       />
       
       <Stack.Screen
