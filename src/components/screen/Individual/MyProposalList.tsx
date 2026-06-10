@@ -32,7 +32,7 @@ type Props = {
 
 
 // ── 타입 정의 ──────────────────────────────────────────────
-type BidStatus = 'PENDING' | 'FINISHED' | 'CANCELLED';
+type BidStatus = 'PENDING' | 'FINISHED' | 'CANCELED';
 
 interface Bid {
   proposalId: number;
@@ -52,24 +52,41 @@ interface Bid {
 const TABS: { key: BidStatus; label: string; color: string }[] = [
   { key: 'PENDING',    label: '진행중', color: '#4f46e5' },
   { key: 'FINISHED', label: '종료',   color: '#10b981' },
-  { key: 'CANCELLED', label: '취소',   color: '#ef4444' },
+  { key: 'CANCELED', label: '취소',   color: '#ef4444' },
 ];
 
-// ── 남은 시간 계산 ─────────────────────────────────────────
-function getRemainingTime(endDate: string): string {
-  const now  = new Date();
-  const end  = new Date(endDate);
-  const diff = end.getTime() - now.getTime();
+// ── 남은 일수 계산 ─────────────────────────────────────────
+function getRemainingDays(
+    createdAt: string,
+    deadlineDays: number,
+    currentDate: Date = new Date(),
+) {
 
-  if (diff <= 0) return '마감';
+    // 게시글 생성일
+    const createdDate =
+        new Date(createdAt);
 
-  const days    = Math.floor(diff / (1000 * 60 * 60 * 24));
-  const hours   = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-  const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+    // 마감 날짜 계산
+    const deadlineDate =
+        new Date(createdDate);
 
-  if (days > 0)  return `${days}일 ${hours}시간 남음`;
-  if (hours > 0) return `${hours}시간 ${minutes}분 남음`;
-  return `${minutes}분 남음`;
+    deadlineDate.setDate(
+        deadlineDate.getDate()
+        + deadlineDays
+    );
+
+    // 남은 시간(ms)
+    const diff =
+        deadlineDate.getTime()
+        - currentDate.getTime();
+
+    // 남은 일수 계산
+    const remainingDays =
+        Math.ceil(
+            diff / (1000 * 60 * 60 * 24)
+        );
+
+    return remainingDays;
 }
 
 // ── 상태 뱃지 ──────────────────────────────────────────────
@@ -77,7 +94,7 @@ function StatusBadge({ status }: { status: BidStatus }) {
   const config = {
     PENDING:    { label: '진행중', bg: '#eef2ff', color: '#4f46e5' },
     FINISHED: { label: '종료',   bg: '#d1fae5', color: '#065f46' },
-    CANCELLED: { label: '취소',   bg: '#fee2e2', color: '#991b1b' },
+    CANCELED: { label: '취소',   bg: '#fee2e2', color: '#991b1b' },
   }[status];
 
   return (
@@ -90,7 +107,10 @@ function StatusBadge({ status }: { status: BidStatus }) {
 // ── 입찰 카드 ──────────────────────────────────────────────
 function BidCard({ bid }: { bid: Bid }) {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-  /*const remaining  = getRemainingTime(bid.endDate);*/
+  const remaining  = getRemainingDays(
+        bid.createdAt,
+        bid.deadlineDays,
+    );
   const isPending   = bid.proposalStatus === 'PENDING';
   /*const isUrgent   = isActive && remaining.includes('시간') && !remaining.includes('일');*/
 
@@ -186,7 +206,7 @@ function BidCard({ bid }: { bid: Bid }) {
         : <></>}
 
         <View style={styles.cardBottomRow}>
-          <Text style={styles.dateText}>📅 {bid.deadlineDays}</Text>
+          <Text style={styles.dateText}>📅 {remaining}일 남음</Text>
           <Text style={styles.dateText}>🔥 {bid.fundingCount}</Text>
           <Text style={styles.categoryText}>{bid.proposalCategory}</Text>
         </View>
@@ -254,7 +274,7 @@ export default function MyProposalList({ navigation }: Props) {
   const counts = {
     PENDING: myProposals.filter( (mp) => mp.proposalStatus === 'PENDING' ).length,
     FINISHED: myProposals.filter( (mp) => mp.proposalStatus === 'FINISHED' ).length,
-    CANCELLED: myProposals.filter( (mp) => mp.proposalStatus === 'CANCELLED' ).length,
+    CANCELED: myProposals.filter( (mp) => mp.proposalStatus === 'CANCELED' ).length,
   };
 
 
