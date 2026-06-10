@@ -21,7 +21,6 @@ import ListHeader from '../../../public/screen/ListHeader';
 
 import { getMyFundings } from '../../../api/Product/getMyFundings';
 import { deleteApplyFunding } from '../../../api/Product/deleteApplyFunding';
-import { List } from 'react-native-paper';
 
 type HomeScreenNavigationProp =
   NativeStackNavigationProp<RootStackParamList>;

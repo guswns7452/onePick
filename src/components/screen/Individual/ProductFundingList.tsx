@@ -15,6 +15,8 @@ import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../../navigation/StackNavigator';
 
+import ListHeader from '../../../public/screen/ListHeader';
+
 import { getProducts } from '../../../api/Product/getProducts';
 
 type HomeScreenNavigationProp =
@@ -174,10 +176,11 @@ export default function ProductFundingList({ navigation }: Props) {
     <View style={styles.container}>
 
       {/* 헤더 */}
-      <View style={styles.header}>
-        <Text style={styles.headerTitle}>입찰 내역</Text>
-        <Text style={styles.headerSub}>총 {products.length}건의 입찰</Text>
-      </View>
+      <ListHeader
+        title='전체 공구 목록'
+        count={products.length}
+        onPressBack={() => navigation.goBack()}
+      />
 
       {/* 탭 */}
       <View style={styles.tabRow}>

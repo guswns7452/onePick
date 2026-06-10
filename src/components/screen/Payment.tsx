@@ -1,8 +1,10 @@
 // Payment.tsx
 
+import axios from 'axios';
 import React, { useState, useEffect } from 'react';
 
 import {
+    Alert,
     View,
     Text,
     TouchableOpacity,
@@ -15,7 +17,9 @@ import {
 
 import { RootStackParamList }
 from '../../navigation/StackNavigator';
+import { RouteProp } from '@react-navigation/native';
 
+import { postApplyFunding } from '../../api/Product/postApplyFunding';
 import { getMyAccounts } from '../../api/Member/getMyAccounts';
 
 import { styles } from './PaymentStyle';
@@ -23,8 +27,15 @@ import { styles } from './PaymentStyle';
 type HomeScreenNavigationProp =
   NativeStackNavigationProp<RootStackParamList>;
 
+type PaymentRouteProp =
+    RouteProp<
+        RootStackParamList,
+        'Payment'
+    >;
+
 type Props = {
   navigation: HomeScreenNavigationProp;
+    route: PaymentRouteProp;
 };
 
 
@@ -46,8 +57,9 @@ type Card = {
 
 
 
-export default function Payment({navigation}: Props) {
+export default function Payment({ navigation, route }: Props) {
 
+    const request = route.params;
 
     const [selectedAccount, setSelectedAccount]
         = useState<number | null>(null);
@@ -78,6 +90,45 @@ export default function Payment({navigation}: Props) {
     };
       
     fetchPayment();
+
+    
+
+
+    const handleApply = async () => {
+        try {
+            const body = {
+                content: request.content,
+                price: Number(request.price),
+        }
+
+        const result = await postApplyFunding(request.productId, body);
+        console.log(result);
+        
+        Alert.alert(
+            '✅ 입찰 완료',
+            '입찰이 성공적으로 완료됐어요!');
+        
+
+        navigation.navigate('ProductFundingList');
+
+    } catch (error) {
+        if (axios.isAxiosError(error)) {
+            console.log(error);
+                
+            Alert.alert(
+                '에러 발생',
+                JSON.stringify(error.response?.data)
+                || error.message
+            );
+
+        } else {
+            Alert.alert(
+                '에러 발생',
+                '알 수 없는 오류',
+            );
+        }
+    }
+}
 
 
     return (
@@ -231,7 +282,7 @@ export default function Payment({navigation}: Props) {
                         (selectedAccount == null && selectedCard == null) &&
                         styles.buttonDisabled,
                     ]}
-                    /*onPress={() => }*/
+                    onPress={() => handleApply()}
                 >
 
                     <Text style={styles.buttonText}>

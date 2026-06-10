@@ -18,6 +18,8 @@ import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../../navigation/StackNavigator';
 
+import ListHeader from '../../../public/screen/ListHeader'
+
 import { getMyFundings } from '../../../api/ProposalFunding/getMyFundings';
 import { deleteProposalFunding } from '../../../api/ProposalFunding/deleteProposalFunding';
 
@@ -254,13 +256,12 @@ export default function MyProposalFundingList({ navigation }: Props) {
     <View style={styles.container}>
 
       {/* 헤더 */}
-      <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backBtn}>
-          <Text style={styles.backIcon}>←</Text>
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>입찰 요청 내역</Text>
-        <Text style={styles.headerSub}>총 {myProposalFundings.length}건의 입찰 요청</Text>
-      </View>
+      <ListHeader
+        title='내가 요청한 입찰 목록'
+        count={myProposalFundings.length}
+        onPressBack={() => navigation.goBack()}
+      />
+      
 
       {/* 탭 */}
       <View style={styles.tabRow}>

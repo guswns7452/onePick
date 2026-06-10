@@ -18,6 +18,8 @@ import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../../navigation/StackNavigator';
 
+import ListHeader from '../../../public/screen/ListHeader';
+
 import { getMyProposals } from '../../../api/Proposal/getMyProposals';
 import { deleteProposal } from '../../../api/Proposal/deleteProposal';
 
@@ -260,13 +262,11 @@ export default function MyProposalList({ navigation }: Props) {
     <View style={styles.container}>
 
       {/* 헤더 */}
-      <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backBtn}>
-          <Text style={styles.backIcon}>←</Text>
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>입찰 내역</Text>
-        <Text style={styles.headerSub}>총 {myProposals.length}건의 입찰</Text>
-      </View>
+      <ListHeader
+        title='내가 요청한 공구 목록'
+        count={myProposals.length}
+        onPressBack={() => navigation.goBack()}
+      />
 
       {/* 탭 */}
       <View style={styles.tabRow}>

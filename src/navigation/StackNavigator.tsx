@@ -51,7 +51,11 @@ export type RootStackParamList = {
     member: Member;
   };
 
-  Payment: undefined;
+  Payment: {
+    productId: number;
+    content: string;
+    price: number;
+  };
 
 
   

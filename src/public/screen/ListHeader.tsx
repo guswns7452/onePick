@@ -41,13 +41,9 @@ export default function ListHeader({
                 <Text style={styles.headerTitle}>
                     {title}
                 </Text>
-                {
-                    count && (
-                        <Text style={styles.headerSub}>
-                            {`총 ${count}건`}
-                        </Text>
-                    )
-                }
+                <Text style={styles.headerSub}>
+                    {`총 ${count}건`}
+                </Text>
             </View>
 
         </View>

@@ -17,6 +17,8 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../../navigation/StackNavigator';
 import { RouteProp } from '@react-navigation/native';
 
+import Payment from '../Payment';
+
 import { getProduct } from '../../../api/Product/getProduct';
 import { postApplyFunding } from '../../../api/Product/postApplyFunding';
 
@@ -88,43 +90,6 @@ export default function ProductFundingDetail({ navigation, route }: Props) {
 
 
 
-  const handleApply = async () => {
-    try {
-        const body = {
-            content: bidContent,
-            price: Number(bidAmount),
-        }
-
-        const result = await postApplyFunding(productId, body);
-        console.log(result);
-        
-        Alert.alert(
-            '✅ 입찰 완료',
-            '입찰이 성공적으로 완료됐어요!');
-        
-
-        navigation.goBack();
-
-    } catch (error) {
-        if (axios.isAxiosError(error)) {
-            console.log(error);
-                
-            Alert.alert(
-                '에러 발생',
-                JSON.stringify(error.response?.data)
-                || error.message
-            );
-
-        } else {
-            Alert.alert(
-                '에러 발생',
-                '알 수 없는 오류',
-            );
-        }
-    }
-}
-
-
 /*
   const remaining   = getRemainingTime(product.endDate ?? '2026-12-31T18:00:00');
   const isUrgent    = remaining.includes('시간') && !remaining.includes('일');
@@ -153,9 +118,13 @@ export default function ProductFundingDetail({ navigation, route }: Props) {
             setModalVisible(false);
             setBidAmount('');
             
-            handleApply();
-          },
-        },
+            navigation.navigate('Payment', {
+              productId: Number(productId),
+              content: bidContent,
+              price: Number(bidAmount),
+            })
+          }
+        }
       ]
     );
   };
@@ -337,24 +306,24 @@ if (!product) {
             <View style={styles.modalButtons}>
               <TouchableOpacity
                 style={styles.modalCancelBtn}
-                onPress={() => { setModalVisible(false); setBidAmount(''); }}
+                onPress={() => {
+                  setModalVisible(false);
+                  setBidAmount('');
+                  setBidContent('');
+                }}
               >
                 <Text style={styles.modalCancelText}>취소</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 disabled={!fulfilled}
-                style={[
-                  styles.button,
-                  !fulfilled &&
-                  styles.modalBidBtn,
-                  //styles.buttonDisabled
-                ]}
+                style={styles.modalBidBtn}
                 onPress={handleBid}
               >
                 <Text style={styles.modalBidText}>입찰하기</Text>
               </TouchableOpacity>
             </View>
           </View>
+
         </View>
       </Modal>
 
