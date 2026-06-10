@@ -26,7 +26,7 @@ import {
 import { RootStackParamList }
 from '../../../navigation/StackNavigator';
 
-import { styles } from '../../product/NewProductStyle';
+import { styles } from './NewProductStyle';
 
 import { postProduct } from '../../../api/Product/postProduct';
 
