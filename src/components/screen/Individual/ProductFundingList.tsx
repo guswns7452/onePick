@@ -11,7 +11,7 @@ import {
   StyleSheet,
   RefreshControl,
 } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../../navigation/StackNavigator';
 
@@ -21,6 +21,8 @@ import { getProducts } from '../../../api/Product/getProducts';
 
 type HomeScreenNavigationProp =
   NativeStackNavigationProp<RootStackParamList>;
+
+type ProductFundingListRouteProp = RouteProp<RootStackParamList, 'ProductFundingList'>;
 
 type Props = {
   navigation: HomeScreenNavigationProp;
@@ -130,6 +132,9 @@ function BidCard({ bid }: { bid: Bid }) {
 
 // ── 메인 화면 ──────────────────────────────────────────────
 export default function ProductFundingList({ navigation }: Props) {
+  const route = useRoute<ProductFundingListRouteProp>();
+  const categoryFilter = route.params?.category;
+  const categoryLabel = route.params?.categoryLabel;
 
     const [products, setProducts] = useState<any[]>([]);
     
@@ -158,7 +163,12 @@ export default function ProductFundingList({ navigation }: Props) {
   const [activeTab, setActiveTab]   = useState<BidStatus>('PENDING');
   const [refreshing, setRefreshing] = useState(false);
 
-  const filtered = products.filter( (product) => product.status === activeTab,);
+  const matchesCategory = (product: { category?: string }) =>
+    !categoryFilter || product.category === categoryFilter;
+
+  const filtered = products.filter(
+    product => product.status === activeTab && matchesCategory(product),
+  );
 
   const onRefresh = async () => {
     setRefreshing(true);
@@ -166,9 +176,9 @@ export default function ProductFundingList({ navigation }: Props) {
   };
 
   const counts = {
-    PENDING: products.filter( (p) => p.status === 'PENDING' ).length,
-    FINISHED: products.filter( (p) => p.status === 'FINISHED' ).length,
-    CANCELLED: products.filter( (p) => p.status === 'CANCELLED' ).length,
+    PENDING: products.filter(p => p.status === 'PENDING' && matchesCategory(p)).length,
+    FINISHED: products.filter(p => p.status === 'FINISHED' && matchesCategory(p)).length,
+    CANCELLED: products.filter(p => p.status === 'CANCELLED' && matchesCategory(p)).length,
   };
 
 
@@ -177,8 +187,8 @@ export default function ProductFundingList({ navigation }: Props) {
 
       {/* 헤더 */}
       <ListHeader
-        title='전체 공구 목록'
-        count={products.length}
+        title={categoryLabel ? `${categoryLabel} 펀딩` : '전체 공구 목록'}
+        count={products.filter(matchesCategory).length}
         onPressBack={() => navigation.goBack()}
       />
 
