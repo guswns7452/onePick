@@ -153,11 +153,11 @@ export default function Mypage({ navigation, route }: Props) {
                 </Text>
 
                 <Text style={styles.dashboardTitle}>
-                    모집한 공구
+                    내 펀딩 모집
                 </Text>
 
                 <Text style={styles.dashboardValue}>
-                    12건
+                    ㅇㅇ건
                 </Text>
 
             </TouchableOpacity>
@@ -174,11 +174,11 @@ export default function Mypage({ navigation, route }: Props) {
                 </Text>
 
                 <Text style={styles.dashboardTitle}>
-                    내가 요청한
+                    내가 제안한
                 </Text>
 
                 <Text style={styles.dashboardValue}>
-                    입찰
+                    주문 제작
                 </Text>
 
             </TouchableOpacity>
@@ -201,11 +201,11 @@ export default function Mypage({ navigation, route }: Props) {
                 </Text>
 
                 <Text style={styles.dashboardTitle}>
-                    참여한 펀딩
+                    참여한 펀딩 모집
                 </Text>
 
                 <Text style={styles.dashboardValue}>
-                    12건
+                    ㅇㅇ건
                 </Text>
 
             </TouchableOpacity>
@@ -226,7 +226,7 @@ export default function Mypage({ navigation, route }: Props) {
                 </Text>
 
                 <Text style={styles.dashboardValue}>
-                    공구
+                    주문 제작
                 </Text>
 
             </TouchableOpacity>

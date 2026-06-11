@@ -54,9 +54,11 @@ export default function ListHeader({
 // ── 스타일 ─────────────────────────────────────────────────
 const styles = StyleSheet.create({
   header: {
+    height: 140,
     flexDirection: 'row',
-    marginTop: 35,
-    paddingHorizontal: 20, paddingTop: 16, paddingBottom: 12,
+    paddingHorizontal: 20,
+    paddingTop: 50,
+    paddingBottom: 12,
     backgroundColor: '#fff',
   },
   headerTitle: { 

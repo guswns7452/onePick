@@ -1,14 +1,14 @@
 // src/interface/bid.ts
 
+import { BidCategory } from "../public/screen/BidCard";
+
 export interface bid {
     id: number;
     title: string;
-    subtitle: string;
-    category: string;
-    createdAt: any;
-    deadlineDays: number;
-    price: number;
+    category: BidCategory;
+    valueString: string;
     thumbnail: any;
-    buttonView: () => void;
+    remainingDeadlineDays: number;
+    buttonView: React.ReactNode;
     onPressNav: () => void;
 };

@@ -1,5 +1,5 @@
 // ProductFundingList.tsx
-// 입찰 목록 화면 — 진행중 / 종료 / 취소 탭 구성
+// 전체 펀딩 모집 목록 — 진행중 / 종료 / 취소 탭 구성
 // 카드 클릭 시 ProductFundingDetail로 이동
 
 import React, { useState, useEffect } from 'react';
@@ -16,6 +16,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../../navigation/StackNavigator';
 
 import ListHeader from '../../../public/screen/ListHeader';
+import BidCard from '../../../public/screen/BidCard';
 
 import { getProducts } from '../../../api/Product/getProducts';
 
@@ -46,87 +47,7 @@ const TABS: { key: BidStatus; label: string; color: string }[] = [
   { key: 'CANCELLED', label: '취소',   color: '#ef4444' },
 ];
 
-// ── 남은 시간 계산 ─────────────────────────────────────────
-function getRemainingTime(endDate: string): string {
-  const now  = new Date();
-  const end  = new Date(endDate);
-  const diff = end.getTime() - now.getTime();
 
-  if (diff <= 0) return '마감';
-
-  const days    = Math.floor(diff / (1000 * 60 * 60 * 24));
-  const hours   = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-  const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-
-  if (days > 0)  return `${days}일 ${hours}시간 남음`;
-  if (hours > 0) return `${hours}시간 ${minutes}분 남음`;
-  return `${minutes}분 남음`;
-}
-
-// ── 상태 뱃지 ──────────────────────────────────────────────
-function StatusBadge({ status }: { status: BidStatus }) {
-  const config = {
-    PENDING:    { label: '진행중', bg: '#eef2ff', color: '#4f46e5' },
-    FINISHED: { label: '종료',   bg: '#d1fae5', color: '#065f46' },
-    CANCELLED: { label: '취소',   bg: '#fee2e2', color: '#991b1b' },
-  }[status];
-
-  return (
-    <View style={[styles.badge, { backgroundColor: config.bg }]}>
-      <Text style={[styles.badgeText, { color: config.color }]}>{config.label}</Text>
-    </View>
-  );
-}
-
-// ── 입찰 카드 ──────────────────────────────────────────────
-function BidCard({ bid }: { bid: Bid }) {
-  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-  /*const remaining  = getRemainingTime(bid.endDate);*/
-  const isPending   = bid.status === 'PENDING';
-  /*const isUrgent   = isActive && remaining.includes('시간') && !remaining.includes('일');*/
-
-  return (
-    <TouchableOpacity
-      style={styles.card}
-      activeOpacity={0.8}
-      onPress={() =>
-        navigation.navigate('ProductFundingDetail', {
-          productId: bid.productId
-        })
-      }
-    >
-      {/* 왼쪽 이모지 */}
-      <View style={styles.cardEmoji}>
-        <Text style={styles.emojiText}>{/* EMOJI */}</Text>
-      </View>
-
-      {/* 중앙 정보 */}
-      <View style={styles.cardContent}>
-        <View style={styles.cardTopRow}>
-          <Text style={styles.productName} numberOfLines={1}>{bid.title}</Text>
-          <StatusBadge status={bid.status} />
-        </View>
-
-        <Text style={styles.bidAmount}>{bid.price.toLocaleString()}원</Text>
-        {/*
-        <View style={styles.cardBottomRow}>
-          <Text style={styles.dateText}>📅 {bid.date}</Text>
-          {isActive && (
-            <Text style={[styles.remainText, isUrgent && styles.remainUrgent]}>
-              ⏱ {remaining}
-            </Text>
-          )}
-          {!isActive && (
-            <Text style={styles.endDateText}>
-              마감 {bid.endDate.slice(0, 10)}
-            </Text>
-          )}
-        </View>
-        */}
-      </View>
-    </TouchableOpacity>
-  );
-}
 
 // ── 메인 화면 ──────────────────────────────────────────────
 export default function ProductFundingList({ navigation }: Props) {
@@ -177,7 +98,7 @@ export default function ProductFundingList({ navigation }: Props) {
 
       {/* 헤더 */}
       <ListHeader
-        title='전체 공구 목록'
+        title='전체 펀딩 모집 목록'
         count={products.length}
         onPressBack={() => navigation.goBack()}
       />
@@ -226,7 +147,22 @@ export default function ProductFundingList({ navigation }: Props) {
             </Text>
           </View>
         ) : (
-          filtered.map(product => <BidCard key={product.productId} bid={product} />)
+          filtered.map(product =>
+            <BidCard
+              key={product.productId}
+              id={product.productId}
+              title={product.title}
+              category={product.category}
+              valueString={`${product.minQuantity}개`}
+              thumbnail={product.thumbnail !== null ? product.thumbnail.imageUrl : null}
+              remainingDeadlineDays={product.remainingDeadlineDays}
+              buttonView={() => {}}
+              onPressNav={() => {/*
+                navigation.navigate('MyProposalDetail', {
+                  proposalId: Number(myProposal.proposalId),
+                })
+              */}}
+            />)
         )}
       </ScrollView>
 

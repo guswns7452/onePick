@@ -18,6 +18,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../../navigation/StackNavigator';
 
 import ListHeader from '../../../public/screen/ListHeader';
+import BidCard from '../../../public/screen/BidCard';
 
 import { getMyFundings } from '../../../api/Product/getMyFundings';
 import { deleteApplyFunding } from '../../../api/Product/deleteApplyFunding';
@@ -31,7 +32,7 @@ type Props = {
 
 
 // ── 타입 정의 ──────────────────────────────────────────────
-type BidStatus = 'PENDING' | 'FINISHED' | 'CANCELLED';
+type BidStatus = 'PENDING' | 'FINISHED' | 'CANCELED';
 
 interface Bid {
   fundingId: number;
@@ -46,32 +47,16 @@ interface Bid {
 const TABS: { key: BidStatus; label: string; color: string }[] = [
   { key: 'PENDING',    label: '진행중', color: '#4f46e5' },
   { key: 'FINISHED', label: '종료',   color: '#10b981' },
-  { key: 'CANCELLED', label: '취소',   color: '#ef4444' },
+  { key: 'CANCELED', label: '취소',   color: '#ef4444' },
 ];
 
-// ── 남은 시간 계산 ─────────────────────────────────────────
-function getRemainingTime(endDate: string): string {
-  const now  = new Date();
-  const end  = new Date(endDate);
-  const diff = end.getTime() - now.getTime();
-
-  if (diff <= 0) return '마감';
-
-  const days    = Math.floor(diff / (1000 * 60 * 60 * 24));
-  const hours   = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-  const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-
-  if (days > 0)  return `${days}일 ${hours}시간 남음`;
-  if (hours > 0) return `${hours}시간 ${minutes}분 남음`;
-  return `${minutes}분 남음`;
-}
 
 // ── 상태 뱃지 ──────────────────────────────────────────────
 function StatusBadge({ status }: { status: BidStatus }) {
   const config = {
     PENDING:    { label: '진행중', bg: '#eef2ff', color: '#4f46e5' },
     FINISHED: { label: '종료',   bg: '#d1fae5', color: '#065f46' },
-    CANCELLED: { label: '취소',   bg: '#fee2e2', color: '#991b1b' },
+    CANCELED: { label: '취소',   bg: '#fee2e2', color: '#991b1b' },
   }[status];
 
   return (
@@ -81,12 +66,10 @@ function StatusBadge({ status }: { status: BidStatus }) {
   );
 }
 
-// ── 입찰 카드 ──────────────────────────────────────────────
-function BidCard({ bid }: { bid: Bid }) {
+// ── 버튼 뷰 ──────────────────────────────────────────────
+function Buttons( productId : number ) {
+  
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-  /*const remaining  = getRemainingTime(bid.endDate);*/
-  const isPending   = bid.productStatus === 'PENDING';
-  /*const isUrgent   = isActive && remaining.includes('시간') && !remaining.includes('일');*/
 
   const cancelMyFunding = async (productId: number) => {
 
@@ -140,55 +123,17 @@ function BidCard({ bid }: { bid: Bid }) {
 
 
   return (
-    <TouchableOpacity
-      style={styles.card}
-      activeOpacity={0.8}
-      /*onPress={() =>
-        navigation.navigate('ProductFundingDetail', {
-          productId: bid.productId
-        })
-      }*/
-    >
-      {/* 왼쪽 이모지 */}
-      <View style={styles.cardEmoji}>
-        <Text style={styles.emojiText}>{/* EMOJI */}</Text>
-      </View>
-
-      {/* 중앙 정보 */}
-      <View style={styles.cardContent}>
-        <View style={styles.cardTopRow}>
-          <Text style={styles.productName} numberOfLines={1}>{bid.productTitle}</Text>
-          {/*<StatusBadge status={bid.productStatus} />*/}
-        </View>
-        <Text style={styles.remainText}>{bid.quantity}</Text>
-
-        <TouchableOpacity
-          style={styles.btn}
-          onPress={() => cancelMyFunding(bid.productId)}
-        >
-          <Text style={styles.btnText}>
-            참여 취소
-          </Text>
-        </TouchableOpacity>
-
-        {/*
-        <View style={styles.cardBottomRow}>
-          <Text style={styles.dateText}>📅 {bid.date}</Text>
-          {isActive && (
-            <Text style={[styles.remainText, isUrgent && styles.remainUrgent]}>
-              ⏱ {remaining}
+      <View style={styles.btnView}>
+          <TouchableOpacity
+            style={[styles.btn, styles.cancelBtn]}
+            onPress={() => cancelMyFunding(productId)}
+          >
+            <Text style={styles.btnText}>
+              참여 취소
             </Text>
-          )}
-          {!isActive && (
-            <Text style={styles.endDateText}>
-              마감 {bid.endDate.slice(0, 10)}
-            </Text>
-          )}
-        </View>
-        */}
-      </View>
-    </TouchableOpacity>
-  );
+          </TouchableOpacity>
+          </View>
+    );
 }
 
 // ── 메인 화면 ──────────────────────────────────────────────
@@ -234,7 +179,7 @@ export default function MyFundingList({ navigation }: Props) {
   const counts = {
     PENDING: myFundings.filter( (mf) => mf.productStatus === 'PENDING' ).length,
     FINISHED: myFundings.filter( (mf) => mf.productStatus === 'FINISHED' ).length,
-    CANCELLED: myFundings.filter( (mf) => mf.productStatus === 'CANCELLED' ).length,
+    CANCELED: myFundings.filter( (mf) => mf.productStatus === 'CANCELED' ).length,
   };
 
 
@@ -243,7 +188,7 @@ export default function MyFundingList({ navigation }: Props) {
 
       <ListHeader
         title='내가 참여한 펀딩 목록'
-        count={myFundings.length}
+        count={myFundings.length - myFundings.filter((mf) => mf.productStatus === 'WRITING').length}
         onPressBack={() => navigation.goBack()}
       />
       {/* 헤더 
@@ -299,7 +244,26 @@ export default function MyFundingList({ navigation }: Props) {
             </Text>
           </View>
         ) : (
-          filtered.map(myFunding => <BidCard key={myFunding.productId} bid={myFunding} />)
+          filtered.map(myFunding =>
+            <BidCard
+              key={myFunding.fundingId}
+              id={myFunding.fundingId}
+              title={myFunding.productTitle}
+              category={myFunding.category}
+              valueString={`${myFunding.quantity}개`}
+              thumbnail={myFunding.thumbnail !== null ? myFunding.thumbnail.imageUrl : null}
+              remainingDeadlineDays={myFunding.remainingDeadlineDays}
+              buttonView={
+                myFunding.productStatus === 'PENDING'
+                ? Buttons(myFunding.fundingId)
+                : null
+              }
+              onPressNav={() => {/*
+                navigation.navigate('MyProposalDetail', {
+                  proposalId: Number(myProposal.proposalId),
+                })
+              */}}
+            />)
         )}
       </ScrollView>
 
@@ -365,17 +329,36 @@ const styles = StyleSheet.create({
   emptyBox:     { alignItems: 'center', paddingVertical: 60, gap: 12 },
   emptyEmoji:   { fontSize: 40 },
   emptyText:    { fontSize: 15, color: '#aaa' },
+
+  btnView: {
+    flexDirection: 'row',
+    width: '70%',
+    justifyContent: 'flex-end',
+  },
+
   btn: {
-    right: 8,
-    paddingHorizontal: 6,
-    paddingVertical: 3,
-    borderRadius: 8,
-    alignSelf: 'flex-end',
-    backgroundColor: '#ef4444'
-    },
+    marginLeft: 8,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 10,
+  },
+
+  finishBtn: {
+    //borderColor: '#10b981',
+    //backgroundColor: '#A7F09F',
+    backgroundColor: '#10b981',
+  },
+
+  cancelBtn: {
+    //borderColor: '#ef4444',
+    //backgroundColor: '#FFCFCF',
+    backgroundColor: '#ef4444',
+  },
+
   btnText: {
     color: '#fff',
     fontSize: 13,
     fontWeight: '700',
-    },
+  },
+
 });

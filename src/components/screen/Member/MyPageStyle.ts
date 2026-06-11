@@ -13,6 +13,8 @@ export const styles = StyleSheet.create({
     },
 
     header: {
+        left: 15,
+        marginTop: 65,
         marginBottom: 20,
     },
 

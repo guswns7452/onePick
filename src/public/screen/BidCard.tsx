@@ -13,74 +13,36 @@ import { bid } from '../../interface/bid';
 
 
 
+// ── 타입 정의 ──────────────────────────────────────────────
+export type BidCategory = 'FOOD' | 'FURNITURE' | 'DIGITAL' | 'FASHION' | 'BEAUTY' | 'ETC';
 
-type Props = {
-    id: number;
-    title: string;
-    subtitle: string;
-    category: string;
-    createdAt: any;
-    deadlineDays: number;
-    price: number;
-    thumbnail: any;
-    buttonView: () => void;
-    onPressNav: () => void;
-};
+// ── 카테고리 ──────────────────────────────────────────────
+function Categories({ category }: { category: BidCategory }) {
+  const config = {
+    FOOD:    { label: '음식', },
+    FURNITURE:    { label: '가구', },
+    DIGITAL:    { label: '전자기기', },
+    FASHION:    { label: '패션/의류', },
+    BEAUTY:    { label: '뷰티', },
+    ETC:    { label: '기타', },
+  }[category];
 
-
-// ── 남은 일수 계산 ─────────────────────────────────────────
-function getRemainingDays(
-    createdAt: string,
-    deadlineDays: number,
-    currentDate: Date = new Date(),
-) {
-
-    // 게시글 생성일
-    const createdDate =
-        new Date(createdAt);
-
-    // 마감 날짜 계산
-    const deadlineDate =
-        new Date(createdDate);
-
-    deadlineDate.setDate(
-        deadlineDate.getDate()
-        + deadlineDays
-    );
-
-    // 남은 시간(ms)
-    const diff =
-        deadlineDate.getTime()
-        - currentDate.getTime();
-
-    // 남은 일수 계산
-    const remainingDays =
-        Math.ceil(
-            diff / (1000 * 60 * 60 * 24)
-        );
-
-    return remainingDays;
+  return (
+    <Text style={styles.categoryText}>|  {config.label}</Text>
+  );
 }
 
 
 export default function BidCard({
     id,
     title,
-    subtitle,
     category,
-    createdAt,
-    deadlineDays,
-    price,
+    valueString,
     thumbnail,
+    remainingDeadlineDays,
     buttonView,
     onPressNav,
-}: Props) {
-    
-    const remaining  = getRemainingDays(
-        createdAt,
-        deadlineDays,
-    );
-
+}: bid) {
 
     return (
 
@@ -94,7 +56,7 @@ export default function BidCard({
         <View style={styles.cardEmoji}>
             {thumbnail !== null ?
             <Image
-                source={{ uri: thumbnail.imageUrl }}
+                source={{ uri: thumbnail }}
                 style={styles.cardImage}
             /> :
             <Text style={styles.emojiText}>❌</Text>}
@@ -103,16 +65,24 @@ export default function BidCard({
         {/* 중앙 정보 */}
         <View style={styles.cardContent}>
             <View style={styles.cardTopRow}>
-                <View style={styles.cardTopRowText}>
-                    <Text style={styles.listTitle} numberOfLines={1}>{title}</Text>
-                    <Text style={styles.remainText}> |  {category}</Text>
-                </View>
-            {/*<StatusBadge status={bid.productStatus} />*/}
-        </View>
-        <Text style={styles.bidAmount}>{price.toLocaleString()}원</Text>
+                <Text style={styles.titleText} numberOfLines={1}>{title}</Text>
+                <Categories category={category}/>
+
+                {/*<StatusBadge status={bid.productStatus} />*/}
+            </View>
+        <Text style={styles.bidAmount}>{valueString}</Text>
 
         <View style={styles.cardBottomRow}>
-          <Text style={styles.dateText}>📅 {remaining}일 남음</Text>
+            <Text style={styles.dateText}>
+                📅 {
+                    remainingDeadlineDays > 0
+                        ? `${remainingDeadlineDays}일 남음`
+                            : remainingDeadlineDays === 0
+                                ? '오늘 마감'
+                                    : `${Math.abs(remainingDeadlineDays)}일 경과`
+                }
+            </Text>
+            {buttonView}
         </View>
         
       </View>
@@ -141,23 +111,35 @@ const styles = StyleSheet.create({
   cardContent:  { flex: 1, gap: 4 },
     cardTopRow:   {
         flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center'
     },
-    cardTopRowText: {
-        flexDirection: 'row',
+    titleText: {
+        fontSize: 16,
+        fontWeight: '700',
+        color: '#1a1a2e',
     },
-    listTitle:  { fontSize: 16, fontWeight: '700', color: '#1a1a2e', flex: 1, marginRight: 8 },
+
+    categoryText: {
+        marginTop: 2,
+        marginLeft: 10,
+        fontSize: 12,
+        color: 'gray',
+        fontWeight: '600',
+    },
+
+
   bidAmount:    { fontSize: 18, fontWeight: 'bold', color: '#4f46e5' },
     cardBottomRow:{
+        height: 30,
         flexDirection: 'row',
         justifyContent: 'flex-start',
         alignItems: 'center',
-        marginTop: 5,
+        //backgroundColor: 'red'
     },
-  dateText:     { marginRight: 10, fontSize: 12, color: '#737684' },
-  categoryText: { fontWeight: '600', fontSize: 13, },
-  remainText:   { fontSize: 12, color: 'gray', fontWeight: '600' },
+    dateText: {
+      marginRight: 10,
+      fontSize: 12,
+      color: '#737684'
+    },
   remainUrgent: { color: '#ef4444' },
   endDateText:  { fontSize: 12, color: '#aaa' },
 });

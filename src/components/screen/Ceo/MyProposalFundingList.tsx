@@ -19,7 +19,9 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../../navigation/StackNavigator';
 
 import ListHeader from '../../../public/screen/ListHeader'
+import BidCard from '../../../public/screen/BidCard';
 
+import { getProduct } from '../../../api/Product/getProduct';
 import { getMyFundings } from '../../../api/ProposalFunding/getMyFundings';
 import { deleteProposalFunding } from '../../../api/ProposalFunding/deleteProposalFunding';
 
@@ -84,10 +86,10 @@ function StatusBadge({ status }: { status: BidStatus }) {
 }
 
 // ── 입찰 카드 ──────────────────────────────────────────────
-function BidCard({ bid }: { bid: Bid }) {
+function Buttons() {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   /*const remaining  = getRemainingTime(bid.endDate);*/
-  const isPending   = bid.status === 'PENDING';
+  //const isPending   = bid.status === 'PENDING';
   /*const isUrgent   = isActive && remaining.includes('시간') && !remaining.includes('일');*/
 
   const cancelMyProposalFunding = async (proposalFundingId: number) => {
@@ -247,8 +249,8 @@ export default function MyProposalFundingList({ navigation }: Props) {
 
   const counts = {
     PENDING: myProposalFundings.filter( (mpf) => mpf.status === 'PENDING' ).length,
-    FINISHED: myProposalFundings.filter( (mpf) => mpf.status === 'FINISHED' ).length,
-    CANCELLED: myProposalFundings.filter( (mpf) => mpf.status === 'CANCELLED' ).length,
+    CHOSEN: myProposalFundings.filter( (mpf) => mpf.status === 'CHOSEN' ).length,
+    REJECTED: myProposalFundings.filter( (mpf) => mpf.status === 'REJECTED' ).length,
   };
 
 
@@ -258,7 +260,7 @@ export default function MyProposalFundingList({ navigation }: Props) {
       {/* 헤더 */}
       <ListHeader
         title='내가 요청한 입찰 목록'
-        count={myProposalFundings.length}
+        count={myProposalFundings.length - myProposalFundings.filter( (mpf) => mpf.status === 'WRITING' ).length}
         onPressBack={() => navigation.goBack()}
       />
       
@@ -298,16 +300,31 @@ export default function MyProposalFundingList({ navigation }: Props) {
         {filtered.length === 0 ? (
           <View style={styles.emptyBox}>
             <Text style={styles.emptyEmoji}>
-              {activeTab === 'PENDING' ? '🔍' : activeTab === 'FINISHED' ? '✅' : '❌'}
+              {activeTab === 'PENDING' ? '🔍' : activeTab === 'CHOSEN' ? '✅' : '❌'}
             </Text>
             <Text style={styles.emptyText}>
-              {activeTab === 'PENDING'    ? '진행 중인 참여한 입찰이 없어요'  :
-               activeTab === 'FINISHED' ? '종료된 참여한 입찰이 없어요'     :
-                                          '취소된 참여한 입찰이 없어요'}
+              {activeTab === 'PENDING'    ? '대기 중인 제작 제안이 없어요'  :
+               activeTab === 'CHOSEN' ? '낙찰된 제작 제안이 없어요'     :
+                                          '거절된 제작 제안이 없어요'}
             </Text>
           </View>
         ) : (
-          filtered.map(myProposalFunding => <BidCard key={myProposalFunding.proposalId} bid={myProposalFunding} />)
+          filtered.map(myProposalFunding =>
+            <BidCard
+              key={myProposalFunding.proposalFundingId}
+              id={myProposalFunding.proposalFundingId}
+              title={myProposalFunding.productTitle}
+              category={'ETC'}
+              valueString={`${myProposalFunding.price.toLocaleString()}원`}
+              thumbnail={null}
+              remainingDeadlineDays={0}
+              buttonView={() => {}}
+              onPressNav={() => {/*
+                navigation.navigate('MyProposalDetail', {
+                  proposalId: Number(myProposal.proposalId),
+                })
+              */}}
+            />)
         )}
       </ScrollView>
 
