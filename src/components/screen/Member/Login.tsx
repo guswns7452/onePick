@@ -39,7 +39,11 @@ export default function Login({ navigation }: Props) {
             console.log(result);
             console.log(`${result.data.type === 'CEO' ? '기업' : '개인'}회원 ${result.data.nickname} 님 로그인 성공 !`);
 
-            navigation.navigate('MyPage', { member: result.data });
+            if (result.data.type === 'CEO') {
+                navigation.replace('CeoMainV3', { member: result.data });
+            } else {
+                navigation.replace('IndividualMainV1', { member: result.data });
+            }
 
         } catch (error) {
             if (axios.isAxiosError(error)) {
