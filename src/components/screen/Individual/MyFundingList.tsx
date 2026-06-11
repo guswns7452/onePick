@@ -343,7 +343,8 @@ const styles = StyleSheet.create({
   card: {
     flexDirection: 'row', backgroundColor: '#fff',
     borderRadius: 16, padding: 16,
-    shadowColor: '#000', shadowOpacity: 0.05, shadowRadius: 8, elevation: 2, gap: 14,
+    shadowColor: '#000', shadowOpacity: 0.05, shadowRadius: 8,
+    elevation: 2, gap: 14,
   },
   cardEmoji: {
     width: 52, height: 52, borderRadius: 14,

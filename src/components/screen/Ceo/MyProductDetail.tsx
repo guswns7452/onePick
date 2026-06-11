@@ -278,9 +278,7 @@ const styles = StyleSheet.create({
     padding: 16,
     gap: 14,
 
-    shadowColor: '#000',
-    shadowOpacity: 0.05,
-    shadowRadius: 8,
+    shadowColor: '#000', shadowOpacity: 0.05, shadowRadius: 8,
 
     elevation: 2,
   },

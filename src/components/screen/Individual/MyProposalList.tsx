@@ -19,6 +19,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../../navigation/StackNavigator';
 
 import ListHeader from '../../../public/screen/ListHeader';
+import BidCard from '../../../public/screen/BidCard';
 
 import { getMyProposals } from '../../../api/Proposal/getMyProposals';
 import { deleteProposal } from '../../../api/Proposal/deleteProposal';
@@ -104,15 +105,10 @@ function StatusBadge({ status }: { status: BidStatus }) {
   );
 }
 
+
 // ── 입찰 카드 ──────────────────────────────────────────────
-function BidCard({ bid }: { bid: Bid }) {
+function Buttons() {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-  const remaining  = getRemainingDays(
-        bid.createdAt,
-        bid.deadlineDays,
-    );
-  const isPending   = bid.proposalStatus === 'PENDING';
-  /*const isUrgent   = isActive && remaining.includes('시간') && !remaining.includes('일');*/
 
   const deleteMyProposal = async (proposalId: number) => {
 
@@ -166,68 +162,7 @@ function BidCard({ bid }: { bid: Bid }) {
 
 
   return (
-    <TouchableOpacity
-      style={styles.card}
-      activeOpacity={0.8}
-      onPress={() =>
-        navigation.navigate('MyProposalDetail', {
-          proposalId: bid.proposalId
-        })
-      }
-    >
-      {/* 왼쪽 이모지 */}
-      <View style={styles.cardEmoji}>
-        {bid.thumbnail !== null ?
-        <Image
-            source={{ uri: bid.thumbnail.imageUrl }}
-            style={styles.cardImage}
-        /> :
-        <Text style={styles.emojiText}>❌</Text>}
-      </View>
-
-      {/* 중앙 정보 */}
-      <View style={styles.cardContent}>
-        <View style={styles.cardTopRow}>
-          <Text style={styles.productName} numberOfLines={1}>{bid.title}</Text>
-          {/*<StatusBadge status={bid.productStatus} />*/}
-        </View>
-        <Text style={styles.remainText}>{bid.proposalCategory}</Text>
-        <Text style={styles.bidAmount}>최대 {bid.maxPrice.toLocaleString()}원</Text>
-
-        {bid.proposalStatus === 'PENDING' ?
-        <TouchableOpacity
-          style={styles.btn}
-          onPress={() => deleteMyProposal(bid.proposalId)}
-        >
-          <Text style={styles.btnText}>
-            요청 삭제
-          </Text>
-        </TouchableOpacity>
-        : <></>}
-
-        <View style={styles.cardBottomRow}>
-          <Text style={styles.dateText}>📅 {remaining}일 남음</Text>
-          <Text style={styles.dateText}>🔥 {bid.fundingCount}</Text>
-          <Text style={styles.categoryText}>{bid.proposalCategory}</Text>
-        </View>
-
-        {/*
-        <View style={styles.cardBottomRow}>
-          <Text style={styles.dateText}>📅 {bid.date}</Text>
-          {isActive && (
-            <Text style={[styles.remainText, isUrgent && styles.remainUrgent]}>
-              ⏱ {remaining}
-            </Text>
-          )}
-          {!isActive && (
-            <Text style={styles.endDateText}>
-              마감 {bid.endDate.slice(0, 10)}
-            </Text>
-          )}
-        </View>
-        */}
-      </View>
-    </TouchableOpacity>
+    <></>
   );
 }
 
@@ -332,7 +267,25 @@ export default function MyProposalList({ navigation }: Props) {
             </Text>
           </View>
         ) : (
-          filtered.map(myProposal => <BidCard key={myProposal.proposalId} bid={myProposal} />)
+          filtered.map(myProposal =>
+            <BidCard
+              key={myProposal.proposalId}
+              id={myProposal.proposalId}
+              title={myProposal.title}
+              subtitle={myProposal.content}
+              category={myProposal.proposalCategory}
+              createdAt={myProposal.createdAt}
+              deadlineDays={myProposal.deadlineDays}
+              price={myProposal.maxPrice}
+              thumbnail={myProposal.thumbnail}
+              buttonView={() => {}}
+              onPressNav={() => {
+                navigation.navigate('MyProposalDetail', {
+                  proposalId: Number(myProposal.proposalId),
+                })
+              }}
+            />
+          )
         )}
       </ScrollView>
 
@@ -376,7 +329,8 @@ const styles = StyleSheet.create({
   card: {
     flexDirection: 'row', backgroundColor: '#fff',
     borderRadius: 16, padding: 16,
-    shadowColor: '#000', shadowOpacity: 0.05, shadowRadius: 8, elevation: 2, gap: 14,
+    //shadowColor: '#000', shadowOpacity: 0.05, shadowRadius: 8,
+    elevation: 2, gap: 14,
   },
   cardEmoji: {
     width: 52, height: 52, borderRadius: 14,

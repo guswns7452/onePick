@@ -267,9 +267,7 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     padding: 20,
     marginBottom: 16,
-    shadowColor: '#000',
-    shadowOpacity: 0.05,
-    shadowRadius: 8,
+    shadowColor: '#000', shadowOpacity: 0.05, shadowRadius: 8,
     elevation: 2,
   },
   sectionTitle: {
@@ -377,9 +375,7 @@ const styles = StyleSheet.create({
     padding: 16,
     marginBottom: 12,
     flexDirection: 'row',
-    shadowColor: '#000',
-    shadowOpacity: 0.05,
-    shadowRadius: 8,
+    //shadowColor: '#000', shadowOpacity: 0.05, shadowRadius: 8,
     elevation: 2,
   },
   resultRank: {

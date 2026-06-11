@@ -7,24 +7,17 @@ import { Alert, Text, TouchableOpacity, View, TextInput } from 'react-native';
 import CookieManager from '@react-native-cookies/cookies';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../../navigation/StackNavigator.tsx';
-
+import { postLogin } from '../../../api/Member/postLogin.ts';
 import { styles } from './LoginStyle';
 
 const BASE_URL = 'http://13.209.73.31:8080';
 
+type HomeScreenNavigationProp = NativeStackNavigationProp<RootStackParamList>;
+type Props = { navigation: HomeScreenNavigationProp; };
 
-type HomeScreenNavigationProp =
-    NativeStackNavigationProp<RootStackParamList>;
-
-type Props = {
-    navigation: HomeScreenNavigationProp;
-};
-
-export default function Login({navigation}: Props) {
-
-    const [fulfilled, setFulfilled] = useState(false)
-    const [phoneNumber, setPhoneNumber] = useState('')
-
+export default function Login({ navigation }: Props) {
+    const [fulfilled, setFulfilled]     = useState(false);
+    const [phoneNumber, setPhoneNumber] = useState('');
 
     useEffect(() => {
         setFulfilled(phoneNumber.trim() !== '');
@@ -46,13 +39,7 @@ export default function Login({navigation}: Props) {
             console.log(result);
             console.log(`${result.data.type === 'CEO' ? '기업' : '개인'}회원 ${result.data.nickname} 님 로그인 성공 !`);
 
-
-            navigation.navigate('MyPage',
-                {
-                    member: result.data
-                }
-            );
-
+            navigation.navigate('MyPage', { member: result.data });
 
         } catch (error) {
             if (axios.isAxiosError(error)) {
@@ -63,34 +50,20 @@ export default function Login({navigation}: Props) {
         }
     };
 
-
     return (
-
         <View style={styles.container}>
-
             <View style={styles.content}>
-
-                {/* TITLE */}
                 <View style={styles.titleBox}>
-
                     <Text style={styles.title}>
                         함께 사면{"\n"}
                         더 저렴하게
                     </Text>
-
                     <Text style={styles.subTitle}>
                         공동구매를 시작해 보세요
                     </Text>
-
                 </View>
-
-                {/* CARD */}
                 <View style={styles.card}>
-                    {/*
-                    <Text style={styles.inputLabel}>
-                        휴대폰번호
-                    </Text>
-                    */}
+                    <Text style={styles.inputLabel}>휴대폰번호</Text>
                     <TextInput
                         style={styles.input}
                         placeholder="휴대폰번호 입력"
@@ -99,28 +72,15 @@ export default function Login({navigation}: Props) {
                         value={phoneNumber}
                         onChangeText={setPhoneNumber}
                     />
-
                 </View>
-
             </View>
-
-            {/* BUTTON */}
             <TouchableOpacity
                 disabled={!fulfilled}
-                style={[
-                    styles.button,
-                    !fulfilled &&
-                    styles.buttonDisabled,
-                ]}
+                style={[styles.button, !fulfilled && styles.buttonDisabled]}
                 onPress={handleLogin}
             >
-
-                <Text style={styles.buttonText}>
-                    로그인
-                </Text>
-
+                <Text style={styles.buttonText}>로그인</Text>
             </TouchableOpacity>
-
         </View>
     );
 }

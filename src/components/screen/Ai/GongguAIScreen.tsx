@@ -265,9 +265,7 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     padding: 20,
     marginBottom: 16,
-    shadowColor: '#000',
-    shadowOpacity: 0.05,
-    shadowRadius: 8,
+    shadowColor: '#000', shadowOpacity: 0.05, shadowRadius: 8,
     elevation: 2,
   },
   sectionTitle: {
@@ -321,9 +319,7 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     padding: 20,
     marginBottom: 40,
-    shadowColor: '#000',
-    shadowOpacity: 0.05,
-    shadowRadius: 8,
+    //shadowColor: '#000', shadowOpacity: 0.05, shadowRadius: 8,
     elevation: 2,
   },
   priceBox: {

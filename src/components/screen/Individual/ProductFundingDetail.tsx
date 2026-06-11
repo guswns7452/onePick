@@ -88,13 +88,6 @@ export default function ProductFundingDetail({ navigation, route }: Props) {
 
     }, [productId, bidContent, bidAmount]);
 
-
-
-/*
-  const remaining   = getRemainingTime(product.endDate ?? '2026-12-31T18:00:00');
-  const isUrgent    = remaining.includes('시간') && !remaining.includes('일');
-*/
-
   
 
   const handleBid = () => {
