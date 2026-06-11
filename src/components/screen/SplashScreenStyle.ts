@@ -8,10 +8,6 @@ export const styles = StyleSheet.create({
   },
 
   topAccent: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
     height: 6,
     backgroundColor: brand.ibkBlue,
   },
@@ -39,7 +35,6 @@ export const styles = StyleSheet.create({
 
   footer: {
     position: 'absolute',
-    bottom: 48,
     left: 32,
     right: 32,
     alignItems: 'center',

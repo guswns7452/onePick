@@ -1,8 +1,10 @@
 import React, { useEffect, useRef } from 'react';
 import { Animated, StatusBar, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../navigation/StackNavigator';
 import OnePickLogo from '../brand/OnePickLogo';
+import SafeScreen from '../common/SafeScreen';
 import { styles } from './SplashScreenStyle';
 
 type SplashNavigationProp = NativeStackNavigationProp<RootStackParamList, 'Splash'>;
@@ -13,6 +15,7 @@ const SPLASH_DURATION_MS = 4000;
 export default function SplashScreen({ navigation }: Props) {
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const slideAnim = useRef(new Animated.Value(16)).current;
+  const insets = useSafeAreaInsets();
 
   useEffect(() => {
     Animated.parallel([
@@ -29,14 +32,14 @@ export default function SplashScreen({ navigation }: Props) {
     ]).start();
 
     const timer = setTimeout(() => {
-      navigation.replace('Login');
+      navigation.replace('LoginV1');
     }, SPLASH_DURATION_MS);
 
     return () => clearTimeout(timer);
   }, [fadeAnim, navigation, slideAnim]);
 
   return (
-    <View style={styles.container}>
+    <SafeScreen style={styles.container}>
       <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
       <View style={styles.topAccent} />
 
@@ -56,11 +59,11 @@ export default function SplashScreen({ navigation }: Props) {
         </Animated.View>
       </View>
 
-      <Animated.View style={[styles.footer, { opacity: fadeAnim }]}>
+      <Animated.View style={[styles.footer, { bottom: insets.bottom + 24, opacity: fadeAnim }]}>
         <Animated.Text style={styles.subText}>
           판매자와 구매자를 연결하는 공동구매 플랫폼
         </Animated.Text>
       </Animated.View>
-    </View>
+    </SafeScreen>
   );
 }

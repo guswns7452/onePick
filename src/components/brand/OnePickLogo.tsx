@@ -4,9 +4,10 @@ import { brand } from '../../public/style/colors';
 
 type Props = {
   symbolSize?: number;
+  wordmarkSize?: number;
 };
 
-export default function OnePickLogo({ symbolSize = 112 }: Props) {
+export default function OnePickLogo({ symbolSize = 112, wordmarkSize = 42 }: Props) {
   return (
     <View style={styles.container}>
       <Image
@@ -14,7 +15,7 @@ export default function OnePickLogo({ symbolSize = 112 }: Props) {
         style={[styles.symbol, { width: symbolSize, height: symbolSize }]}
         resizeMode="contain"
       />
-      <Text style={styles.wordmark}>onepick</Text>
+      <Text style={[styles.wordmark, { fontSize: wordmarkSize }]}>onepick</Text>
     </View>
   );
 }
