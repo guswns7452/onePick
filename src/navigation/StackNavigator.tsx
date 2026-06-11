@@ -22,11 +22,13 @@ import GongguAIScreen from '../components/screen/Ai/GongguAIScreen'
 import OrderParserScreen from '../components/screen/Ai/OrderParserScreen'
 import RecommendScreen from '../components/screen/Ai/RecommendScreen'
 import Sketch2ProductScreen from '../components/screen/Ai/Sketch2ProductScreen'
+import SplashScreen from '../components/screen/SplashScreen'
 
 import { Member } from '../interface/member'
 
 
 export type RootStackParamList = {
+  Splash: undefined;
   Login: undefined;
   MyPage: {
     member: Member;
@@ -65,10 +67,15 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 export default function StackNavigator() {
   return (
     <Stack.Navigator
+      initialRouteName="Splash"
       screenOptions={{
         headerShown: false,
       }}
     >
+      <Stack.Screen
+        name="Splash"
+        component={SplashScreen}
+      />
       <Stack.Screen
         name="Login"
         component={Login}

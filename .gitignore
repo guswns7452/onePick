@@ -73,3 +73,10 @@ yarn-error.log
 !.yarn/releases
 !.yarn/sdks
 !.yarn/versions
+
+# Local / generated iOS & Expo (per-team machine setup)
+.expo/dev/logs/start.log
+ios/Podfile
+ios/Podfile.lock
+ios/onePick/PrivacyInfo.xcprivacy
+ios/onePick.xcodeproj/project.pbxproj

@@ -1,3 +1,9 @@
+export const brand = {
+    ibkBlue: '#0077C8',
+    ibkDeepBlue: '#002266',
+    white: '#FFFFFF',
+};
+
 export const color = {
     primary: '#0076F0',
     positiveBlue: '#1654D1',
