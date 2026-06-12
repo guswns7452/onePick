@@ -38,8 +38,26 @@ type Props = {
 };
 
 
+
+const CATEGORY_LABELS: Record<string, string> = {
+  FOOD: '식품', FURNITURE: '가구', DIGITAL: '디지털',
+  FASHION: '패션', BEAUTY: '뷰티', ETC: '기타',
+};
+
+
+function InfoItem({ label, value }: { label: string; value: string }) {
+  return (
+    <View style={styles.infoItem}>
+      <Text style={styles.infoLabel}>{label}</Text>
+      <Text style={styles.infoValue}>{value}</Text>
+    </View>
+  );
+}
+
+
 export default function ProductFundingDetail({ navigation, route }: Props) {
-  const { productId } = route.params;
+  
+  const request = route.params;
 
   const [product, setProduct] = useState<any>(null);
 
@@ -52,7 +70,7 @@ export default function ProductFundingDetail({ navigation, route }: Props) {
 
     const fetchProduct = async () => {
         try {
-            const data = await getProduct(productId);
+            const data = await getProduct(request.productId);
             console.log(JSON.stringify(data, null, 2));
 
             setProduct(data.data);
@@ -67,7 +85,7 @@ export default function ProductFundingDetail({ navigation, route }: Props) {
     const isFilled = bidAmount.trim() !== '';
     setFulfilled(isFilled);
 
-    }, [productId, bidAmount]);
+    }, [request.productId, bidAmount]);
 
   
 
@@ -94,7 +112,7 @@ export default function ProductFundingDetail({ navigation, route }: Props) {
             
             navigation.navigate('Payment', {
               isPayment: true,
-              productId: Number(productId),
+              productId: Number(request.productId),
               quantity: Number(bidAmount),
             })
           }
@@ -154,9 +172,15 @@ if (!product) {
         */}
         {/* 기본 정보 */}
         <View style={styles.section}>
-          <Text style={styles.productName}>{product.title}</Text>
-          <Text style={styles.seller}>{product.createdAt.slice(0, 10)}</Text>
-          <Text style={styles.price}>{product.price.toLocaleString()}원</Text>
+          <View style={styles.sectionTop}>
+            <Text style={styles.productName}>{product?.title}</Text>
+            <View style={styles.categoryBadge}>
+              <Text style={styles.categoryBadgeText}>
+                {CATEGORY_LABELS[product?.category] ?? product?.category}
+              </Text>
+            </View>
+          </View>
+          <Text style={styles.price}>{product?.price?.toLocaleString()}원</Text>
         </View>
 
         {/* 펀딩 달성률 */}
@@ -185,53 +209,33 @@ if (!product) {
           </Text>
         </View>
 
-        {/* 제품 설명 */}
+        {/* 펀딩 정보 */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>💛 최소 개수</Text>
-          <Text style={styles.description}>
-            {`${product.minQuantity}개`}
-          </Text>
-        </View>
-
-        {/* 제품 설명 */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>📍 카테고리</Text>
-          <Text style={styles.description}>
-            {product.category}
-          </Text>
-        </View>
-
-        {/* 판매자 정보
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>👤 판매자 정보</Text>
-          <View style={styles.sellerBox}>
-            <View style={styles.sellerAvatar}>
-              <Text style={styles.sellerAvatarText}>
-                {(product.seller ?? '판').charAt(0)}
-              </Text>
-            </View>
-            <View>
-              <Text style={styles.sellerName}>{product.seller ?? '판매자'}</Text>
-              <Text style={styles.sellerSub}>크라우드펀딩 판매자</Text>
-            </View>
+          <Text style={styles.sectionTitle}>📊 요청 정보</Text>
+          <View style={styles.infoGrid}>
+            <InfoItem
+              label="마감 기한"
+              value={
+                product?.remainingDeadlineDays > 0
+                ? `${product?.remainingDeadlineDays}일 남음`
+                : product?.remainingDeadlineDays === 0
+                ? '오늘 마감'
+                : `${Math.abs(product?.remainingDeadlineDays)}일 경과`
+              }
+            />
+            <InfoItem label="최소 참여 수량"   value={`${product?.minQuantity}개`} />
+            <InfoItem label="상태"      value={product?.proposalStatus === 'PENDING' ? '진행중' : '완료'} />
+            <InfoItem label="등록일"    value={product?.createdAt?.slice(0, 10) ?? '-'} />
           </View>
         </View>
-             */}
+
+
         <View style={{ height: 100 }} />
 
-        {/* BUTTON 
-        <TouchableOpacity
-            style={styles.button}
-            onPress={handleApply}
-        >
-            <Text style={styles.buttonText}>
-                완료
-            </Text>
-        </TouchableOpacity>
-            */}
+
 
       {/* 하단 입찰 버튼 */}
-      { product.status === 'PENDING' ?
+      { product.status === 'PENDING' && !request.isMine ?
       (
         <TouchableOpacity
             style={styles.button}
@@ -344,21 +348,6 @@ const styles = StyleSheet.create({
     fontSize: 100,
   },
 
-  // 남은 시간 배너
-  timeBanner: {
-    backgroundColor: '#eef2ff',
-    paddingVertical: 10,
-    alignItems: 'center',
-  },
-  timeBannerUrgent: {
-    backgroundColor: '#fee2e2',
-  },
-  timeBannerText: {
-    fontSize: 14,
-    fontWeight: '700',
-    color: '#4f46e5',
-  },
-
   // 섹션
   section: {
     backgroundColor: '#fff',
@@ -371,6 +360,26 @@ const styles = StyleSheet.create({
     color: '#1a1a2e',
     marginBottom: 12,
   },
+
+  categoryBadge: {
+    backgroundColor: '#eee',
+    borderRadius: 8,
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    alignSelf: 'flex-start',
+    marginLeft: 15,
+    marginBottom: 8
+  },
+  categoryBadgeText: { fontSize: 12, color: 'gray', fontWeight: '600' },
+
+  sectionTop: {
+    flexDirection: 'row',
+  },
+
+  infoGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: 12 },
+  infoItem: { width: '47%', backgroundColor: '#f8f8ff', borderRadius: 12, padding: 14 },
+  infoLabel:{ fontSize: 12, color: '#888', marginBottom: 4 },
+  infoValue:{ fontSize: 16, fontWeight: '700', color: '#1a1a2e' },
 
   // 기본 정보
   productName: {

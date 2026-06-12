@@ -42,6 +42,7 @@ export type RootStackParamList = {
   NewProposal: undefined;
   ProductFundingList: undefined;
   ProductFundingDetail: {
+    isMine: boolean,
     productId: number,
   };
   MyFundingList: undefined;

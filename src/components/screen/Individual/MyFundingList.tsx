@@ -262,11 +262,12 @@ export default function MyFundingList({ navigation }: Props) {
                 ? <Buttons productId={myFunding.productId} />
                 : null
               }
-              onPressNav={() => {/*
-                navigation.navigate('MyProposalDetail', {
-                  proposalId: Number(myProposal.proposalId),
+              onPressNav={() => {
+                navigation.navigate('ProductFundingDetail', {
+                  isMine: true,
+                  productId: Number(myFunding.productId),
                 })
-              */}}
+              }}
             />)
         )}
       </ScrollView>

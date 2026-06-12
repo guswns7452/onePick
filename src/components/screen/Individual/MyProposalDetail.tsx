@@ -139,12 +139,14 @@ export default function MyProposalDetail({ navigation, route }: Props) {
 
         {/* 기본 정보 */}
         <View style={styles.section}>
-          <View style={styles.categoryBadge}>
-            <Text style={styles.categoryBadgeText}>
-              {CATEGORY_LABELS[proposal?.proposalCategory] ?? proposal?.proposalCategory}
-            </Text>
+          <View style={styles.sectionTop}>
+            <Text style={styles.productName}>{proposal?.title}</Text>
+            <View style={styles.categoryBadge}>
+              <Text style={styles.categoryBadgeText}>
+                {CATEGORY_LABELS[proposal?.proposalCategory] ?? proposal?.proposalCategory}
+              </Text>
+            </View>
           </View>
-          <Text style={styles.productName}>{proposal?.title}</Text>
           <Text style={styles.price}>{proposal?.maxPrice?.toLocaleString()}원</Text>
           <Text style={styles.seller}>by {proposal?.writerNickname}</Text>
         </View>
@@ -218,14 +220,31 @@ const styles = StyleSheet.create({
   scroll:       { paddingBottom: 40 },
 
   header: {
-    flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
-    paddingHorizontal: 16, paddingVertical: 14, backgroundColor: '#fff',
+    height: 160,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+    backgroundColor: '#fff',
   },
-  backBtn:     { width: 40, height: 40, alignItems: 'center', justifyContent: 'center' },
-  backIcon:    { fontSize: 22, color: '#1a1a2e' },
+  backBtn: {
+    width: 40,
+    height: 40,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  backIcon: {
+    fontSize: 32,
+    color: '#1a1a2e',
+  },
+
   headerTitle: { fontSize: 17, fontWeight: '700', color: '#1a1a2e' },
 
-  imageBox:             { height: 280, backgroundColor: '#fff', position: 'relative' },
+  imageBox: {
+    height: 240,
+    backgroundColor: '#fff', position: 'relative'
+  },
   productImage:         { width: '100%', height: '100%' },
   imagePlaceholder:     { flex: 1, alignItems: 'center', justifyContent: 'center', gap: 8 },
   imagePlaceholderEmoji:{ fontSize: 60 },
@@ -236,18 +255,31 @@ const styles = StyleSheet.create({
   section:      { backgroundColor: '#fff', padding: 20, marginTop: 8 },
   sectionTitle: { fontSize: 15, fontWeight: '700', color: '#1a1a2e', marginBottom: 12 },
 
-  categoryBadge:     { backgroundColor: '#eef2ff', borderRadius: 8, paddingHorizontal: 10, paddingVertical: 4, alignSelf: 'flex-start', marginBottom: 8 },
-  categoryBadgeText: { fontSize: 12, color: '#4f46e5', fontWeight: '600' },
-  productName: { fontSize: 22, fontWeight: 'bold', color: '#1a1a2e', marginBottom: 8 },
-  price:       { fontSize: 20, fontWeight: 'bold', color: '#4f46e5', marginBottom: 4 },
-  seller:      { fontSize: 13, color: '#888' },
-  description: { fontSize: 14, color: '#555', lineHeight: 22 },
-  emptyText:   { fontSize: 14, color: '#aaa', textAlign: 'center', paddingVertical: 20 },
+  categoryBadge: {
+    backgroundColor: '#eee',
+    borderRadius: 8,
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    alignSelf: 'flex-start',
+    marginLeft: 15,
+    marginBottom: 8
+  },
+  categoryBadgeText: { fontSize: 12, color: 'gray', fontWeight: '600' },
+
+  sectionTop: {
+    flexDirection: 'row',
+  },
 
   infoGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: 12 },
   infoItem: { width: '47%', backgroundColor: '#f8f8ff', borderRadius: 12, padding: 14 },
   infoLabel:{ fontSize: 12, color: '#888', marginBottom: 4 },
   infoValue:{ fontSize: 16, fontWeight: '700', color: '#1a1a2e' },
+
+  productName: { fontSize: 22, fontWeight: 'bold', color: '#1a1a2e', marginBottom: 8 },
+  price:       { fontSize: 26, fontWeight: 'bold', color: '#4f46e5', marginBottom: 4 },
+  seller:      { marginTop: 3, fontSize: 13, color: '#888' },
+  description: { fontSize: 14, color: '#555', lineHeight: 22 },
+  emptyText:   { fontSize: 14, color: '#aaa', textAlign: 'center', paddingVertical: 20 },
 
   fundingCard: {
     backgroundColor: '#f8f8ff', borderRadius: 12, padding: 14,
