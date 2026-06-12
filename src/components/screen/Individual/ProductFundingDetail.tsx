@@ -76,7 +76,7 @@ export default function ProductFundingDetail({ navigation, route }: Props) {
       Alert.alert('참여 오류', '개수를 올바르게 입력해 주세요.');
       return;
     }
-    if (Number(bidAmount) < product.price) {
+    if (Number(bidAmount) < product.minQuantity) {
       Alert.alert('참여 오류', `최소 참여 가능 개수는 ${product.minQuantity}개입니다.`);
       return;
     }
@@ -253,14 +253,14 @@ if (!product) {
       >
         <View style={styles.modalOverlay}>
           <View style={styles.modalBox}>
-            <Text style={styles.modalTitle}>💰 입찰 금액 입력</Text>
+            <Text style={styles.modalTitle}>📋 주문량 입력</Text>
             <Text style={styles.modalSub}>
-              최소 입찰가: {product.price?.toLocaleString()}원
+              최소 개수: {product.minQuantity}개
             </Text>
 
             <TextInput
               style={styles.modalInput}
-              placeholder="입찰 금액 입력"
+              placeholder="주문량 입력"
               placeholderTextColor="#aaa"
               value={bidAmount}
               onChangeText={setBidAmount}
