@@ -13,6 +13,7 @@ import MyProposalList from '../components/screen/Individual/MyProposalList'
 import MyProposalDetail from '../components/screen/Individual/MyProposalDetail'
 
 import NewProduct from '../components/screen/Ceo/NewProduct'
+import ProposalList from '../components/screen/Ceo/ProposalList'
 import MyProductList from '../components/screen/Ceo/MyProductList'
 import MyProposalFundingList from '../components/screen/Ceo/MyProposalFundingList'
 
@@ -33,9 +34,9 @@ export type RootStackParamList = {
   };
 
   Payment: {
+    isPayment: boolean;
     productId: number;
-    content: string;
-    price: number;
+    quantity: number;
   };
 
   NewProposal: undefined;
@@ -50,6 +51,7 @@ export type RootStackParamList = {
   };
 
   NewProduct: undefined;
+  ProposalList: undefined;
   MyProductList: undefined;
   MyProposalFundingList: undefined;
 
@@ -116,6 +118,10 @@ export default function StackNavigator() {
       <Stack.Screen
         name="NewProduct"
         component={NewProduct}
+      />
+      <Stack.Screen
+        name="ProposalList"
+        component={ProposalList}
       />
       <Stack.Screen
         name="MyProductList"

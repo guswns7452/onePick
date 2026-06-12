@@ -97,8 +97,7 @@ export default function Payment({ navigation, route }: Props) {
     const handleApply = async () => {
         try {
             const body = {
-                content: request.content,
-                price: Number(request.price),
+                quantity: Number(request.quantity),
         }
 
         const result = await postApplyFunding(request.productId, body);
@@ -148,7 +147,7 @@ export default function Payment({ navigation, route }: Props) {
                     </Text>
 
                     <Text style={styles.headerSub}>
-                        사용할 결제 수단을 선택하세요
+                        { request.isPayment ? '사용할 결제 수단을 선택하세요' : '내 결제 수단을 확인하세요' }
                     </Text>
 
                 </View>
@@ -275,7 +274,10 @@ export default function Payment({ navigation, route }: Props) {
                 </View>
 
                 {/* BUTTON */}
-                <TouchableOpacity
+
+                { request.isPayment ?
+
+                (<TouchableOpacity
                     disabled={selectedAccount == null && selectedCard == null}
                     style={[
                         styles.button,
@@ -290,7 +292,18 @@ export default function Payment({ navigation, route }: Props) {
                     </Text>
 
                 </TouchableOpacity>
-
+                )
+                : (<TouchableOpacity
+                    disabled={selectedAccount == null && selectedCard == null}
+                    style={styles.button}
+                    onPress={() => navigation.goBack()}
+                >
+                    <Text style={styles.buttonText}>
+                        뒤로가기
+                    </Text>
+                </TouchableOpacity>
+                )
+                }
             </ScrollView>
 
         </View>

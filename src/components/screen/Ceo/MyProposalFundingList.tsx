@@ -53,40 +53,13 @@ const TABS: { key: BidStatus; label: string; color: string }[] = [
   { key: 'REJECTED', label: '거절',   color: '#ef4444' },
 ];
 
-// ── 남은 시간 계산 ─────────────────────────────────────────
-function getRemainingTime(endDate: string): string {
-  const now  = new Date();
-  const end  = new Date(endDate);
-  const diff = end.getTime() - now.getTime();
-
-  if (diff <= 0) return '마감';
-
-  const days    = Math.floor(diff / (1000 * 60 * 60 * 24));
-  const hours   = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-  const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-
-  if (days > 0)  return `${days}일 ${hours}시간 남음`;
-  if (hours > 0) return `${hours}시간 ${minutes}분 남음`;
-  return `${minutes}분 남음`;
-}
-
-// ── 상태 뱃지 ──────────────────────────────────────────────
-function StatusBadge({ status }: { status: BidStatus }) {
-  const config = {
-    PENDING:    { label: '대기중', bg: '#eef2ff', color: '#4f46e5' },
-    CHOSEN: { label: '낙찰',   bg: '#d1fae5', color: '#065f46' },
-    REJECTED: { label: '거절',   bg: '#fee2e2', color: '#991b1b' },
-  }[status];
-
-  return (
-    <View style={[styles.badge, { backgroundColor: config.bg }]}>
-      <Text style={[styles.badgeText, { color: config.color }]}>{config.label}</Text>
-    </View>
-  );
-}
 
 // ── 입찰 카드 ──────────────────────────────────────────────
-function Buttons() {
+type ButtonsProps = {
+  proposalFundingId: number;
+};
+
+function Buttons({ proposalFundingId, }: ButtonsProps) {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   /*const remaining  = getRemainingTime(bid.endDate);*/
   //const isPending   = bid.status === 'PENDING';
@@ -95,8 +68,8 @@ function Buttons() {
   const cancelMyProposalFunding = async (proposalFundingId: number) => {
 
     Alert.alert(
-      '입찰 요청 취소',
-      '정말 입찰 요청을 취소하시겠습니까?',
+      '제작 제안 취소',
+      '정말 제작 제안을 취소하시겠습니까?',
       [
         {
           text: '아니오',
@@ -144,66 +117,16 @@ function Buttons() {
 
 
   return (
-    <TouchableOpacity
-      style={styles.card}
-      activeOpacity={0.8}
-      /*onPress={() =>
-        navigation.navigate('MyProposalDetail', {
-          proposalId: bid.proposalId
-        })
-      }*/
-    >
-      {/* 왼쪽 이모지 */}
-      <View style={styles.cardEmoji}>
-        <Text style={styles.emojiText}>😄</Text>
-      </View>
-
-      {/* 중앙 정보 */}
-      <View style={styles.cardContent}>
-        <View style={styles.cardTopRow}>
-          <Text style={styles.productName} numberOfLines={1}>{bid.content}</Text>
-          {/*<StatusBadge status={bid.productStatus} />*/}
-        </View>
-        <Text style={styles.remainText}>{bid.ceoNickname}</Text>
-        <Text style={styles.bidAmount}>최대 {bid.price.toLocaleString()}원</Text>
-
-        {bid.status === 'PENDING' ?
+    <View style={styles.btnView}>
         <TouchableOpacity
-          style={styles.btn}
-          onPress={() => cancelMyProposalFunding(bid.proposalId)}
+          style={[styles.btn, styles.cancelBtn]}
+          onPress={() => cancelMyProposalFunding(proposalFundingId)}
         >
           <Text style={styles.btnText}>
-            요청 취소
+            제안 취소
           </Text>
         </TouchableOpacity>
-        : <></>}
-
-
-        {/*
-        <View style={styles.cardBottomRow}>
-          <Text style={styles.dateText}>📅 {bid.deadlineDays}</Text>
-          <Text style={styles.dateText}>🔥 {bid.fundingCount}</Text>
-          <Text style={styles.categoryText}>{bid.proposalCategory}</Text>
         </View>
-        */}
-
-        {/*
-        <View style={styles.cardBottomRow}>
-          <Text style={styles.dateText}>📅 {bid.date}</Text>
-          {isActive && (
-            <Text style={[styles.remainText, isUrgent && styles.remainUrgent]}>
-              ⏱ {remaining}
-            </Text>
-          )}
-          {!isActive && (
-            <Text style={styles.endDateText}>
-              마감 {bid.endDate.slice(0, 10)}
-            </Text>
-          )}
-        </View>
-        */}
-      </View>
-    </TouchableOpacity>
   );
 }
 
@@ -230,7 +153,18 @@ export default function MyProposalFundingList({ navigation }: Props) {
             }
 
         } catch (error) {
-            console.log(error);
+
+          if (axios.isAxiosError(error)) {
+
+            console.log('status:',
+            error.response?.status);
+
+            console.log('data:',
+            error.response?.data);
+
+            console.log('message:',
+            error.message);
+          }
         }
     };
 
@@ -240,7 +174,7 @@ export default function MyProposalFundingList({ navigation }: Props) {
   const [activeTab, setActiveTab]   = useState<BidStatus>('PENDING');
   const [refreshing, setRefreshing] = useState(false);
 
-  const filtered = myProposalFundings.filter( (myProposalFunding) => myProposalFunding.status === activeTab,);
+  const filtered = myProposalFundings.filter( (myProposalFunding) => myProposalFunding.proposalFundingStatus === activeTab,);
 
   const onRefresh = async () => {
     setRefreshing(true);
@@ -248,9 +182,9 @@ export default function MyProposalFundingList({ navigation }: Props) {
   };
 
   const counts = {
-    PENDING: myProposalFundings.filter( (mpf) => mpf.status === 'PENDING' ).length,
-    CHOSEN: myProposalFundings.filter( (mpf) => mpf.status === 'CHOSEN' ).length,
-    REJECTED: myProposalFundings.filter( (mpf) => mpf.status === 'REJECTED' ).length,
+    PENDING: myProposalFundings.filter( (mpf) => mpf.proposalFundingStatus === 'PENDING' ).length,
+    CHOSEN: myProposalFundings.filter( (mpf) => mpf.proposalFundingStatus === 'CHOSEN' ).length,
+    REJECTED: myProposalFundings.filter( (mpf) => mpf.proposalFundingStatus === 'REJECTED' ).length,
   };
 
 
@@ -259,8 +193,8 @@ export default function MyProposalFundingList({ navigation }: Props) {
 
       {/* 헤더 */}
       <ListHeader
-        title='내가 요청한 입찰 목록'
-        count={myProposalFundings.length - myProposalFundings.filter( (mpf) => mpf.status === 'WRITING' ).length}
+        title='내가 제안한 주문 제작 목록'
+        count={myProposalFundings.length - myProposalFundings.filter( (mpf) => mpf.proposalFundingStatus === 'WRITING' ).length}
         onPressBack={() => navigation.goBack()}
       />
       
@@ -318,7 +252,11 @@ export default function MyProposalFundingList({ navigation }: Props) {
               valueString={`${myProposalFunding.price.toLocaleString()}원`}
               thumbnail={null}
               remainingDeadlineDays={0}
-              buttonView={() => {}}
+              buttonView={
+                myProposalFunding.status === 'PENDING'
+                ? Buttons(myProposalFunding.productId)
+                : null
+              }
               onPressNav={() => {/*
                 navigation.navigate('MyProposalDetail', {
                   proposalId: Number(myProposal.proposalId),
@@ -394,17 +332,35 @@ const styles = StyleSheet.create({
   emptyBox:     { alignItems: 'center', paddingVertical: 60, gap: 12 },
   emptyEmoji:   { fontSize: 40 },
   emptyText:    { fontSize: 15, color: '#aaa' },
+
+  btnView: {
+    flexDirection: 'row',
+    width: '70%',
+    justifyContent: 'flex-end',
+  },
+
   btn: {
-    right: 8,
-    paddingHorizontal: 6,
-    paddingVertical: 3,
-    borderRadius: 8,
-    alignSelf: 'flex-end',
-    backgroundColor: '#ef4444'
-    },
+    marginLeft: 8,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 10,
+  },
+
+  finishBtn: {
+    //borderColor: '#10b981',
+    //backgroundColor: '#A7F09F',
+    backgroundColor: '#10b981',
+  },
+
+  cancelBtn: {
+    //borderColor: '#ef4444',
+    //backgroundColor: '#FFCFCF',
+    backgroundColor: '#ef4444',
+  },
+
   btnText: {
     color: '#fff',
     fontSize: 13,
     fontWeight: '700',
-    },
+  },
 });

@@ -97,7 +97,11 @@ export default function Mypage({ navigation, route }: Props) {
     {/* 하단 */}
     <TouchableOpacity
         style={styles.profilePaymentBox}
-        onPress={() => navigation.navigate('Payment')}
+        onPress={() => navigation.navigate('Payment', {
+            isPayment: false,
+            productId: Number(null),
+            quantity: Number(null),
+        })}
     >
         <Text style={styles.profilePaymentText}>
             내 결제 수단
@@ -127,8 +131,9 @@ export default function Mypage({ navigation, route }: Props) {
                 카드
             </Text>
         </View>
-    </View>
-        */}
+        </View>
+        */
+        }
 
 </View>
 
@@ -269,12 +274,12 @@ export default function Mypage({ navigation, route }: Props) {
 
             <TouchableOpacity
                 style={styles.menuButton}
-                /*onPress={() =>
-                    navigation.navigate('MyProductList')
-                }*/
+                onPress={() =>
+                    navigation.navigate('ProposalList')
+                }
             >
                 <Text style={styles.menuText}>
-                    🛒 이건뭘까
+                    🛒 전체 제작 요청 보러가기
                 </Text>
 
                 <Text style={styles.arrow}>

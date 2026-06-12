@@ -73,8 +73,15 @@ function StatusBadge({ status }: { status: BidStatus }) {
 }
 
 
-// ── 입찰 카드 ──────────────────────────────────────────────
-function Buttons( proposalId: number ) {
+
+
+
+// ── 버튼 뷰 ──────────────────────────────────────────────
+type ButtonsProps = {
+  proposalId: number;
+};
+
+function Buttons({ proposalId, }: ButtonsProps) {
 
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
@@ -255,7 +262,7 @@ export default function MyProposalList({ navigation }: Props) {
               remainingDeadlineDays={myProposal.remainingDeadlineDays}
               buttonView={
                 myProposal.proposalStatus === 'PENDING'
-                ? Buttons(myProposal.proposalId)
+                ? <Buttons proposalId={myProposal.proposalId} />
                 : null
               }
               onPressNav={() => {

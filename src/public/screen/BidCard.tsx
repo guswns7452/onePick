@@ -129,13 +129,14 @@ const styles = StyleSheet.create({
 
   bidAmount:    { fontSize: 18, fontWeight: 'bold', color: '#4f46e5' },
     cardBottomRow:{
-        height: 30,
+        height: 25,
         flexDirection: 'row',
         justifyContent: 'flex-start',
         alignItems: 'center',
         //backgroundColor: 'red'
     },
     dateText: {
+      paddingTop: 8,
       marginRight: 10,
       fontSize: 12,
       color: '#737684'

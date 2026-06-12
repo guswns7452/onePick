@@ -20,7 +20,6 @@ import { RouteProp } from '@react-navigation/native';
 import Payment from '../Payment';
 
 import { getProduct } from '../../../api/Product/getProduct';
-import { postApplyFunding } from '../../../api/Product/postApplyFunding';
 
 import StatusBadge from './StatusBadge';
 
@@ -39,30 +38,12 @@ type Props = {
 };
 
 
-// ── 남은 시간 계산 ─────────────────────────────────────────
-function getRemainingTime(endDate: string): string {
-  const now  = new Date();
-  const end  = new Date(endDate);
-  const diff = end.getTime() - now.getTime();
-
-  if (diff <= 0) return '마감';
-
-  const days    = Math.floor(diff / (1000 * 60 * 60 * 24));
-  const hours   = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-  const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-
-  if (days > 0)  return `${days}일 ${hours}시간 남음`;
-  if (hours > 0) return `${hours}시간 ${minutes}분 남음`;
-  return `${minutes}분 남음`;
-}
-
 export default function ProductFundingDetail({ navigation, route }: Props) {
   const { productId } = route.params;
 
   const [product, setProduct] = useState<any>(null);
 
   const [fulfilled, setFulfilled] = useState(false);
-  const [bidContent, setBidContent] = useState('');
   const [bidAmount, setBidAmount] = useState('');
 
   const [modalVisible, setModalVisible] = useState(false);
@@ -86,35 +67,35 @@ export default function ProductFundingDetail({ navigation, route }: Props) {
     const isFilled = bidAmount.trim() !== '';
     setFulfilled(isFilled);
 
-    }, [productId, bidContent, bidAmount]);
+    }, [productId, bidAmount]);
 
   
 
   const handleBid = () => {
     if (!bidAmount || isNaN(Number(bidAmount))) {
-      Alert.alert('입력 오류', '올바른 입찰 금액을 입력해 주세요.');
+      Alert.alert('참여 오류', '개수를 올바르게 입력해 주세요.');
       return;
     }
     if (Number(bidAmount) < product.price) {
-      Alert.alert('입찰 오류', `최소 입찰 금액은 ${product.price.toLocaleString()}원입니다.`);
+      Alert.alert('참여 오류', `최소 참여 가능 개수는 ${product.minQuantity}개입니다.`);
       return;
     }
 
     Alert.alert(
-      '입찰 확인',
-      `${Number(bidAmount).toLocaleString()}원으로 입찰하시겠습니까?`,
+      '펀딩 참여 확인',
+      `${Number(bidAmount)}개로 펀딩 참여하시겠습니까?`,
       [
         { text: '취소', style: 'cancel' },
         {
-          text: '입찰하기',
+          text: '참여하기',
           onPress: () => {
             setModalVisible(false);
             setBidAmount('');
             
             navigation.navigate('Payment', {
+              isPayment: true,
               productId: Number(productId),
-              content: bidContent,
-              price: Number(bidAmount),
+              quantity: Number(bidAmount),
             })
           }
         }
@@ -127,9 +108,9 @@ if (!product) {
     return (
         <View
             style={{
-                flex: 1,
-                justifyContent: 'center',
-                alignItems: 'center',
+              flex: 1,
+              justifyContent: 'center',
+              alignItems: 'center',
             }}
         >
             <Text>불러오는 중...</Text>
@@ -137,8 +118,8 @@ if (!product) {
     );
  }
 
- //const fundingRate = 0;
-  const fundingRate = product.fundingCount === 0 ? 0 : product.fundingCount / product.minPeople * 100;
+
+  const fundingRate = product.fundedQuantity === 0 ? 0 : product.fundedQuantity / product.minQuantity * 100;
 
   return (
     <View style={styles.container}>
@@ -259,7 +240,7 @@ if (!product) {
           style={styles.bidButton}
           onPress={() => setModalVisible(true)}
         >
-          <Text style={styles.bidButtonText}>입찰하기</Text>
+          <Text style={styles.bidButtonText}>참여하기</Text>
         </TouchableOpacity>
       </View>
     
@@ -287,22 +268,12 @@ if (!product) {
               autoFocus
             />
 
-            <TextInput
-              style={styles.modalInput}
-              placeholder="간단한 내용 입력"
-              placeholderTextColor="#aaa"
-              value={bidContent}
-              onChangeText={setBidContent}
-              autoFocus
-            />
-
             <View style={styles.modalButtons}>
               <TouchableOpacity
                 style={styles.modalCancelBtn}
                 onPress={() => {
                   setModalVisible(false);
                   setBidAmount('');
-                  setBidContent('');
                 }}
               >
                 <Text style={styles.modalCancelText}>취소</Text>
@@ -312,7 +283,7 @@ if (!product) {
                 style={styles.modalBidBtn}
                 onPress={handleBid}
               >
-                <Text style={styles.modalBidText}>입찰하기</Text>
+                <Text style={styles.modalBidText}>참여하기</Text>
               </TouchableOpacity>
             </View>
           </View>

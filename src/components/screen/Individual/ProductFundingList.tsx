@@ -156,12 +156,12 @@ export default function ProductFundingList({ navigation }: Props) {
               valueString={`${product.minQuantity}개`}
               thumbnail={product.thumbnail !== null ? product.thumbnail.imageUrl : null}
               remainingDeadlineDays={product.remainingDeadlineDays}
-              buttonView={() => {}}
-              onPressNav={() => {/*
-                navigation.navigate('MyProposalDetail', {
-                  proposalId: Number(myProposal.proposalId),
+              buttonView={null}
+              onPressNav={() => {
+                navigation.navigate('ProductFundingDetail', {
+                  productId: Number(product.productId),
                 })
-              */}}
+              }}
             />)
         )}
       </ScrollView>

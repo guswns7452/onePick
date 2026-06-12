@@ -74,7 +74,11 @@ function StatusBadge({ status }: { status: BidStatus }) {
 
 
 // ── 버튼 뷰 ──────────────────────────────────────────────
-function Buttons( productId : number ) {
+type ButtonsProps = {
+  productId: number;
+};
+
+function Buttons({ productId, }: ButtonsProps) {
 
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 

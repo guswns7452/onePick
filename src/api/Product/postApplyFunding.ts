@@ -2,8 +2,7 @@ import { api } from '../axios';
 
 // 요청 body 타입
 export interface CreateApplyRequest {
-    content: string;
-    price: number;
+    quantity: number;
 }
 
 // POST API
