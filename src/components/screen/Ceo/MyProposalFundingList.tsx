@@ -24,6 +24,7 @@ import BidCard from '../../../public/screen/BidCard';
 import { getProduct } from '../../../api/Product/getProduct';
 import { getMyFundings } from '../../../api/ProposalFunding/getMyFundings';
 import { deleteProposalFunding } from '../../../api/ProposalFunding/deleteProposalFunding';
+import { formatOrderAmount } from '../../../utils/orderStatus';
 
 type HomeScreenNavigationProp =
   NativeStackNavigationProp<RootStackParamList>;
@@ -249,7 +250,9 @@ export default function MyProposalFundingList({ navigation }: Props) {
               id={myProposalFunding.proposalId}
               title={myProposalFunding.proposalTitle}
               category={myProposalFunding.proposalCategory}
-              valueString={`${myProposalFunding.maxPrice.toLocaleString()}원`}
+              valueString={formatOrderAmount(
+                myProposalFunding.proposalFundingPrice ?? myProposalFunding.maxPrice,
+              )}
               thumbnail={null}
               remainingDeadlineDays={0}
               buttonView={
