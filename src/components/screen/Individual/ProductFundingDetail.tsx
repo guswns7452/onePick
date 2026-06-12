@@ -155,8 +155,8 @@ if (!product) {
         {/* 기본 정보 */}
         <View style={styles.section}>
           <Text style={styles.productName}>{product.title}</Text>
-          <Text style={styles.seller}>{product.createdAt}</Text>
-          <Text style={styles.price}>{product.price}원</Text>
+          <Text style={styles.seller}>{product.createdAt.slice(0, 10)}</Text>
+          <Text style={styles.price}>{product.price.toLocaleString()}원</Text>
         </View>
 
         {/* 펀딩 달성률 */}
@@ -187,9 +187,9 @@ if (!product) {
 
         {/* 제품 설명 */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>👥 최소 인원</Text>
+          <Text style={styles.sectionTitle}>💛 최소 개수</Text>
           <Text style={styles.description}>
-            {product.minPeople}
+            {`${product.minQuantity}개`}
           </Text>
         </View>
 
@@ -231,18 +231,19 @@ if (!product) {
             */}
 
       {/* 하단 입찰 버튼 */}
-      <View style={styles.bottomBar}>
-        <View style={styles.bottomPrice}>
-          <Text style={styles.bottomPriceLabel}>시작가</Text>
-          <Text style={styles.bottomPriceValue}>{product.price?.toLocaleString()}원</Text>
-        </View>
+      { product.status === 'PENDING' ?
+      (
         <TouchableOpacity
-          style={styles.bidButton}
-          onPress={() => setModalVisible(true)}
+            style={styles.button}
+            onPress={() => setModalVisible(true)}
         >
-          <Text style={styles.bidButtonText}>참여하기</Text>
+            <Text style={styles.buttonText}>
+                참여하기
+            </Text>
         </TouchableOpacity>
-      </View>
+
+    ) : ( <></> )
+    }
     
       {/* 입찰 모달 */}
       <Modal
@@ -283,14 +284,13 @@ if (!product) {
                 style={styles.modalBidBtn}
                 onPress={handleBid}
               >
-                <Text style={styles.modalBidText}>참여하기</Text>
-              </TouchableOpacity>
-            </View>
+              <Text style={styles.modalBidText}>참여하기</Text>
+            </TouchableOpacity>
           </View>
-
         </View>
-      </Modal>
 
+      </View>
+    </Modal>
       </ScrollView>
     </View>
   );
@@ -307,6 +307,7 @@ const styles = StyleSheet.create({
 
   // 헤더
   header: {
+    height: 160,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
@@ -321,18 +322,20 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   backIcon: {
-    fontSize: 22,
+    fontSize: 32,
     color: '#1a1a2e',
   },
+  
   headerTitle: {
-    fontSize: 17,
+    marginTop: 4,
+    fontSize: 22,
     fontWeight: '700',
     color: '#1a1a2e',
   },
 
   // 이미지
   imageBox: {
-    height: 260,
+    height: 240,
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
@@ -466,11 +469,13 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0,
+    height: 120,
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: '#fff',
-    padding: 16,
+    //padding: 16,
     paddingBottom: 30,
+    paddingHorizontal: 30,
     borderTopWidth: 1,
     borderTopColor: '#f0f0f0',
     gap: 12,
