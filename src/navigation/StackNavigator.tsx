@@ -19,12 +19,16 @@ import MyProposalFundingList from '../components/screen/Ceo/MyProposalFundingLis
 
 import Payment from '../components/screen/Payment'
 
+import MyOrderList from '../components/screen/Order/MyOrderList'
+import MyOrderDetail from '../components/screen/Order/MyOrderDetail'
+
 import GongguAIScreen from '../components/screen/Ai/GongguAIScreen'
 import OrderParserScreen from '../components/screen/Ai/OrderParserScreen'
 import RecommendScreen from '../components/screen/Ai/RecommendScreen'
 import Sketch2ProductScreen from '../components/screen/Ai/Sketch2ProductScreen'
 
 import { Member } from '../interface/member'
+import { ProposalOrder } from '../interface/order'
 
 
 export type RootStackParamList = {
@@ -37,6 +41,15 @@ export type RootStackParamList = {
     isPayment: boolean;
     productId: number;
     quantity: number;
+  };
+
+  MyOrderList: {
+    member: Member;
+  };
+
+  MyOrderDetail: {
+    order: ProposalOrder;
+    member: Member;
   };
 
   NewProposal: undefined;
@@ -84,6 +97,16 @@ export default function StackNavigator() {
       <Stack.Screen
         name="Payment"
         component={Payment}
+      />
+
+      <Stack.Screen
+        name="MyOrderList"
+        component={MyOrderList}
+      />
+
+      <Stack.Screen
+        name="MyOrderDetail"
+        component={MyOrderDetail}
       />
 
 
