@@ -10,10 +10,10 @@ import ProductFundingList from '../components/screen/Individual/ProductFundingLi
 import ProductFundingDetail from '../components/screen/Individual/ProductFundingDetail'
 import MyFundingList from '../components/screen/Individual/MyFundingList'
 import MyProposalList from '../components/screen/Individual/MyProposalList'
-import MyProposalDetail from '../components/screen/Individual/MyProposalDetail'
 
 import NewProduct from '../components/screen/Ceo/NewProduct'
 import ProposalList from '../components/screen/Ceo/ProposalList'
+import ProposalDetail from '../components/screen/Ceo/ProposalDetail'
 import MyProductList from '../components/screen/Ceo/MyProductList'
 import MyProposalFundingList from '../components/screen/Ceo/MyProposalFundingList'
 
@@ -47,12 +47,13 @@ export type RootStackParamList = {
   };
   MyFundingList: undefined;
   MyProposalList: undefined;
-  MyProposalDetail: {
-    proposalId: number,
-  };
 
   NewProduct: undefined;
   ProposalList: undefined;
+  ProposalDetail: {
+    isMine: boolean,
+    proposalId: number,
+  };
   MyProductList: undefined;
   MyProposalFundingList: undefined;
 
@@ -110,10 +111,6 @@ export default function StackNavigator() {
         name="MyProposalList"
         component={MyProposalList}
       />
-      <Stack.Screen
-        name="MyProposalDetail"
-        component={MyProposalDetail}
-      />
 
 
       <Stack.Screen
@@ -123,6 +120,10 @@ export default function StackNavigator() {
       <Stack.Screen
         name="ProposalList"
         component={ProposalList}
+      />
+      <Stack.Screen
+        name="ProposalDetail"
+        component={ProposalDetail}
       />
       <Stack.Screen
         name="MyProductList"

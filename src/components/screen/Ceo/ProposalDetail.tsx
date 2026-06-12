@@ -1,23 +1,26 @@
-// MyProposalDetail.tsx
+// ProposalDetail.tsx
 // (개인) 구매 요청 글 상세 화면 — 이미지, 제목, 설명 + 입찰 요청 목록
 
 import axios from 'axios';
 import React, { useState, useEffect } from 'react';
 import {
-  Alert, View, Text, Image, TouchableOpacity,
-  ScrollView, StyleSheet, ActivityIndicator,
+  Alert, View, Text, Image, TouchableOpacity, Modal,
+  TextInput, ScrollView, StyleSheet, ActivityIndicator,
 } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../../navigation/StackNavigator';
 import { RouteProp } from '@react-navigation/native';
+
 import { getFundings } from '../../../api/ProposalFunding/getFundings';
 import { patchAcceptFunding } from '../../../api/ProposalFunding/patchAcceptFunding';
 import { patchRejectFunding } from '../../../api/ProposalFunding/patchRejectFunding';
+import { postProposalFunding } from '../../../api/ProposalFunding/postProposalFunding';
+
 import { api } from '../../../api/axios';
 
 type Props = {
   navigation: NativeStackNavigationProp<RootStackParamList>;
-  route:      RouteProp<RootStackParamList, 'MyProposalDetail'>;
+  route:      RouteProp<RootStackParamList, 'ProposalDetail'>;
 };
 
 const CATEGORY_LABELS: Record<string, string> = {
@@ -25,23 +28,40 @@ const CATEGORY_LABELS: Record<string, string> = {
   FASHION: '패션', BEAUTY: '뷰티', ETC: '기타',
 };
 
-export default function MyProposalDetail({ navigation, route }: Props) {
-  const { proposalId } = route.params;
+export default function ProposalDetail({ navigation, route }: Props) {
 
-  const [proposal, setProposal]               = useState<any>(null);
+  const request = route.params;
+
+  const [proposal, setProposal] = useState<any>(null);
   const [proposalFundings, setProposalFundings] = useState<any[]>([]);
-  const [loading, setLoading]                 = useState(true);
+  const [loading, setLoading] = useState(true);
+  
+  const [fulfilled, setFulfilled] = useState(false);
+  const [bidPrice, setBidPrice] = useState('');
+  const [bidContent, setBidContent] = useState('');
+  
+  const [modalVisible, setModalVisible] = useState(false);
+
 
   useEffect(() => {
-    fetchAll();
-  }, [proposalId]);
+
+    const isFilled =
+      bidPrice.trim() !== '' &&
+      bidContent.trim() !== '';
+      
+    setFulfilled(isFilled);
+
+  }, [bidPrice, bidContent]);
+
+
+  useEffect(() => {
 
   const fetchAll = async () => {
     try {
       // 제품 상세 + 입찰 목록 동시 호출
       const [proposalRes, fundingsRes] = await Promise.all([
-        api.get(`/api/v1/proposals/${proposalId}`),
-        getFundings(proposalId),
+        api.get(`/api/v1/proposals/${request.proposalId}`),
+        getFundings(request.proposalId),
       ]);
       setProposal(proposalRes.data.data);
       setProposalFundings(fundingsRes.data ?? []);
@@ -51,6 +71,79 @@ export default function MyProposalDetail({ navigation, route }: Props) {
       setLoading(false);
     }
   };
+
+   fetchAll();
+    
+  }, [request.proposalId]);
+  
+
+  const handleBid = () => {
+    if (!bidPrice || isNaN(Number(bidPrice))) {
+      Alert.alert('참여 오류', '금액을 올바르게 입력해 주세요.');
+      return;
+    }
+    if (Number(bidPrice) > proposal.maxPrice) {
+      Alert.alert('참여 오류', `최대 금액은 ${proposal.maxPrice.toLocaleString()}원입니다.`);
+      return;
+    }
+
+    Alert.alert(
+      '제작 제안 확인',
+      `${bidPrice.toLocaleString()}원으로 펀딩 참여하시겠습니까?`,
+      [
+        { text: '취소', style: 'cancel' },
+        {
+          text: '참여하기',
+          onPress: () => {
+            setModalVisible(false);
+            setBidPrice('');
+            setBidContent('');
+
+
+            
+            navigation.navigate('Payment', {
+              isPayment: true,
+              productId: Number(request.productId),
+              quantity: Number(bidAmount),
+            })
+          }
+        }
+      ]
+    );
+  };
+
+    const handlePropose = async (proposalId: number) => {
+
+      try {
+
+        const result = await postProposalFunding(proposalId);
+        console.log(result);
+        
+        Alert.alert(
+            '✅ 제안 완료',
+            '제작 제안이 성공적으로 완료됐어요!');
+        
+        setModalVisible(false);
+        navigation.goBack();
+
+    } catch (error) {
+        if (axios.isAxiosError(error)) {
+            console.log(error);
+                
+            Alert.alert(
+                '에러 발생',
+                JSON.stringify(error.response?.data)
+                || error.message
+            );
+
+        } else {
+            Alert.alert(
+                '에러 발생',
+                '알 수 없는 오류',
+            );
+        }
+    }
+}
 
   const handleAccept = async (proposalFundingId: number) => {
     try {
@@ -110,7 +203,7 @@ export default function MyProposalDetail({ navigation, route }: Props) {
           <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backBtn}>
             <Text style={styles.backIcon}>←</Text>
           </TouchableOpacity>
-          <Text style={styles.headerTitle}>구매 요청 상세</Text>
+          <Text style={styles.headerTitle}>제작 요청 상세</Text>
           <View style={{ width: 40 }} />
         </View>
 
@@ -169,7 +262,8 @@ export default function MyProposalDetail({ navigation, route }: Props) {
         </View>
 
         {/* 입찰 요청 목록 */}
-        <View style={styles.section}>
+        { request.isMine ?
+        (<View style={styles.section}>
           <Text style={styles.sectionTitle}>📩 입찰 요청 목록</Text>
           {proposalFundings.length === 0 ? (
             <Text style={styles.emptyText}>아직 입찰 요청이 없어요</Text>
@@ -198,6 +292,84 @@ export default function MyProposalDetail({ navigation, route }: Props) {
             ))
           )}
         </View>
+        ) : ( <></> )
+        }
+
+        <View style={{ height: 100, }}/>
+
+      {/* 하단 입찰 버튼 */}
+      { proposal.proposalStatus === 'PENDING' && !request.isMine ?
+      (
+        <TouchableOpacity
+            style={styles.button}
+            onPress={() => setModalVisible(true)}
+        >
+            <Text style={styles.buttonText}>
+                제작 제안하기
+            </Text>
+        </TouchableOpacity>
+
+      ) : ( <></> )
+      }
+
+      {/* 입찰 모달 */}
+      <Modal
+        visible={modalVisible}
+        transparent
+        animationType="slide"
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalBox}>
+            <Text style={styles.modalTitle}>📋 제안서 입력</Text>
+            <Text style={styles.modalSub}>
+              {`최대 금액: ${proposal.maxPrice.toLocaleString()}원`}
+            </Text>
+
+            <TextInput
+              style={styles.modalInput}
+              placeholder="금액 입력"
+              placeholderTextColor="#aaa"
+              value={bidPrice}
+              onChangeText={setBidPrice}
+              keyboardType="numeric"
+              autoFocus
+            />
+
+            <TextInput
+              style={styles.modalInput}
+              placeholder="내용 입력"
+              placeholderTextColor="#aaa"
+              value={bidContent}
+              onChangeText={setBidContent}
+              autoFocus
+            />
+
+            <View style={styles.modalButtons}>
+              <TouchableOpacity
+                style={styles.modalCancelBtn}
+                onPress={() => {
+                  setModalVisible(false);
+                  setBidPrice('');
+                  setBidContent('');
+                }}
+              >
+                <Text style={styles.modalCancelText}>취소</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                disabled={!fulfilled}
+                style={styles.modalBidBtn}
+                onPress={() => handlePropose(proposal.proposalId)}
+              >
+              <Text style={styles.modalBidText}>참여하기</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+
+      </View>
+    </Modal>
+
+
 
         <View style={{ height: 40 }} />
       </ScrollView>
@@ -239,7 +411,7 @@ const styles = StyleSheet.create({
     color: '#1a1a2e',
   },
 
-  headerTitle: { fontSize: 17, fontWeight: '700', color: '#1a1a2e' },
+  headerTitle: { fontSize: 22, fontWeight: '700', color: '#1a1a2e' },
 
   imageBox: {
     height: 240,
@@ -293,4 +465,87 @@ const styles = StyleSheet.create({
   rejectBtnText:   { color: '#ef4444', fontSize: 13, fontWeight: '600' },
   acceptBtn:       { backgroundColor: '#4f46e5', borderRadius: 8, paddingHorizontal: 12, paddingVertical: 6 },
   acceptBtnText:   { color: '#fff', fontSize: 13, fontWeight: '600' },
+
+  // 모달
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.4)',
+    justifyContent: 'flex-end',
+  },
+  modalBox: {
+    backgroundColor: '#fff',
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
+    padding: 24,
+    paddingBottom: 40,
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#1a1a2e',
+    marginBottom: 6,
+  },
+  modalSub: {
+    fontSize: 13,
+    color: '#888',
+    marginBottom: 20,
+  },
+  modalInput: {
+    borderWidth: 1.5,
+    borderColor: '#4f46e5',
+    borderRadius: 12,
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+    fontSize: 18,
+    color: '#1a1a2e',
+    marginBottom: 20,
+  },
+  modalButtons: {
+    flexDirection: 'row',
+    gap: 12,
+  },
+  modalCancelBtn: {
+    flex: 1,
+    borderWidth: 1,
+    borderColor: '#e0e0e0',
+    borderRadius: 12,
+    paddingVertical: 14,
+    alignItems: 'center',
+  },
+  modalCancelText: {
+    fontSize: 15,
+    color: '#888',
+    fontWeight: '600',
+  },
+  modalBidBtn: {
+    flex: 2,
+    backgroundColor: '#4f46e5',
+    borderRadius: 12,
+    paddingVertical: 14,
+    alignItems: 'center',
+  },
+  modalBidText: {
+    fontSize: 15,
+    color: '#fff',
+    fontWeight: '700',
+  },
+
+  // 버튼
+  button: {
+    width: '92%',
+    backgroundColor: '#4f46e5',
+    borderRadius: 16,
+    paddingVertical: 18,
+    alignSelf: 'center',
+    alignItems: 'center',
+  },
+  buttonDisabled: {
+    backgroundColor: '#a5b4fc',
+  },
+  buttonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '700',
+  },
+
 });

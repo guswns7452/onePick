@@ -311,11 +311,12 @@ export default function MyProductList({ navigation }: Props) {
                 ? <Buttons productId={myProduct.productId} />
                 : null
               }
-              onPressNav={() => {/*
-                navigation.navigate('MyProposalDetail', {
-                  proposalId: Number(myProposal.proposalId),
+              onPressNav={() => {
+                navigation.navigate('ProductFundingDetail', {
+                  isMine: true,
+                  productId: Number(product.productId),
                 })
-              */}}
+              }}
             />)
         )}
       </ScrollView>

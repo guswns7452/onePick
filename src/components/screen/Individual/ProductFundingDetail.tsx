@@ -246,8 +246,8 @@ if (!product) {
             </Text>
         </TouchableOpacity>
 
-    ) : ( <></> )
-    }
+      ) : ( <></> )
+      }
     
       {/* 입찰 모달 */}
       <Modal
@@ -295,6 +295,7 @@ if (!product) {
 
       </View>
     </Modal>
+    
       </ScrollView>
     </View>
   );

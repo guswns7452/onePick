@@ -1,6 +1,6 @@
 // ProductFundingList.tsx
-// 전체 펀딩 모집 목록 — 진행중 / 종료 / 취소 탭 구성
-// 카드 클릭 시 ProductFundingDetail로 이동
+// 전체 제작 요청 목록 — 진행중 / 종료 / 취소 탭 구성
+// 카드 클릭 시 ProposalDetail 로 이동
 
 import React, { useState, useEffect } from 'react';
 import {
@@ -91,7 +91,7 @@ export default function ProposalList({ navigation }: Props) {
 
       {/* 헤더 */}
       <ListHeader
-        title='전체 펀딩 모집 목록'
+        title='전체 제작 요청 목록'
         count={proposals.length}
         onPressBack={() => navigation.goBack()}
       />
@@ -150,11 +150,12 @@ export default function ProposalList({ navigation }: Props) {
               thumbnail={proposal.thumbnail !== null ? proposal.thumbnail.imageUrl : null}
               remainingDeadlineDays={proposal.remainingDeadlineDays}
               buttonView={null}
-              onPressNav={() => {/*
-                navigation.navigate('ProductFundingDetail', {
-                  productId: Number(product.productId),
+              onPressNav={() => {
+                navigation.navigate('ProposalDetail', {
+                  isMine: false,
+                  proposalId: Number(proposal.proposalId),
                 })
-              */}}
+              }}
             />)
         )}
       </ScrollView>
