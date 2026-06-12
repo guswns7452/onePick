@@ -35,16 +35,6 @@ type Props = {
 // ── 타입 정의 ──────────────────────────────────────────────
 type BidStatus = 'PENDING' | 'FINISHED' | 'CANCELED';
 
-interface Bid {
-  productId: number;
-  title: string;
-  price: number;
-  minPeople: number;
-  status: BidStatus;
-  category: string;
-}
-
-
   
 // ── 탭 설정 ────────────────────────────────────────────────
 const TABS: { key: BidStatus; label: string; color: string }[] = [
@@ -82,7 +72,6 @@ function Buttons({ productId, }: ButtonsProps) {
 
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
-
   const finishMyProduct = async (productId : number) => {
 
     Alert.alert(
@@ -99,7 +88,6 @@ function Buttons({ productId, }: ButtonsProps) {
 
           onPress: async () => {
             try {
-                
               const result = await patchFunding(productId);
               console.log(result);
 
@@ -133,11 +121,10 @@ function Buttons({ productId, }: ButtonsProps) {
     );
   };
 
-
   const deleteMyProduct = async (productId : number) => {
 
     Alert.alert(
-      '펀딩 취소',
+      '모집 취소',
       '정말 펀딩 모집을 취소하시겠습니까?',
       [
         {
@@ -202,7 +189,7 @@ function Buttons({ productId, }: ButtonsProps) {
           onPress={() => deleteMyProduct(productId)}
         >
           <Text style={styles.btnText}>
-            참여 취소
+            모집 취소
           </Text>
         </TouchableOpacity>
         </View>
@@ -260,7 +247,7 @@ export default function MyProductList({ navigation }: Props) {
 
       {/* 헤더 */}
       <ListHeader
-        title='내 주문 제작 목록'
+        title='내 펀딩 모집 목록'
         count={myProducts.length - myProducts.filter( (mp) => mp.status === 'WRITING' ).length}
         onPressBack={() => navigation.goBack()}
       />
@@ -321,7 +308,7 @@ export default function MyProductList({ navigation }: Props) {
               remainingDeadlineDays={myProduct.remainingDeadlineDays}
               buttonView={
                 myProduct.status === 'PENDING'
-                ? Buttons(myProduct.productId)
+                ? <Buttons productId={myProduct.productId} />
                 : null
               }
               onPressNav={() => {/*
