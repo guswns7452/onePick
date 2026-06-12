@@ -29,22 +29,14 @@ type Props = {
 
 
 // ── 타입 정의 ──────────────────────────────────────────────
-type BidStatus = 'PENDING' | 'FINISHED' | 'CANCELLED';
+type BidStatus = 'PENDING' | 'FINISHED' | 'CANCELED';
 
-interface Bid {
-  productId: number;
-  title: string;
-  price: number;
-  minPeople: number;
-  status: BidStatus;
-  category: string;
-}
 
 // ── 탭 설정 ────────────────────────────────────────────────
 const TABS: { key: BidStatus; label: string; color: string }[] = [
   { key: 'PENDING',    label: '진행중', color: '#4f46e5' },
   { key: 'FINISHED', label: '종료',   color: '#10b981' },
-  { key: 'CANCELLED', label: '취소',   color: '#ef4444' },
+  { key: 'CANCELED', label: '취소',   color: '#ef4444' },
 ];
 
 
@@ -63,13 +55,14 @@ export default function ProposalList({ navigation }: Props) {
             const data = await getProposals();
             console.log(JSON.stringify(data, null, 2));
             
-            if (Array.isArray(data)) {
-                setProposals(data);
-            } else if (Array.isArray(data.data)) {
-                setProposals(data.data);
+            if (Array.isArray(data.content)) {
+                setProposals(data.content);
+            } else if (Array.isArray(data.data.content)) {
+                setProposals(data.data.content);
             } else {
                 setProposals([]);
             }
+
         } catch (error) {
             console.log(error);
         }
@@ -89,7 +82,7 @@ export default function ProposalList({ navigation }: Props) {
   const counts = {
     PENDING: proposals.filter( (p) => p.proposalStatus === 'PENDING' ).length,
     FINISHED: proposals.filter( (p) => p.proposalStatus === 'FINISHED' ).length,
-    CANCELLED: proposals.filter( (p) => p.proposalStatus === 'CANCELLED' ).length,
+    CANCELED: proposals.filter( (p) => p.proposalStatus === 'CANCELED' ).length,
   };
 
 
@@ -152,7 +145,7 @@ export default function ProposalList({ navigation }: Props) {
               key={proposal.proposalId}
               id={proposal.proposalId}
               title={proposal.title}
-              category={proposal.proposalStatus}
+              category={proposal.proposalCategory}
               valueString={`최대 ${proposal.maxPrice}원`}
               thumbnail={proposal.thumbnail !== null ? proposal.thumbnail.imageUrl : null}
               remainingDeadlineDays={proposal.remainingDeadlineDays}
