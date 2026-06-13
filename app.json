@@ -1,4 +1,11 @@
 {
   "name": "onePick",
-  "displayName": "onePick"
+  "displayName": "onePick",
+  "expo": {
+    "name": "onePick",
+    "slug": "one-pick-six",
+    "web": {
+      "bundler": "metro"
+    }
+  }
 }
