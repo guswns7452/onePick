@@ -13,6 +13,8 @@ import MyProposalList from '../components/screen/Individual/MyProposalList'
 import ProposalPayment from '../components/screen/Individual/ProposalPayment'
 
 import NewProduct from '../components/screen/Ceo/NewProduct'
+import AiProductPriceScreen from '../components/screen/Ceo/AiProductPriceScreen'
+import AiLoadingScreen from '../components/screen/Ceo/AiLoadingScreen'
 import ProposalList from '../components/screen/Ceo/ProposalList'
 import ProposalDetail from '../components/screen/Ceo/ProposalDetail'
 import MyProductList from '../components/screen/Ceo/MyProductList'
@@ -65,7 +67,18 @@ export type RootStackParamList = {
     proposalFundingId: number,
   };
 
-  NewProduct: undefined;
+  NewProduct: {
+    aiPrice?: number | null;
+    aiDescription?: string | null;
+    aiProductId?: number | null;
+    productName?: string;
+  } | undefined;
+  AiProductPriceScreen: undefined;
+  AiLoadingScreen: {
+    jobId: string;
+    productId: number;
+    name: string;
+  };
   ProposalList: undefined;
   ProposalDetail: {
     isMine: boolean,
@@ -145,6 +158,14 @@ export default function StackNavigator() {
       <Stack.Screen
         name="NewProduct"
         component={NewProduct}
+      />
+      <Stack.Screen
+        name="AiProductPriceScreen"
+        component={AiProductPriceScreen}
+      />
+      <Stack.Screen
+        name="AiLoadingScreen"
+        component={AiLoadingScreen}
       />
       <Stack.Screen
         name="ProposalList"
