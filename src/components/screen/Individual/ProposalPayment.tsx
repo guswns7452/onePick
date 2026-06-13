@@ -1,4 +1,4 @@
-// Payment.tsx
+// ProposalPayment.tsx
 
 import axios from 'axios';
 import React, { useState, useEffect } from 'react';
@@ -15,27 +15,26 @@ import {
     NativeStackNavigationProp,
 } from '@react-navigation/native-stack';
 
-import { RootStackParamList }
-from '../../navigation/StackNavigator';
+import { RootStackParamList } from '../../../navigation/StackNavigator';
 import { RouteProp } from '@react-navigation/native';
 
-import { postApplyFunding } from '../../api/Product/postApplyFunding';
-import { getMyAccounts } from '../../api/Member/getMyAccounts';
+import { getMyAccounts } from '../../../api/Member/getMyAccounts';
+import { postAcceptPayment } from '../../../api/Payment/postAcceptPayment';
 
-import { styles } from './PaymentStyle';
+import { styles } from '../PaymentStyle';
 
 type HomeScreenNavigationProp =
   NativeStackNavigationProp<RootStackParamList>;
 
-type PaymentRouteProp =
+type ProposalPaymentRouteProp =
     RouteProp<
         RootStackParamList,
-        'Payment'
+        'ProposalPayment'
     >;
 
 type Props = {
   navigation: HomeScreenNavigationProp;
-    route: PaymentRouteProp;
+    route: ProposalPaymentRouteProp;
 };
 
 
@@ -57,21 +56,17 @@ type Card = {
 
 
 
-export default function Payment({ navigation, route }: Props) {
+export default function ProposalPayment({ navigation, route }: Props) {
 
-    const request = route.params;
+    const { proposalFundingId } = route.params;
 
-    const [selectedAccount, setSelectedAccount]
-        = useState<number | null>(null);
-
-    const [selectedCard, setSelectedCard]
-        = useState<number | null>(null);
-
+    const [selectedAccount, setSelectedAccount] = useState<any>(null);
+    const [selectedCard, setSelectedCard] = useState<any>(null);
 
     const [accounts, setAccounts] = useState<Account[]>([]);
     const [cards, setCards] = useState<Card[]>([]);
 
-
+    useEffect(() => {
     const fetchPayment = async () => {
         try {
             const data = await getMyAccounts();
@@ -79,9 +74,6 @@ export default function Payment({ navigation, route }: Props) {
 
             setAccounts(data.data.accounts);
             setCards(data.data.cards);
-
-            console.log(accounts);
-            console.log(cards);
 
 
         } catch (error) {
@@ -91,24 +83,29 @@ export default function Payment({ navigation, route }: Props) {
       
     fetchPayment();
 
+    }, []);
+
     
 
 
-    const handleApply = async () => {
+    const handleAcceptPay = async () => {
         try {
             const body = {
-                quantity: Number(request.quantity),
-        }
+                proposalFundingId: Number(proposalFundingId),
+                paymentType: selectedAccount != null ? 'ACCOUNT' : 'CARD',
+                pgPaymentKey: '',
 
-        const result = await postApplyFunding(request.productId, body);
+            }
+        
+        console.log(body);
+
+        const result = await postAcceptPayment(body);
         console.log(result);
         
-        Alert.alert(
-            '✅ 입찰 완료',
-            '입찰이 성공적으로 완료됐어요!');
+        
+        Alert.alert('✅ 수락 완료', '입찰을 성공적으로 수락했어요!');
         
 
-        navigation.navigate('ProductFundingList');
 
     } catch (error) {
         if (axios.isAxiosError(error)) {
@@ -127,6 +124,10 @@ export default function Payment({ navigation, route }: Props) {
             );
         }
     }
+
+
+    navigation.navigate('MyProposalList');
+
 }
 
 
@@ -147,7 +148,7 @@ export default function Payment({ navigation, route }: Props) {
                     </Text>
 
                     <Text style={styles.headerSub}>
-                        { request.isPayment ? '사용할 결제 수단을 선택하세요' : '내 결제 수단을 확인하세요' }
+                        사용할 결제 수단을 선택하세요
                     </Text>
 
                 </View>
@@ -274,17 +275,14 @@ export default function Payment({ navigation, route }: Props) {
                 </View>
 
                 {/* BUTTON */}
-
-                { request.isPayment ?
-
-                (<TouchableOpacity
+                <TouchableOpacity
                     disabled={selectedAccount == null && selectedCard == null}
                     style={[
                         styles.button,
                         (selectedAccount == null && selectedCard == null) &&
                         styles.buttonDisabled,
                     ]}
-                    onPress={() => handleApply()}
+                    onPress={() => handleAcceptPay()}
                 >
 
                     <Text style={styles.buttonText}>
@@ -292,18 +290,6 @@ export default function Payment({ navigation, route }: Props) {
                     </Text>
 
                 </TouchableOpacity>
-                )
-                : (<TouchableOpacity
-                    disabled={selectedAccount == null && selectedCard == null}
-                    style={styles.button}
-                    onPress={() => navigation.goBack()}
-                >
-                    <Text style={styles.buttonText}>
-                        뒤로가기
-                    </Text>
-                </TouchableOpacity>
-                )
-                }
             </ScrollView>
 
         </View>

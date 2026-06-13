@@ -63,8 +63,14 @@ export default function ProposalDetail({ navigation, route }: Props) {
         api.get(`/api/v1/proposals/${request.proposalId}`),
         getFundings(request.proposalId),
       ]);
+
+      console.log('제안제품 상세');
+      
       setProposal(proposalRes.data.data);
+      console.log(proposalRes.data.data);
       setProposalFundings(fundingsRes.data ?? []);
+
+
     } catch (error) {
       console.log(error);
     } finally {
@@ -80,13 +86,8 @@ export default function ProposalDetail({ navigation, route }: Props) {
     const handlePropose = async (proposalId: number) => {
 
       try {
-
         const result = await postProposalFunding(proposalId);
         console.log(result);
-        
-        Alert.alert(
-            '✅ 제안 완료',
-            '제작 제안이 성공적으로 완료됐어요!');
         
         setModalVisible(false);
         navigation.goBack();
@@ -111,11 +112,18 @@ export default function ProposalDetail({ navigation, route }: Props) {
 }
 
   const handleAccept = async (proposalFundingId: number) => {
+
     try {
+
       const result = await patchAcceptFunding(proposalFundingId);
-      Alert.alert('✅ 수락 완료', '입찰을 성공적으로 수락했어요!');
-      navigation.goBack();
+      console.log(result);
+
+      navigation.navigate('ProposalPayment', {
+        proposalFundingId: proposalFundingId,
+      });
+
     } catch (error) {
+
       if (axios.isAxiosError(error)) {
         Alert.alert('에러 발생', JSON.stringify(error.response?.data) || error.message);
       } else {
