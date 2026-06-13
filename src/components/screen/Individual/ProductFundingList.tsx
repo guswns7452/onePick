@@ -159,6 +159,7 @@ export default function ProductFundingList({ navigation }: Props) {
               buttonView={null}
               onPressNav={() => {
                 navigation.navigate('ProductFundingDetail', {
+                  isMine: false,
                   productId: Number(product.productId),
                 })
               }}

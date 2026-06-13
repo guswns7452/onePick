@@ -245,11 +245,11 @@ export default function MyProposalFundingList({ navigation }: Props) {
         ) : (
           filtered.map(myProposalFunding =>
             <BidCard
-              key={myProposalFunding.proposalFundingId}
-              id={myProposalFunding.proposalFundingId}
-              title={myProposalFunding.productTitle}
-              category={'ETC'}
-              valueString={`${myProposalFunding.price.toLocaleString()}원`}
+              key={myProposalFunding.proposalId}
+              id={myProposalFunding.proposalId}
+              title={myProposalFunding.proposalTitle}
+              category={myProposalFunding.proposalCategory}
+              valueString={`${myProposalFunding.maxPrice.toLocaleString()}원`}
               thumbnail={null}
               remainingDeadlineDays={0}
               buttonView={

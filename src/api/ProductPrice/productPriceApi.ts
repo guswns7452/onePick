@@ -25,6 +25,15 @@ export interface ProductPriceJobResult {
     price:       number | null;
     description: string | null;
     productId:   number | null;
+
+    jobId:     string;
+    status:    'QUEUED' | 'RUNNING' | 'SUCCESS' | 'FAILED';
+    productId: number | null;
+    result: {
+        price:           number | null;
+        description:     string | null;
+        inferenceTimeSec: number | null;
+    } | null;
 }
 
 // AI 추론 요청

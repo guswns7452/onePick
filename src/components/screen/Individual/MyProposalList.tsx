@@ -266,7 +266,8 @@ export default function MyProposalList({ navigation }: Props) {
                 : null
               }
               onPressNav={() => {
-                navigation.navigate('MyProposalDetail', {
+                navigation.navigate('ProposalDetail', {
+                  isMine: true,
                   proposalId: Number(myProposal.proposalId),
                 })
               }}
