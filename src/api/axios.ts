@@ -1,5 +1,5 @@
 import axios from 'axios';
-import CookieManager from '@react-native-cookies/cookies';
+import CookieManager from '../utils/cookieManager';
 
 export const api = axios.create({
     baseURL: 'http://13.209.73.31:8080',

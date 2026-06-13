@@ -1,5 +1,5 @@
 import { api } from '../axios';
-import CookieManager from '@react-native-cookies/cookies';
+import CookieManager from '../../utils/cookieManager';
 
 import { TextEncoder } from 'text-encoding';
 import { decode } from 'base-64';

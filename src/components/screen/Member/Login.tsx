@@ -4,7 +4,7 @@
 import axios from 'axios';
 import React, { useState, useEffect } from 'react';
 import { Alert, Text, TouchableOpacity, View, TextInput } from 'react-native';
-import CookieManager from '@react-native-cookies/cookies';
+import CookieManager from '../../../utils/cookieManager';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../../navigation/StackNavigator.tsx';
 import { postLogin } from '../../../api/Member/postLogin.ts';
