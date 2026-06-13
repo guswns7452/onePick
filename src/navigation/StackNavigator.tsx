@@ -15,16 +15,36 @@ import ProposalList from '../components/screen/Ceo/ProposalList'
 import MyProductList from '../components/screen/Ceo/MyProductList'
 import MyProposalFundingList from '../components/screen/Ceo/MyProposalFundingList'
 import Payment from '../components/screen/Payment'
+import MyOrderList from '../components/screen/Order/MyOrderList'
+import MyOrderDetail from '../components/screen/Order/MyOrderDetail'
 import GongguAIScreen from '../components/screen/Ai/GongguAIScreen'
 import OrderParserScreen from '../components/screen/Ai/OrderParserScreen'
 import RecommendScreen from '../components/screen/Ai/RecommendScreen'
 import Sketch2ProductScreen from '../components/screen/Ai/Sketch2ProductScreen'
 import { Member } from '../interface/member'
+import { ProposalOrder } from '../interface/order'
 
 export type RootStackParamList = {
   Login: undefined;
-  MyPage: { member: Member; };
-  Payment: { isPayment: boolean; productId: number; quantity: number; };
+  MyPage: {
+    member: Member;
+  };
+
+  Payment: {
+    isPayment: boolean;
+    productId: number;
+    quantity: number;
+  };
+
+  MyOrderList: {
+    member: Member;
+  };
+
+  MyOrderDetail: {
+    order: ProposalOrder;
+    member: Member;
+  };
+
   NewProposal: undefined;
   ProductFundingList: undefined;
   ProductFundingDetail: { productId: number; };
@@ -53,27 +73,100 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export default function StackNavigator() {
   return (
-    <Stack.Navigator screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="Login"               component={Login} />
-      <Stack.Screen name="MyPage"              component={MyPage} />
-      <Stack.Screen name="Payment"             component={Payment} />
-      <Stack.Screen name="NewProposal"         component={NewProposal} />
-      <Stack.Screen name="ProductFundingList"  component={ProductFundingList} />
-      <Stack.Screen name="ProductFundingDetail" component={ProductFundingDetail} />
-      <Stack.Screen name="MyFundingList"       component={MyFundingList} />
-      <Stack.Screen name="MyProposalList"      component={MyProposalList} />
-      <Stack.Screen name="MyProposalDetail"    component={MyProposalDetail} />
-      {/* ✅ AI 가격 분석 흐름 */}
-      <Stack.Screen name="AiProductPriceScreen" component={AiProductPriceScreen} />
-      <Stack.Screen name="AiLoadingScreen"      component={AiLoadingScreen} />
-      <Stack.Screen name="NewProduct"           component={NewProduct} />
-      <Stack.Screen name="ProposalList"        component={ProposalList} />
-      <Stack.Screen name="MyProductList"       component={MyProductList} />
-      <Stack.Screen name="MyProposalFundingList" component={MyProposalFundingList} />
-      <Stack.Screen name="GongguAIScreen"      component={GongguAIScreen} />
-      <Stack.Screen name="OrderParserScreen"   component={OrderParserScreen} />
-      <Stack.Screen name="RecommendScreen"     component={RecommendScreen} />
-      <Stack.Screen name="Sketch2ProductScreen" component={Sketch2ProductScreen} />
+    <Stack.Navigator
+      screenOptions={{
+        headerShown: false,
+      }}
+    >
+      <Stack.Screen
+        name="Login"
+        component={Login}
+      />
+      <Stack.Screen
+        name="MyPage"
+        component={MyPage}
+      />
+
+
+      <Stack.Screen
+        name="Payment"
+        component={Payment}
+      />
+
+      <Stack.Screen
+        name="MyOrderList"
+        component={MyOrderList}
+      />
+
+      <Stack.Screen
+        name="MyOrderDetail"
+        component={MyOrderDetail}
+      />
+
+
+      <Stack.Screen
+        name="NewProposal"
+        component={NewProposal}
+      />
+      <Stack.Screen
+        name="ProductFundingList"
+        component={ProductFundingList}
+      />
+      <Stack.Screen
+        name="ProductFundingDetail"
+        component={ProductFundingDetail}
+      />
+
+
+      <Stack.Screen
+        name="MyFundingList"
+        component={MyFundingList}
+      />
+      <Stack.Screen
+        name="MyProposalList"
+        component={MyProposalList}
+      />
+      <Stack.Screen
+        name="MyProposalDetail"
+        component={MyProposalDetail}
+      />
+
+
+      <Stack.Screen
+        name="NewProduct"
+        component={NewProduct}
+      />
+      <Stack.Screen
+        name="ProposalList"
+        component={ProposalList}
+      />
+      <Stack.Screen
+        name="MyProductList"
+        component={MyProductList}
+      />
+      <Stack.Screen
+        name="MyProposalFundingList"
+        component={MyProposalFundingList}
+      />
+      
+
+      <Stack.Screen
+        name="GongguAIScreen"
+        component={GongguAIScreen}
+      />
+      <Stack.Screen
+        name="OrderParserScreen"
+        component={OrderParserScreen}
+      />
+      <Stack.Screen
+        name="RecommendScreen"
+        component={RecommendScreen}
+      />
+      <Stack.Screen
+        name="Sketch2ProductScreen"
+        component={Sketch2ProductScreen}
+      />
+
     </Stack.Navigator>
   );
 }
