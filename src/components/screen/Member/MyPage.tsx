@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
 import {
     View,
@@ -10,6 +10,9 @@ import {
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../../navigation/StackNavigator';
 import { RouteProp } from '@react-navigation/native';
+
+import { getMyProducts } from '../../../api/Product/getMyProducts';
+import { getMyFundings } from '../../../api/Product/getMyFundings';
 
 import { styles } from './MyPageStyle';
 
@@ -34,6 +37,51 @@ export default function Mypage({ navigation, route }: Props) {
     // 유저 정보
     const user = route.params;
     const isCEO = user.member.type === 'CEO';
+    
+    const [myProducts, setMyProducts] = useState<any[]>([]);
+    const [myFundings, setMyFundings] = useState<any[]>([]);
+
+    useEffect(() => {
+        fetchMyProductList();
+        fetchMyFundingList();
+    }, []);
+    
+    const fetchMyProductList = async () => {
+        try {
+            const data = await getMyProducts();
+            console.log(JSON.stringify(data, null, 2));
+            
+            if (Array.isArray(data)) {
+                setMyProducts(data);
+            } else if (Array.isArray(data.data)) {
+                setMyProducts(data.data);
+            } else {
+                setMyProducts([]);
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    const fetchMyFundingList = async () => {
+        try {
+            const data = await getMyFundings();
+            console.log(JSON.stringify(data, null, 2));
+            
+            if (Array.isArray(data)) {
+                setMyFundings(data);
+            } else if (Array.isArray(data.data)) {
+                setMyFundings(data.data);
+            } else {
+                setMyFundings([]);
+            }
+
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+
 
     return (
 
@@ -107,33 +155,6 @@ export default function Mypage({ navigation, route }: Props) {
             내 결제 수단
         </Text>
     </TouchableOpacity>
-        {/*
-        <View style={styles.profileBottom}>
-        
-        <View style={styles.profileStatBox}>
-            <Text style={styles.profileStatLabel}>
-                결제 수단
-            </Text>
-
-            <Text style={styles.profileStatValue}>
-                통장
-            </Text>
-        </View>
-
-        <View style={styles.profileDivider} />
-
-        <View style={styles.profileStatBox}>
-            <Text style={styles.profileStatLabel}>
-                결제 수단
-            </Text>
-
-            <Text style={styles.profileStatValue}>
-                카드
-            </Text>
-        </View>
-        </View>
-        */
-        }
 
 </View>
 
@@ -162,7 +183,7 @@ export default function Mypage({ navigation, route }: Props) {
                 </Text>
 
                 <Text style={styles.dashboardValue}>
-                    ㅇㅇ건
+                    {`${myProducts.filter( (mp) => mp.status === 'PENDING' ).length}건`}
                 </Text>
 
             </TouchableOpacity>
@@ -210,7 +231,7 @@ export default function Mypage({ navigation, route }: Props) {
                 </Text>
 
                 <Text style={styles.dashboardValue}>
-                    ㅇㅇ건
+                    {`${myFundings.filter((mf) => mf.productStatus === 'PENDING' ).length}건`}
                 </Text>
 
             </TouchableOpacity>
@@ -253,21 +274,6 @@ export default function Mypage({ navigation, route }: Props) {
                         ⚙️ 메뉴
                     </Text>
 
-                    <TouchableOpacity
-                        style={styles.menuButton}
-                        onPress={() =>
-                            navigation.navigate('MyOrderList', { member: user.member })
-                        }
-                    >
-                        <Text style={styles.menuText}>
-                            📦 내 주문 현황
-                        </Text>
-
-                        <Text style={styles.arrow}>
-                            ›
-                        </Text>
-                    </TouchableOpacity>
-
 {
     isCEO ? (
 
@@ -275,7 +281,7 @@ export default function Mypage({ navigation, route }: Props) {
             <TouchableOpacity
                 style={styles.menuButton}
                 onPress={() =>
-                    navigation.navigate('AiProductPriceScreen')
+                    navigation.navigate('NewProduct')
                 }
             >
                 <Text style={styles.menuText}>
