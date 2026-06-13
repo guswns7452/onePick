@@ -20,6 +20,12 @@ export interface ProductPriceJobResponse {
 }
 
 export interface ProductPriceJobResult {
+    jobId:       string;
+    status:      'QUEUED' | 'RUNNING' | 'SUCCESS' | 'FAILED';
+    price:       number | null;
+    description: string | null;
+    productId:   number | null;
+
     jobId:     string;
     status:    'QUEUED' | 'RUNNING' | 'SUCCESS' | 'FAILED';
     productId: number | null;
