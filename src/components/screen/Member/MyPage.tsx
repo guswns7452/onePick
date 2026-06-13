@@ -275,7 +275,7 @@ export default function Mypage({ navigation, route }: Props) {
             <TouchableOpacity
                 style={styles.menuButton}
                 onPress={() =>
-                    navigation.navigate('NewProduct')
+                    navigation.navigate('AiProductPriceScreen')
                 }
             >
                 <Text style={styles.menuText}>

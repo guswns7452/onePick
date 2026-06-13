@@ -1,35 +1,28 @@
 import React from 'react'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
-
-
 import Login from '../components/screen/Member/Login'
 import MyPage from '../components/screen/Member/MyPage'
-
 import NewProposal from '../components/screen/Individual/NewProposal'
 import ProductFundingList from '../components/screen/Individual/ProductFundingList'
 import ProductFundingDetail from '../components/screen/Individual/ProductFundingDetail'
 import MyFundingList from '../components/screen/Individual/MyFundingList'
 import MyProposalList from '../components/screen/Individual/MyProposalList'
 import MyProposalDetail from '../components/screen/Individual/MyProposalDetail'
-
 import NewProduct from '../components/screen/Ceo/NewProduct'
+import AiProductPriceScreen from '../components/screen/Ceo/AiProductPriceScreen'
+import AiLoadingScreen from '../components/screen/Ceo/AiLoadingScreen'
 import ProposalList from '../components/screen/Ceo/ProposalList'
 import MyProductList from '../components/screen/Ceo/MyProductList'
 import MyProposalFundingList from '../components/screen/Ceo/MyProposalFundingList'
-
 import Payment from '../components/screen/Payment'
-
 import MyOrderList from '../components/screen/Order/MyOrderList'
 import MyOrderDetail from '../components/screen/Order/MyOrderDetail'
-
 import GongguAIScreen from '../components/screen/Ai/GongguAIScreen'
 import OrderParserScreen from '../components/screen/Ai/OrderParserScreen'
 import RecommendScreen from '../components/screen/Ai/RecommendScreen'
 import Sketch2ProductScreen from '../components/screen/Ai/Sketch2ProductScreen'
-
 import { Member } from '../interface/member'
 import { ProposalOrder } from '../interface/order'
-
 
 export type RootStackParamList = {
   Login: undefined;
@@ -54,25 +47,26 @@ export type RootStackParamList = {
 
   NewProposal: undefined;
   ProductFundingList: undefined;
-  ProductFundingDetail: {
-    productId: number,
-  };
+  ProductFundingDetail: { productId: number; };
   MyFundingList: undefined;
   MyProposalList: undefined;
-  MyProposalDetail: {
-    proposalId: number,
-  };
-
-  NewProduct: undefined;
+  MyProposalDetail: { proposalId: number; };
+  // ✅ AI 가격 분석 화면들
+  AiProductPriceScreen: undefined;
+  AiLoadingScreen: { jobId: string; productId: number; name: string; };
+  NewProduct: {
+    aiPrice?:       number | null;
+    aiDescription?: string | null;
+    aiProductId?:   number | null;
+    productName?:   string;
+  } | undefined;
   ProposalList: undefined;
   MyProductList: undefined;
   MyProposalFundingList: undefined;
-
   GongguAIScreen: undefined;
   OrderParserScreen: undefined;
   RecommendScreen: undefined;
   Sketch2ProductScreen: undefined;
-
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();

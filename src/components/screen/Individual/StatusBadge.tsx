@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 
 
-type BidStatus = 'PENDING' | 'FINISHED' | 'CANCELLED';
+type BidStatus = 'PENDING' | 'FINISHED' | 'CANCELED';
 
 const BADGES: {
     key: BidStatus;
@@ -20,7 +20,7 @@ const BADGES: {
         color: '#10b981',
     },
     {
-        key: 'CANCELLED',
+        key: 'CANCELED',
         label: '취소',
         color: '#ef4444',
     },
