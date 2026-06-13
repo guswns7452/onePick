@@ -77,41 +77,6 @@ export default function ProposalDetail({ navigation, route }: Props) {
   }, [request.proposalId]);
   
 
-  const handleBid = () => {
-    if (!bidPrice || isNaN(Number(bidPrice))) {
-      Alert.alert('참여 오류', '금액을 올바르게 입력해 주세요.');
-      return;
-    }
-    if (Number(bidPrice) > proposal.maxPrice) {
-      Alert.alert('참여 오류', `최대 금액은 ${proposal.maxPrice.toLocaleString()}원입니다.`);
-      return;
-    }
-
-    Alert.alert(
-      '제작 제안 확인',
-      `${bidPrice.toLocaleString()}원으로 펀딩 참여하시겠습니까?`,
-      [
-        { text: '취소', style: 'cancel' },
-        {
-          text: '참여하기',
-          onPress: () => {
-            setModalVisible(false);
-            setBidPrice('');
-            setBidContent('');
-
-
-            
-            navigation.navigate('Payment', {
-              isPayment: true,
-              productId: Number(request.productId),
-              quantity: Number(bidAmount),
-            })
-          }
-        }
-      ]
-    );
-  };
-
     const handlePropose = async (proposalId: number) => {
 
       try {
@@ -162,6 +127,7 @@ export default function ProposalDetail({ navigation, route }: Props) {
   const handleReject = async (proposalFundingId: number) => {
     try {
       const result = await patchRejectFunding(proposalFundingId);
+
       Alert.alert('❎ 거절 완료', '입찰을 성공적으로 거절했어요!');
       navigation.goBack();
     } catch (error) {
@@ -254,7 +220,16 @@ export default function ProposalDetail({ navigation, route }: Props) {
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>📊 요청 정보</Text>
           <View style={styles.infoGrid}>
-            <InfoItem label="마감 기간" value={`${proposal?.deadlineDays}일`} />
+            <InfoItem
+              label="마감 기한"
+              value={
+                proposal?.remainingDeadlineDays > 0
+                ? `${proposal?.remainingDeadlineDays}일 남음`
+                : proposal?.remainingDeadlineDays === 0
+                ? '오늘 마감'
+                : `${Math.abs(proposal?.remainingDeadlineDays)}일 경과`
+              }
+            />
             <InfoItem label="입찰 수"   value={`${proposal?.fundingCount}건`} />
             <InfoItem label="상태"      value={proposal?.proposalStatus === 'PENDING' ? '진행중' : '완료'} />
             <InfoItem label="등록일"    value={proposal?.createdAt?.slice(0, 10) ?? '-'} />
@@ -264,12 +239,15 @@ export default function ProposalDetail({ navigation, route }: Props) {
         {/* 입찰 요청 목록 */}
         { request.isMine ?
         (<View style={styles.section}>
-          <Text style={styles.sectionTitle}>📩 입찰 요청 목록</Text>
+          <Text style={styles.sectionTitle}>📩 제작 제안 목록</Text>
           {proposalFundings.length === 0 ? (
-            <Text style={styles.emptyText}>아직 입찰 요청이 없어요</Text>
+            <Text style={styles.emptyText}>아직 받은 제안이 없어요</Text>
           ) : (
-            proposalFundings.map((funding: any) => (
+            proposalFundings.map((funding: any, index) => (
               <View key={funding.proposalFundingId} style={styles.fundingCard}>
+                <View style={styles.fundingRank}>
+                  <Text style={styles.fundingRankText}>{index + 1}</Text>
+                </View>
                 <View style={styles.fundingInfo}>
                   <Text style={styles.fundingNickname}>{funding.sellerNickname ?? '판매자'}</Text>
                   <Text style={styles.fundingPrice}>{funding.price?.toLocaleString()}원</Text>
@@ -457,14 +435,30 @@ const styles = StyleSheet.create({
     backgroundColor: '#f8f8ff', borderRadius: 12, padding: 14,
     marginBottom: 10, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
   },
-  fundingInfo:     { flex: 1 },
+
+  fundingRank: {
+    marginBottom: 20,
+    paddingHorizontal: 10,
+    borderRadius: 10,
+    backgroundColor: '#ddd',
+  },
+
+  fundingRankText: {
+    fontSize: 15,
+    fontWeight: '700',
+  },
+
+  fundingInfo: {
+    right: 50,
+  },
+
   fundingNickname: { fontSize: 14, fontWeight: '600', color: '#1a1a2e', marginBottom: 4 },
   fundingPrice:    { fontSize: 16, fontWeight: 'bold', color: '#4f46e5' },
   fundingBtns:     { flexDirection: 'row', gap: 8 },
   rejectBtn:       { borderWidth: 1, borderColor: '#ef4444', borderRadius: 8, paddingHorizontal: 12, paddingVertical: 6 },
   rejectBtnText:   { color: '#ef4444', fontSize: 13, fontWeight: '600' },
-  acceptBtn:       { backgroundColor: '#4f46e5', borderRadius: 8, paddingHorizontal: 12, paddingVertical: 6 },
-  acceptBtnText:   { color: '#fff', fontSize: 13, fontWeight: '600' },
+  acceptBtn:       { borderWidth: 1, borderColor: '#065f46', borderRadius: 8, paddingHorizontal: 12, paddingVertical: 6 },
+  acceptBtnText:   { color: '#065f46', fontSize: 13, fontWeight: '600' },
 
   // 모달
   modalOverlay: {

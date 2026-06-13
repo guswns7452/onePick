@@ -24,7 +24,6 @@ import BidCard from '../../../public/screen/BidCard';
 import { getProduct } from '../../../api/Product/getProduct';
 import { getMyFundings } from '../../../api/ProposalFunding/getMyFundings';
 import { deleteProposalFunding } from '../../../api/ProposalFunding/deleteProposalFunding';
-import { formatOrderAmount } from '../../../utils/orderStatus';
 
 type HomeScreenNavigationProp =
   NativeStackNavigationProp<RootStackParamList>;
@@ -250,21 +249,20 @@ export default function MyProposalFundingList({ navigation }: Props) {
               id={myProposalFunding.proposalId}
               title={myProposalFunding.proposalTitle}
               category={myProposalFunding.proposalCategory}
-              valueString={formatOrderAmount(
-                myProposalFunding.proposalFundingPrice ?? myProposalFunding.maxPrice,
-              )}
+              valueString={`${myProposalFunding.maxPrice.toLocaleString()}원`}
               thumbnail={null}
               remainingDeadlineDays={0}
               buttonView={
-                myProposalFunding.status === 'PENDING'
-                ? Buttons(myProposalFunding.productId)
+                myProposalFunding.productStatus === 'PENDING'
+                ? <Buttons proposalFundingId={myProposalFunding.proposalId} />
                 : null
               }
-              onPressNav={() => {/*
-                navigation.navigate('MyProposalDetail', {
-                  proposalId: Number(myProposal.proposalId),
+              onPressNav={() => {
+                navigation.navigate('ProposalDetail', {
+                  isMine: false,
+                  proposalId: Number(myProposalFunding.proposalId),
                 })
-              */}}
+              }}
             />)
         )}
       </ScrollView>

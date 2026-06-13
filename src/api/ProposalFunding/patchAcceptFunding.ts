@@ -1,7 +1,7 @@
 import { api } from '../axios';
 
 export const patchAcceptFunding = async (proposalFundingId: number) => {
-    const response = await api.patch(`/api/v1/product/${proposalFundingId}/accept`);
+    const response = await api.patch(`/api/v1/proposals/fundings/${proposalFundingId}/accept`);
 
     return response.data;
 };
