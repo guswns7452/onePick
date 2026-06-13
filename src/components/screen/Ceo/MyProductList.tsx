@@ -314,7 +314,7 @@ export default function MyProductList({ navigation }: Props) {
               onPressNav={() => {
                 navigation.navigate('ProductFundingDetail', {
                   isMine: true,
-                  productId: Number(product.productId),
+                  productId: Number(myProduct.productId),
                 })
               }}
             />)
