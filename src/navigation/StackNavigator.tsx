@@ -13,6 +13,8 @@ import MyProposalList from '../components/screen/Individual/MyProposalList'
 import ProposalPayment from '../components/screen/Individual/ProposalPayment'
 
 import NewProduct from '../components/screen/Ceo/NewProduct'
+import AiProductPriceScreen from '../components/screen/Ceo/AiProductPriceScreen'
+import AiLoadingScreen from '../components/screen/Ceo/AiLoadingScreen'
 import ProposalList from '../components/screen/Ceo/ProposalList'
 import ProposalDetail from '../components/screen/Ceo/ProposalDetail'
 import MyProductList from '../components/screen/Ceo/MyProductList'
@@ -20,12 +22,16 @@ import MyProposalFundingList from '../components/screen/Ceo/MyProposalFundingLis
 
 import Payment from '../components/screen/Payment'
 
+import MyOrderList from '../components/screen/Order/MyOrderList'
+import MyOrderDetail from '../components/screen/Order/MyOrderDetail'
+
 import GongguAIScreen from '../components/screen/Ai/GongguAIScreen'
 import OrderParserScreen from '../components/screen/Ai/OrderParserScreen'
 import RecommendScreen from '../components/screen/Ai/RecommendScreen'
 import Sketch2ProductScreen from '../components/screen/Ai/Sketch2ProductScreen'
 
 import { Member } from '../interface/member'
+import { ProposalOrder } from '../interface/order'
 
 
 export type RootStackParamList = {
@@ -40,6 +46,15 @@ export type RootStackParamList = {
     quantity: number;
   };
 
+  MyOrderList: {
+    member: Member;
+  };
+
+  MyOrderDetail: {
+    order: ProposalOrder;
+    member: Member;
+  };
+
   NewProposal: undefined;
   ProductFundingList: undefined;
   ProductFundingDetail: {
@@ -52,7 +67,18 @@ export type RootStackParamList = {
     proposalFundingId: number,
   };
 
-  NewProduct: undefined;
+  NewProduct: {
+    aiPrice?: number | null;
+    aiDescription?: string | null;
+    aiProductId?: number | null;
+    productName?: string;
+  } | undefined;
+  AiProductPriceScreen: undefined;
+  AiLoadingScreen: {
+    jobId: string;
+    productId: number;
+    name: string;
+  };
   ProposalList: undefined;
   ProposalDetail: {
     isMine: boolean,
@@ -92,6 +118,16 @@ export default function StackNavigator() {
         component={Payment}
       />
 
+      <Stack.Screen
+        name="MyOrderList"
+        component={MyOrderList}
+      />
+
+      <Stack.Screen
+        name="MyOrderDetail"
+        component={MyOrderDetail}
+      />
+
 
       <Stack.Screen
         name="NewProposal"
@@ -122,6 +158,14 @@ export default function StackNavigator() {
       <Stack.Screen
         name="NewProduct"
         component={NewProduct}
+      />
+      <Stack.Screen
+        name="AiProductPriceScreen"
+        component={AiProductPriceScreen}
+      />
+      <Stack.Screen
+        name="AiLoadingScreen"
+        component={AiLoadingScreen}
       />
       <Stack.Screen
         name="ProposalList"
